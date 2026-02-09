@@ -1,43 +1,149 @@
 {
   "version": "1.0",
   "type": "global",
-  "exportedAt": "2026-02-09T17:05:00.000Z",
+  "exportedAt": "2026-02-09T18:00:00.000Z",
   "user": {
-    "id": "sample-user",
-    "name": "Dev Admin",
-    "role": "Lead Architect",
-    "bio": "Managing the DevJournal ecosystem.",
-    "socialLinks": { "github": "", "twitter": "", "linkedin": "", "email": "" }
+    "id": "alex-dev",
+    "name": "Alex Admin",
+    "role": "Solo Founder",
+    "bio": "Building DevJournal to help developers document their build process in real-time.",
+    "socialLinks": {
+      "github": "https://github.com/alexdev",
+      "twitter": "https://twitter.com/alexdev"
+    }
   },
   "projects": [
     {
-      "id": "sample-p1",
-      "name": "Ecosystem Expansion",
-      "slug": "ecosystem-expansion",
-      "description": "Unifying data portability across the platform.",
-      "techStack": ["Next.js", "Zustand"],
-      "status": "shipped",
-      "createdAt": "2026-02-09T10:00:00.000Z",
-      "updatedAt": "2026-02-09T17:00:00.000Z"
+      "id": "proj-devjournal",
+      "name": "DevJournal Core",
+      "slug": "devjournal-core",
+      "description": "The primary repository for the DevJournal application.",
+      "techStack": ["Next.js 16", "Zustand", "Tailwind CSS"],
+      "repositoryLink": "https://github.com/alexdev/devjournal",
+      "status": "in-progress",
+      "createdAt": "2026-02-09T08:00:00.000Z",
+      "updatedAt": "2026-02-09T18:00:00.000Z"
     }
   ],
   "entries": [
     {
-      "id": "sample-e1",
-      "projectId": "sample-p1",
-      "category": "build",
-      "title": "Unified Portability Implemented",
+      "id": "entry-idea",
+      "projectId": "proj-devjournal",
+      "category": "plan-change",
+      "title": "Rethinking the Journal Interface",
       "templateData": {
-        "subcategory": "technical-decision",
-        "technicalDecision": {
-          "context": "Imports were overwriting data.",
-          "decision": "Implemented non-destructive smart merging.",
-          "rationale": "Better UX for combining logs from different machines."
+        "subcategory": "idea-spark",
+        "ideaSpark": {
+            "coreValue": "Frictionless Documentation",
+            "vibe": "Narrative-first, but guided."
         }
       },
       "isPublic": true,
-      "createdAt": "2026-02-09T16:00:00.000Z",
-      "updatedAt": "2026-02-09T16:00:00.000Z"
-    }
+      "createdAt": "2026-02-09T09:00:00.000Z",
+      "updatedAt": "2026-02-09T09:00:00.000Z"
+    },
+    {
+        "id": "entry-decision",
+        "projectId": "proj-devjournal",
+        "category": "plan-change",
+        "title": "Pivot to Hybrid Templates",
+        "templateData": {
+          "subcategory": "decision-log",
+          "decisionLog": {
+              "context": "User felt 'empty markdown' lacked guidance, but 'strict forms' felt like tax documents.",
+              "options": "1. Revert to strict forms.\n2. Keep empty markdown.\n3. Hybrid (Structured Input -> Narrative Output).",
+              "decision": "Option 3: Hybrid.",
+              "rationale": "We need the *prompting* of a form to unblock the user, but the *readability* of a story for the timeline."
+          }
+        },
+        "isPublic": true,
+        "createdAt": "2026-02-09T10:00:00.000Z",
+        "updatedAt": "2026-02-09T10:00:00.000Z"
+      },
+    {
+      "id": "entry-debugging",
+      "projectId": "proj-devjournal",
+      "category": "build",
+      "title": "Fixing Circular Type Dependencies",
+      "templateData": {
+        "subcategory": "debugging",
+        "debugging": {
+            "symptom": "TypeScript error: `EntryTemplateData` circularly references itself.",
+            "hypothesis": "I defined the union type incorrectly in `types.ts`.",
+            "attempted": "- Checked imports\n- Simplified unions",
+            "solution": "Separated the interfaces for Plan, Build, and Reflect into distinct types before unionizing them."
+        }
+      },
+      "isPublic": true,
+      "createdAt": "2026-02-09T14:30:00.000Z",
+      "updatedAt": "2026-02-09T14:30:00.000Z"
+    },
+    {
+        "id": "entry-context",
+        "projectId": "proj-devjournal",
+        "category": "build",
+        "title": "Audit Complete",
+        "templateData": {
+          "subcategory": "context-switch",
+          "contextSwitch": {
+              "currentState": "Templates are verified. Codebase is building.",
+              "nextSteps": "Update the sample data to reflect this history."
+          }
+        },
+        "isPublic": true,
+        "createdAt": "2026-02-09T18:00:00.000Z",
+        "updatedAt": "2026-02-09T18:00:00.000Z"
+      },
+      {
+        "id": "entry-milestone",
+        "projectId": "proj-devjournal",
+        "category": "reflect",
+        "title": "v1.0 Templates Shipped",
+        "templateData": {
+          "subcategory": "milestone",
+          "milestone": {
+              "achievement": "Implemented the Reddit-inspired Hybrid Templates.",
+              "impact": "Users now have 'Rubber Ducking' and 'Context Switching' built directly into their workflow.",
+              "demoLink": "http://localhost:3000"
+          }
+        },
+        "isPublic": true,
+        "createdAt": "2026-02-09T20:00:00.000Z",
+        "updatedAt": "2026-02-09T20:00:00.000Z"
+      },
+      {
+        "id": "entry-postmortem",
+        "projectId": "proj-devjournal",
+        "category": "reflect",
+        "title": "Build Failed on Vercel",
+        "templateData": {
+          "subcategory": "post-mortem",
+          "postMortem": {
+              "incident": "Production build failed due to missing env var.",
+              "rootCause": "Forgot to add `NEXT_PUBLIC_API_URL` to Vercel dashboard.",
+              "prevention": "Added a `.env.example` check in the build script."
+          }
+        },
+        "isPublic": true,
+        "createdAt": "2026-02-09T21:00:00.000Z",
+        "updatedAt": "2026-02-09T21:00:00.000Z"
+      },
+      {
+        "id": "entry-review",
+        "projectId": "proj-devjournal",
+        "category": "reflect",
+        "title": "Weekly Review: Feb 3-9",
+        "templateData": {
+          "subcategory": "review",
+          "review": {
+              "period": "Feb 3 - Feb 9, 2026",
+              "wentWell": "- Shipped Hybrid Templates\n- Fixed circular dependency bug\n- Updated all documentation",
+              "couldBeBetter": "- Spent too long struggling with Next.js 16 async params.\n- Need to automate the sample data generation."
+          }
+        },
+        "isPublic": true,
+        "createdAt": "2026-02-09T22:00:00.000Z",
+        "updatedAt": "2026-02-09T22:00:00.000Z"
+      }
   ]
 }

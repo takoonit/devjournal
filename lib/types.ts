@@ -26,57 +26,82 @@ export interface Project {
 }
 
 // Entry Categories and Subcategories
-export type EntryCategory = "plan" | "build" | "reflect";
+export type EntryCategory = "plan-change" | "build" | "reflect";
 
-export type PlanSubcategory = "blast" | "feature-concept";
-export type BuildSubcategory = "technical-decision" | "bug-fix" | "progress-update";
-export type ReflectSubcategory = "learning-note" | "retrospective" | "general-note";
+export type PlanSubcategory = "idea-spark" | "decision-log" | "research-notes";
+export type BuildSubcategory = "context-switch" | "debugging" | "til-snippet" | "implementation-guide";
+export type ReflectSubcategory = "milestone" | "post-mortem" | "review";
 
 export type EntrySubcategory = PlanSubcategory | BuildSubcategory | ReflectSubcategory;
 
-// BLAST Framework
-export interface BlastFramework {
-    blueprint: string; // The singular goal/North Star
-    link: string; // Integrations and MCPs required
-    architect: string; // Data structure and schema planning
-    style: string; // UI/UX tokens and design system choices
-    trigger: string; // The event that initiates the logic/automation
-}
+
 
 // Entry Template Data
+
 export interface PlanTemplateData {
     subcategory: PlanSubcategory;
-    blastFramework?: BlastFramework;
-    featureConcept?: string;
+    // content: string; // <-- Moving away from generic content
+    ideaSpark?: {
+        coreValue: string;
+        vibe: string;
+    };
+    decisionLog?: {
+        context: string;
+        options: string;
+        decision: string;
+        rationale: string;
+    };
+    researchNotes?: {
+        topic: string;
+        learnings: string;
+        resources: string; // Markdown links
+    };
 }
 
 export interface BuildTemplateData {
     subcategory: BuildSubcategory;
-    technicalDecision?: {
-        context: string;
-        decision: string;
-        rationale: string;
+    contextSwitch?: {
+        currentState: string;
+        nextSteps: string;
     };
-    bugFix?: {
-        rootCause: string;
+    debugging?: {
+        symptom: string;
+        hypothesis: string;
+        attempted: string; // Markdown list
         solution: string;
-        prevention: string;
     };
-    progressUpdate?: {
-        accomplishments: string;
+    tilSnippet?: {
+        problem: string;
+        solution: string;
+        code: string;  // Code block
+    };
+    implementationGuide?: {
+        feature: string;
+        howItWorks: string;
+        edgeCases: string;
     };
 }
 
 export interface ReflectTemplateData {
     subcategory: ReflectSubcategory;
-    learningNote?: string;
-    retrospective?: {
-        whatWentWell: string;
-        whatDidntWork: string;
-        whatToImprove: string;
+    milestone?: {
+        achievement: string;
+        impact: string;
+        demoLink: string;
     };
-    generalNote?: string;
+    postMortem?: {
+        incident: string;
+        rootCause: string;
+        prevention: string;
+    };
+    review?: {
+        period: string;
+        wentWell: string;
+        couldBeBetter: string;
+    };
 }
+
+
 
 export type EntryTemplateData = PlanTemplateData | BuildTemplateData | ReflectTemplateData;
 
