@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "type": "global",
+  "exportedAt": "2026-02-09T17:05:00.000Z",
+  "user": {
+    "id": "sample-user",
+    "name": "Dev Admin",
+    "role": "Lead Architect",
+    "bio": "Managing the DevJournal ecosystem.",
+    "socialLinks": { "github": "", "twitter": "", "linkedin": "", "email": "" }
+  },
+  "projects": [
+    {
+      "id": "sample-p1",
+      "name": "Ecosystem Expansion",
+      "slug": "ecosystem-expansion",
+      "description": "Unifying data portability across the platform.",
+      "techStack": ["Next.js", "Zustand"],
+      "status": "shipped",
+      "createdAt": "2026-02-09T10:00:00.000Z",
+      "updatedAt": "2026-02-09T17:00:00.000Z"
+    }
+  ],
+  "entries": [
+    {
+      "id": "sample-e1",
+      "projectId": "sample-p1",
+      "category": "build",
+      "title": "Unified Portability Implemented",
+      "templateData": {
+        "subcategory": "technical-decision",
+        "technicalDecision": {
+          "context": "Imports were overwriting data.",
+          "decision": "Implemented non-destructive smart merging.",
+          "rationale": "Better UX for combining logs from different machines."
+        }
+      },
+      "isPublic": true,
+      "createdAt": "2026-02-09T16:00:00.000Z",
+      "updatedAt": "2026-02-09T16:00:00.000Z"
+    }
+  ]
+}

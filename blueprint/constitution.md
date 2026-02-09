@@ -32,16 +32,34 @@ interface Project {
 interface Entry {
   id: string;
   projectId: string;
-  type: "plan" | "build" | "reflect";
-  content: string; // Markdown
+  category: "plan" | "build" | "reflect";
+  title: string;
+  templateData: {
+    subcategory: string;
+    // ... specialized fields for subcategories (blastFramework, technicalDecision, etc.)
+  };
   isPublic: boolean;
   createdAt: string; // ISO
   updatedAt: string; // ISO
 }
 ```
 
-## 🔗 Link Layer (Integrations)
-- **Framework:** Next.js 16 (Turbopack)
-- **State:** Zustand + Persistence
-- **Styling:** Tailwind CSS + Lucide React
-- **Hosting:** Vercel (Planned)
+## 📂 Data Portability (.devjournal)
+
+DevJournal uses a unified, JSON-based `.devjournal` format for all data transfers.
+
+### 1. File Extension
+- **Format:** `.devjournal` (Pure JSON internally)
+- **Scope:** Can contain a full system backup or a selective project bundle.
+
+### 2. Smart Import Logic
+The system automatically detects the content type based on the `type` field:
+- `global`: Full backup (User + Projects + Entries).
+- `selective`: Multiple chosen projects.
+- `project`: Legacy single project export.
+
+### 3. Non-Destructive Merging
+All imports are **additive**.
+- **Conflict Resolution:** If a project name exists, the system appends a counter (e.g., `My Project (1)`) Windows-style.
+- **ID Management:** New IDs are generated for all imported items to prevent collisions while preserving relationships.
+

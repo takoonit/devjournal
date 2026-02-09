@@ -8,13 +8,13 @@ interface ProjectActionsProps {
 }
 
 export function ProjectActions({ projectId }: ProjectActionsProps) {
-    const exportProjectJournal = useDevJournalStore((state) => state.exportProjectJournal);
+    const exportSelectedProjects = useDevJournalStore((state) => state.exportSelectedProjects);
 
     return (
         <button
-            onClick={() => exportProjectJournal(projectId)}
+            onClick={() => exportSelectedProjects([projectId])}
             className="flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-md transition-colors border border-zinc-700 text-sm font-medium"
-            title="Export project journal as JSON"
+            title="Export project journal as .devjournal"
         >
             <FolderOutput className="w-4 h-4" />
             Export Project

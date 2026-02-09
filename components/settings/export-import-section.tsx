@@ -2,28 +2,48 @@
 
 import { useState, useRef } from "react";
 import { useDevJournalStore } from "@/lib/store";
-import { FolderOutput, FolderInput, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
+import { FolderOutput, FolderInput, CheckCircle2, XCircle, CheckSquare, Square } from "lucide-react";
 
 export function ExportImportSection() {
+    const projects = useDevJournalStore((state) => state.projects);
     const exportJournal = useDevJournalStore((state) => state.exportJournal);
-    const importJournal = useDevJournalStore((state) => state.importJournal);
+    const exportSelectedProjects = useDevJournalStore((state) => state.exportSelectedProjects);
+    const importDevJournal = useDevJournalStore((state) => state.importDevJournal);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
     const [status, setStatus] = useState<{
         type: "idle" | "success" | "error" | "loading";
         message: string;
     }>({ type: "idle", message: "" });
 
-    const handleExport = () => {
+    const toggleProject = (projectId: string) => {
+        setSelectedProjectIds(prev =>
+            prev.includes(projectId)
+                ? prev.filter(id => id !== projectId)
+                : [...prev, projectId]
+        );
+    };
+
+    const handleExportAll = () => {
         try {
             exportJournal();
-            setStatus({ type: "success", message: "Journal exported successfully!" });
+            setStatus({ type: "success", message: "Full journal backup exported!" });
             setTimeout(() => setStatus({ type: "idle", message: "" }), 3000);
         } catch (error) {
-            setStatus({
-                type: "error",
-                message: "Failed to export journal. Please try again.",
-            });
+            setStatus({ type: "error", message: "Export failed." });
+        }
+    };
+
+    const handleExportSelected = () => {
+        if (selectedProjectIds.length === 0) return;
+        try {
+            exportSelectedProjects(selectedProjectIds);
+            setStatus({ type: "success", message: `Exported ${selectedProjectIds.length} projects.` });
+            setTimeout(() => setStatus({ type: "idle", message: "" }), 3000);
+            setSelectedProjectIds([]);
+        } catch (error) {
+            setStatus({ type: "error", message: "Export failed." });
         }
     };
 
@@ -31,14 +51,9 @@ export function ExportImportSection() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        if (!confirm("This will replace all your current data. Are you sure you want to continue?")) {
-            if (fileInputRef.current) fileInputRef.current.value = "";
-            return;
-        }
+        setStatus({ type: "loading", message: "Processing DevJournal file..." });
 
-        setStatus({ type: "loading", message: "Importing journal..." });
-
-        const result = await importJournal(file);
+        const result = await importDevJournal(file);
 
         if (result.success) {
             setStatus({ type: "success", message: result.message });
@@ -52,65 +67,101 @@ export function ExportImportSection() {
 
     return (
         <div className="mt-12 pt-8 border-t border-zinc-800">
-            <h3 className="text-xl font-bold text-zinc-100 mb-2">Data Management</h3>
-            <p className="text-zinc-400 mb-6">
-                Back up your journal data or restore it from a previous export.
+            <h3 className="text-xl font-bold text-zinc-100 mb-2">Data Portability</h3>
+            <p className="text-zinc-400 mb-8">
+                Manage your exports and imports using the unified <code className="text-cyan-400">.devjournal</code> format.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-8">
                 {/* Export Section */}
-                <div className="p-6 bg-zinc-900/30 border border-zinc-800 rounded-xl">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2 bg-emerald-500/10 rounded-lg">
-                            <FolderOutput className="w-5 h-5 text-emerald-400" />
+                <div className="space-y-6">
+                    <div className="p-6 bg-zinc-900/30 border border-zinc-800 rounded-xl">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="p-2 bg-emerald-500/10 rounded-lg">
+                                <FolderOutput className="w-5 h-5 text-emerald-400" />
+                            </div>
+                            <h4 className="font-semibold text-zinc-200">Export Projects</h4>
                         </div>
-                        <h4 className="font-semibold text-zinc-200">Export Journal</h4>
+
+                        {projects.length > 0 ? (
+                            <div className="space-y-4">
+                                <div className="max-h-48 overflow-y-auto pr-2 space-y-2 mb-6 scrollbar-thin scrollbar-thumb-zinc-800">
+                                    {projects.map((project) => {
+                                        const isSelected = selectedProjectIds.includes(project.id);
+                                        return (
+                                            <button
+                                                key={project.id}
+                                                onClick={() => toggleProject(project.id)}
+                                                className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${isSelected
+                                                        ? "bg-cyan-500/5 border-cyan-500/30 text-cyan-400"
+                                                        : "bg-zinc-800/20 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300"
+                                                    }`}
+                                            >
+                                                {isSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
+                                                <span className="text-sm font-medium truncate">{project.name}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={handleExportSelected}
+                                        disabled={selectedProjectIds.length === 0}
+                                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-cyan-500 text-zinc-950 rounded-lg hover:bg-cyan-400 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                                    >
+                                        Export Selected ({selectedProjectIds.length})
+                                    </button>
+                                    <button
+                                        onClick={handleExportAll}
+                                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg transition-colors border border-zinc-700 font-medium text-sm"
+                                    >
+                                        Backup Everything
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <p className="text-sm text-zinc-500 italic py-4">No projects to export.</p>
+                        )}
                     </div>
-                    <p className="text-sm text-zinc-400 mb-6">
-                        Download your entire journal including profile, projects, and all entries as a JSON file.
-                    </p>
-                    <button
-                        onClick={handleExport}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg transition-colors border border-zinc-700 font-medium"
-                    >
-                        <FolderOutput className="w-4 h-4" />
-                        Download JSON
-                    </button>
                 </div>
 
                 {/* Import Section */}
-                <div className="p-6 bg-zinc-900/30 border border-zinc-800 rounded-xl">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2 bg-amber-500/10 rounded-lg">
-                            <FolderInput className="w-5 h-5 text-amber-400" />
+                <div className="space-y-6">
+                    <div className="p-6 bg-zinc-900/30 border border-zinc-800 rounded-xl">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="p-2 bg-amber-500/10 rounded-lg">
+                                <FolderInput className="w-5 h-5 text-amber-400" />
+                            </div>
+                            <h4 className="font-semibold text-zinc-200">Import .devjournal</h4>
                         </div>
-                        <h4 className="font-semibold text-zinc-200">Import Journal</h4>
+
+                        <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
+                            Import projects or full backups. This action is <span className="text-cyan-400 font-medium">non-destructive</span>—imported items will be merged with your existing data.
+                        </p>
+
+                        <button
+                            onClick={() => fileInputRef.current?.click()}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg transition-colors border border-zinc-700 font-medium text-sm"
+                        >
+                            <FolderInput className="w-4 h-4" />
+                            Select File
+                        </button>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleImport}
+                            accept=".devjournal"
+                            className="hidden"
+                        />
                     </div>
-                    <p className="text-sm text-zinc-400 mb-6 font-medium flex items-start gap-2">
-                        <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                        <span>Warning: Importing will overwrite all your current data.</span>
-                    </p>
-                    <button
-                        onClick={() => fileInputRef.current?.click()}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg transition-colors border border-zinc-700 font-medium"
-                    >
-                        <FolderInput className="w-4 h-4" />
-                        Select File
-                    </button>
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleImport}
-                        accept=".json"
-                        className="hidden"
-                    />
                 </div>
             </div>
 
             {/* Status Message */}
             {status.type !== "idle" && (
                 <div
-                    className={`mt-6 p-4 rounded-lg flex items-center gap-3 border ${status.type === "success"
+                    className={`mt-8 p-4 rounded-lg flex items-center gap-3 border animate-in fade-in slide-in-from-top-2 duration-300 ${status.type === "success"
                         ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
                         : status.type === "error"
                             ? "bg-rose-500/10 border-rose-500/30 text-rose-400"
@@ -128,3 +179,4 @@ export function ExportImportSection() {
         </div>
     );
 }
+

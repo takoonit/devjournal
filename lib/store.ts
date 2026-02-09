@@ -25,11 +25,10 @@ interface DevJournalStore {
     getPublicEntriesByProjectId: (projectId: string) => Entry[];
     getPublicProjects: () => Project[];
 
-    // Export/Import
+    // Unified Portability (.devjournal)
     exportJournal: () => void;
-    importJournal: (file: File) => Promise<{ success: boolean; message: string }>;
-    exportProjectJournal: (projectId: string) => void;
-    importProjectJournal: (file: File) => Promise<{ success: boolean; message: string }>;
+    exportSelectedProjects: (projectIds: string[]) => void;
+    importDevJournal: (file: File) => Promise<{ success: boolean; message: string }>;
 }
 
 export const useDevJournalStore = create<DevJournalStore>()(
@@ -132,11 +131,12 @@ export const useDevJournalStore = create<DevJournalStore>()(
                     return publicEntries.length > 0;
                 }),
 
-            // Export journal as JSON file
+            // Unified Export (.devjournal)
             exportJournal: () => {
                 const state = get();
                 const exportData = {
                     version: "1.0",
+                    type: "global",
                     exportedAt: new Date().toISOString(),
                     user: state.user,
                     projects: state.projects,
@@ -149,131 +149,127 @@ export const useDevJournalStore = create<DevJournalStore>()(
                 const link = document.createElement("a");
                 const date = new Date().toISOString().split("T")[0];
                 link.href = url;
-                link.download = `devjournal-export-${date}.json`;
+                link.download = `devjournal-backup-${date}.devjournal`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
             },
 
-            // Import journal from JSON file
-            importJournal: async (file: File) => {
-                try {
-                    const text = await file.text();
-                    const data = JSON.parse(text);
-
-                    // Validate structure
-                    if (!data.version || !data.user || !data.projects || !data.entries) {
-                        return {
-                            success: false,
-                            message: "Invalid journal file format. Missing required fields.",
-                        };
-                    }
-
-                    // Validate data types
-                    if (!Array.isArray(data.projects) || !Array.isArray(data.entries)) {
-                        return {
-                            success: false,
-                            message: "Invalid journal file format. Projects and entries must be arrays.",
-                        };
-                    }
-
-                    // Import the data (replace all)
-                    set({
-                        user: data.user,
-                        projects: data.projects,
-                        entries: data.entries,
-                    });
-
-                    return {
-                        success: true,
-                        message: `Successfully imported ${data.projects.length} projects and ${data.entries.length} entries.`,
-                    };
-                } catch (error) {
-                    return {
-                        success: false,
-                        message: error instanceof Error ? error.message : "Failed to import journal.",
-                    };
-                }
-            },
-
-            // Export specific project and its entries
-            exportProjectJournal: (projectId: string) => {
+            // Selective Project Export
+            exportSelectedProjects: (projectIds) => {
                 const state = get();
-                const project = state.projects.find((p) => p.id === projectId);
-                if (!project) return;
-
-                const entries = state.entries.filter((e) => e.projectId === projectId);
+                const selectedProjects = state.projects.filter((p) => projectIds.includes(p.id));
+                const selectedEntries = state.entries.filter((e) => projectIds.includes(e.projectId));
 
                 const exportData = {
                     version: "1.0",
-                    type: "project",
+                    type: "selective",
                     exportedAt: new Date().toISOString(),
-                    project,
-                    entries,
+                    projects: selectedProjects,
+                    entries: selectedEntries,
                 };
 
                 const dataStr = JSON.stringify(exportData, null, 2);
                 const blob = new Blob([dataStr], { type: "application/json" });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement("a");
-                const safeName = project.name.toLowerCase().replace(/[^a-z0-9]/g, "-");
+                const fileName = selectedProjects.length === 1
+                    ? `project-${selectedProjects[0].name.toLowerCase().replace(/[^a-z0-9]/g, "-")}`
+                    : `selected-projects-${new Date().toISOString().split("T")[0]}`;
+
                 link.href = url;
-                link.download = `project-${safeName}-export.json`;
+                link.download = `${fileName}.devjournal`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
             },
 
-            // Import a project journal as a new project
-            importProjectJournal: async (file: File) => {
+            // Unified Smart Import
+            importDevJournal: async (file) => {
                 try {
                     const text = await file.text();
                     const data = JSON.parse(text);
 
-                    // Validate
-                    if (!data.project || !Array.isArray(data.entries)) {
-                        return {
-                            success: false,
-                            message: "Invalid project journal file format.",
-                        };
+                    if (!data.version) {
+                        return { success: false, message: "Invalid file format." };
                     }
 
-                    // Generate new IDs to avoid collision and allow "importing as new"
-                    const newProjectId = generateId();
-                    const newProject: Project = {
-                        ...data.project,
-                        id: newProjectId,
-                        slug: generateSlug(data.project.name + " (Imported " + new Date().toLocaleTimeString() + ")"),
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString(),
-                    };
+                    const state = get();
+                    const projectsToImport: Project[] = [];
+                    const entriesToImport: Entry[] = [];
 
-                    const newEntries: Entry[] = data.entries.map((entry: Entry) => ({
-                        ...entry,
-                        id: generateId(),
-                        projectId: newProjectId,
-                        createdAt: entry.createdAt, // Preserve original timestamps for logs? Or update?
-                        updatedAt: new Date().toISOString(),
-                    }));
+                    // 1. Resolve what to import
+                    if (data.type === "global") {
+                        projectsToImport.push(...data.projects);
+                        entriesToImport.push(...data.entries);
+                        // Optionally update user bio/data? Keeping merging non-destructive for user too.
+                    } else if (data.type === "selective" || data.type === "project") {
+                        const projs = data.projects || (data.project ? [data.project] : []);
+                        projectsToImport.push(...projs);
+                        entriesToImport.push(...data.entries);
+                    } else {
+                        return { success: false, message: "Unknown DevJournal content type." };
+                    }
 
-                    set((state) => ({
-                        projects: [...state.projects, newProject],
-                        entries: [...state.entries, ...newEntries],
-                    }));
+                    // 2. Process each project with Windows-style renaming
+                    const projectMappings: Record<string, string> = {}; // Old ID -> New ID
+
+                    projectsToImport.forEach(incomingProj => {
+                        let finalName = incomingProj.name;
+                        let counter = 1;
+
+                        while (state.projects.some(p => p.name === finalName)) {
+                            finalName = `${incomingProj.name} (${counter})`;
+                            counter++;
+                        }
+
+                        const newProjectId = generateId();
+                        projectMappings[incomingProj.id] = newProjectId;
+
+                        state.projects.push({
+                            ...incomingProj,
+                            id: newProjectId,
+                            name: finalName,
+                            slug: generateSlug(finalName),
+                            createdAt: incomingProj.createdAt || new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
+                        });
+                    });
+
+                    // 3. Process entries linked to these projects
+                    entriesToImport.forEach(incomingEntry => {
+                        const newProjectId = projectMappings[incomingEntry.projectId];
+                        if (newProjectId) {
+                            state.entries.push({
+                                ...incomingEntry,
+                                id: generateId(),
+                                projectId: newProjectId,
+                                updatedAt: new Date().toISOString()
+                            });
+                        }
+                    });
+
+                    // Update state
+                    set({
+                        projects: [...state.projects],
+                        entries: [...state.entries]
+                    });
 
                     return {
                         success: true,
-                        message: `Successfully imported "${newProject.name}" with ${newEntries.length} entries.`,
+                        message: `Successfully imported ${projectsToImport.length} projects.`
                     };
+
                 } catch (error) {
                     return {
                         success: false,
-                        message: error instanceof Error ? error.message : "Failed to import project journal.",
+                        message: error instanceof Error ? error.message : "Failed to import .devjournal file.",
                     };
                 }
             },
+
         }),
         {
             name: "devjournal-storage",

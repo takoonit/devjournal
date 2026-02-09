@@ -12,7 +12,7 @@ export default function EditorLayout({
     children: React.ReactNode;
 }) {
     const projects = useDevJournalStore((state) => state.projects);
-    const importProjectJournal = useDevJournalStore((state) => state.importProjectJournal);
+    const importDevJournal = useDevJournalStore((state) => state.importDevJournal);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
 
@@ -20,12 +20,9 @@ export default function EditorLayout({
         const file = e.target.files?.[0];
         if (!file) return;
 
-        const result = await importProjectJournal(file);
+        const result = await importDevJournal(file);
         if (result.success) {
             alert(result.message);
-            // Optionally redirect to the new project? 
-            // The import logs might not have the new ID easily accessible here unless we return it.
-            // For now, staying on page is fine.
         } else {
             alert(result.message);
         }
@@ -73,7 +70,7 @@ export default function EditorLayout({
                                 type="file"
                                 ref={fileInputRef}
                                 onChange={handleImport}
-                                accept=".json"
+                                accept=".devjournal"
                                 className="hidden"
                             />
                         </div>
