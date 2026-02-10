@@ -50,6 +50,7 @@ blueprint/            # Project planning documents
   prd.md              # Product vision
   findings.md         # Technical research and fixes
   task_plan.md        # BLAST task tracking
+  design-patterns.md  # UX progressive disclosure patterns
 ```
 
 ## Data Model
@@ -85,6 +86,16 @@ interface Entry {
 - **Effects:** Spotlight hover effects on cards
 - **Typography:** Monospace for dates and metadata
 - **Layout:** Resume-style timeline
+
+## UX Guidelines — Progressive Disclosure
+
+Follow the **Context-Aware Progressive Disclosure** pattern (see `blueprint/design-patterns.md` for full details).
+
+- **Anchored Minimalism:** Fix the top 3-5 actions in persistent, visible locations — recognition over recall. Limit initial choices (Hick's Law) and use whitespace/hierarchy to guide eye-flow.
+- **Just-in-Time Reveal:** Show only what's needed for the current step. Hide advanced features behind explicit interactions (e.g., "Advanced Settings"). Use contextual hotspots over linear tours, and make empty states actionable.
+- **Responsive Enabling:** Disable or hide controls until prerequisites are met to create natural flow and prevent errors.
+- **Personalization:** Segment users at entry (beginner vs. power user). Use AI to filter irrelevant content. Design for monotasking to minimize context-switching overhead.
+- **Friction Audit:** Validate with task completion rates, error rates, and user hesitation/backtracking patterns during testing.
 
 ## BLAST Framework
 
