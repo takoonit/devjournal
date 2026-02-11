@@ -34,3 +34,11 @@
 ### Reddit Wisdom (r/ExperiencedDevs)
 - **Insight:** Experienced developers use journals for widely different things: "Rubber Ducking" (debugging), "Context Switching" (saving state), and "Brag Docs" (milestones).
 - **Action:** Formalized these behaviors into the new subcategory prompts (`debugging`, `context-switch`, `milestone`).
+
+### Persisted UI Preferences with Backward Compatibility
+- **Issue:** Existing users can have persisted Zustand payloads with no UI preference keys, causing undefined values when new global behavior flags are introduced.
+- **Fix:** Added typed defaults plus a `persist` migration that merges stored data with `defaultUiPreferences`, ensuring safe values after upgrade.
+
+### Browser Tool Stability in This Environment
+- **Issue:** `mcp__browser_tools__run_playwright_script` can fail when launching Chromium in this container with a SIGSEGV before navigation.
+- **Fix:** Use Playwright Firefox as a fallback engine for screenshot capture. No app code or deployment environment change is required for this specific failure mode.

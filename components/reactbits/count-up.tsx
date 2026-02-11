@@ -2,6 +2,7 @@
 
 import { useInView, useMotionValue, useSpring } from "framer-motion";
 import { useCallback, useEffect, useRef } from "react";
+import { useDevJournalStore } from "@/lib/store";
 
 interface CountUpProps {
   to: number;
@@ -28,11 +29,13 @@ export default function CountUp({
   onStart,
   onEnd,
 }: CountUpProps) {
+  const { motionLevel } = useDevJournalStore((state) => state.uiPreferences);
   const ref = useRef<HTMLSpanElement>(null);
   const motionValue = useMotionValue(direction === "down" ? to : from);
 
-  const damping = 20 + 40 * (1 / duration);
-  const stiffness = 100 * (1 / duration);
+  const effectiveDuration = motionLevel === "reduced" ? duration * 0.7 : duration;
+  const damping = 20 + 40 * (1 / effectiveDuration);
+  const stiffness = 100 * (1 / effectiveDuration);
 
   const springValue = useSpring(motionValue, {
     damping,
@@ -97,7 +100,7 @@ export default function CountUp({
             onEnd();
           }
         },
-        delay * 1000 + duration * 1000
+        delay * 1000 + effectiveDuration * 1000
       );
 
       return () => {
@@ -115,7 +118,7 @@ export default function CountUp({
     delay,
     onStart,
     onEnd,
-    duration,
+    effectiveDuration,
   ]);
 
   useEffect(() => {

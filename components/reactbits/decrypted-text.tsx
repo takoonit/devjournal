@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
+import { useDevJournalStore } from "@/lib/store";
 import type { HTMLMotionProps } from "framer-motion";
 
 interface DecryptedTextProps extends HTMLMotionProps<"span"> {
@@ -32,6 +33,10 @@ export default function DecryptedText({
   animateOn = "hover",
   ...props
 }: DecryptedTextProps) {
+  const { focusMode, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
+  const effectiveSpeed = motionLevel === "reduced" ? speed * 1.8 : speed;
+  const effectiveMaxIterations = motionLevel === "reduced" ? Math.max(2, Math.floor(maxIterations / 2)) : maxIterations;
+
   const [displayText, setDisplayText] = useState<string>(text);
   const [isHovering, setIsHovering] = useState<boolean>(false);
   const [isScrambling, setIsScrambling] = useState<boolean>(false);
@@ -146,7 +151,7 @@ export default function DecryptedText({
           } else {
             setDisplayText(shuffleText(text, prevRevealed));
             currentIteration++;
-            if (currentIteration >= maxIterations) {
+            if (currentIteration >= effectiveMaxIterations) {
               clearInterval(interval);
               setIsScrambling(false);
               setDisplayText(text);
@@ -154,7 +159,7 @@ export default function DecryptedText({
             return prevRevealed;
           }
         });
-      }, speed);
+      }, effectiveSpeed);
     } else {
       setDisplayText(text);
       setRevealedIndices(new Set());
@@ -167,8 +172,8 @@ export default function DecryptedText({
   }, [
     isHovering,
     text,
-    speed,
-    maxIterations,
+    effectiveSpeed,
+    effectiveMaxIterations,
     sequential,
     revealDirection,
     characters,
@@ -202,6 +207,14 @@ export default function DecryptedText({
       if (currentRef) observer.unobserve(currentRef);
     };
   }, [animateOn, hasAnimated]);
+
+  if (focusMode) {
+    return (
+      <motion.span ref={containerRef} className={parentClassName} {...props}>
+        <span className={className}>{text}</span>
+      </motion.span>
+    );
+  }
 
   const hoverProps =
     animateOn === "hover" || animateOn === "both"
