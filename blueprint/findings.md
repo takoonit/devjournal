@@ -42,3 +42,6 @@
 ### Browser Tool Stability in This Environment
 - **Issue:** `mcp__browser_tools__run_playwright_script` can fail when launching Chromium in this container with a SIGSEGV before navigation.
 - **Fix:** Use Playwright Firefox as a fallback engine for screenshot capture. No app code or deployment environment change is required for this specific failure mode.
+### Tokenized Theme Foundation
+- **Insight:** Page-level redesigns become inconsistent when animation timing, color ramps, and interaction intensity are configured ad hoc.
+- **Action:** Added semantic token groups (`color`, `motion`, `spacing`), mapped theme variables (`noir`, `calm-focus`) in global CSS, and introduced wrapper components (`FocusHeading`, `RewardLabel`, `InteractiveSurface`) so ReactBits usage stays system-aware.
