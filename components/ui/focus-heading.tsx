@@ -20,6 +20,17 @@ const toneStyles: Record<FocusHeadingTone, string> = {
   micro: "text-sm font-medium uppercase tracking-[0.16em] text-text-secondary",
 };
 
+/**
+ * Render a stylized heading that applies a typography tone and a reveal effect.
+ *
+ * When `effect` is "decrypt", renders a decrypt-style reveal; otherwise renders a blur-style reveal.
+ *
+ * @param text - The heading text to display
+ * @param tone - One of "hero", "section", or "micro" that controls typography and animation granularity
+ * @param effect - Visual reveal effect; either "blur" or "decrypt"
+ * @param className - Additional CSS class names to apply to the heading
+ * @returns The rendered heading JSX element
+ */
 export function FocusHeading({
   text,
   tone = "section",

@@ -13,6 +13,20 @@ interface ScrollRevealProps {
   once?: boolean;
 }
 
+/**
+ * Reveal children with a configurable scroll-triggered entrance animation.
+ *
+ * The element starts offset in the specified direction by `distance` and animates to its original position when it enters the viewport.
+ *
+ * @param children - Content to render inside the reveal container
+ * @param className - Optional CSS class names applied to the container
+ * @param delay - Animation delay in seconds
+ * @param direction - Initial reveal direction: `"up" | "down" | "left" | "right"`
+ * @param distance - Offset distance in pixels for the initial hidden state
+ * @param duration - Animation duration in seconds
+ * @param once - If `true`, the animation runs only the first time the element enters the viewport
+ * @returns A React element that animates its children into view from the specified direction and distance
+ */
 export default function ScrollReveal({
   children,
   className = "",

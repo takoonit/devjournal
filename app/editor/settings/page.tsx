@@ -9,6 +9,13 @@ import BlurText from "@/components/reactbits/blur-text";
 import ShinyText from "@/components/reactbits/shiny-text";
 import { useToast } from "@/components/ui/toast";
 
+/**
+ * Settings page React component that lets users edit their public profile, social links, and UI preferences.
+ *
+ * Submitting the form persists profile and UI preference changes to the global store and shows a success toast.
+ *
+ * @returns The rendered settings page element.
+ */
 export default function SettingsPage() {
     const user = useDevJournalStore((state) => state.user);
     const updateUser = useDevJournalStore((state) => state.updateUser);

@@ -3,6 +3,13 @@
 import { useEffect } from "react";
 import { useDevJournalStore } from "@/lib/store";
 
+/**
+ * Applies UI preference values from the global store to the document root and body as data attributes.
+ *
+ * Sets `themeMode`, `focusMode`, `density`, `rewardIntensity`, and `motionLevel` on both `document.documentElement` and `document.body` whenever the stored preferences change.
+ *
+ * @returns `null` — the component renders nothing.
+ */
 export function UiPreferenceAttributes() {
     const uiPreferences = useDevJournalStore((state) => state.uiPreferences);
 

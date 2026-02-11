@@ -32,6 +32,12 @@ interface ToastContextType {
 
 const ToastContext = createContext<ToastContextType | null>(null);
 
+/**
+ * Retrieve the toast context API for enqueuing notifications.
+ *
+ * @returns The toast context object exposing `addToast`.
+ * @throws Error if called outside of a `ToastProvider`.
+ */
 export function useToast() {
   const context = useContext(ToastContext);
   if (!context) {
@@ -52,6 +58,14 @@ const toneClasses: Record<ToastTone, string> = {
   info: "border-cyan-500/40 bg-cyan-500/10",
 };
 
+/**
+ * Provides a context and UI for enqueuing and displaying transient toasts (notifications).
+ *
+ * Renders children and a fixed, animated toast stack managed by internal state; toasts support type-specific styling, resolved copy, auto-dismiss timing based on reward intensity, and manual dismissal.
+ *
+ * @param children - Elements that should have access to the toast context
+ * @returns The provider element that supplies `addToast` via context and renders the toast UI
+ */
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const { rewardIntensity, motionLevel } = useDevJournalStore((state) => state.uiPreferences);

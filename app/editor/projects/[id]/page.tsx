@@ -15,6 +15,14 @@ import BlurText from "@/components/reactbits/blur-text";
 import ShinyText from "@/components/reactbits/shiny-text";
 import ScrollReveal from "@/components/reactbits/scroll-reveal";
 
+/**
+ * Render a detailed view for a single project, including its metadata, entries, and controls for editing, deleting, visibility toggles, and creating new entries.
+ *
+ * Uses the global store to read projects and entries and to perform updates and deletions, displays toast notifications for user feedback, and provides accessible confirmation modals with focus trapping.
+ *
+ * @param params - Route params promise resolving to an object with the project `id`
+ * @returns The ProjectDetailPage React element
+ */
 export default function ProjectDetailPage({
     params,
 }: {

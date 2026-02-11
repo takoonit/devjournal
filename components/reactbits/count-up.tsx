@@ -17,6 +17,24 @@ interface CountUpProps {
   onEnd?: () => void;
 }
 
+/**
+ * Animate a numeric value from a start value to a target and render the formatted result inside a span.
+ *
+ * The component animates between `from` and `to` using a spring whose timing adapts to a motion preference,
+ * optionally delays the start, and begins when the element enters the viewport if `startWhen` is true.
+ *
+ * @param to - Target numeric value to animate to.
+ * @param from - Starting numeric value (default 0).
+ * @param direction - "up" to animate from `from` to `to`, "down" to animate from `to` to `from` (default "up").
+ * @param delay - Seconds to wait before beginning the animation (default 0).
+ * @param duration - Base animation duration in seconds; adjusted by motion preferences (default 2).
+ * @param className - CSS class applied to the returned span.
+ * @param startWhen - If true, start the animation when the element enters the viewport (default true).
+ * @param separator - Thousand separator string to use for formatted output (default "").
+ * @param onStart - Optional callback invoked when the animation begins.
+ * @param onEnd - Optional callback invoked after the animation completes.
+ * @returns A span element whose text content is updated with the localized, optionally separated, animated numeric value.
+ */
 export default function CountUp({
   to,
   from = 0,

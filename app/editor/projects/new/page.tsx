@@ -8,6 +8,15 @@ import Link from "next/link";
 import BlurText from "@/components/reactbits/blur-text";
 import ShinyText from "@/components/reactbits/shiny-text";
 
+/**
+ * Renders the New Project page containing a form to create and submit a project.
+ *
+ * The form captures project name, description, tech stack (add/remove tags), repository link,
+ * and status; submitting with a non-empty name adds the project to the store and navigates
+ * back to the editor.
+ *
+ * @returns A React element containing the new project form and its controls.
+ */
 export default function NewProjectPage() {
     const router = useRouter();
     const addProject = useDevJournalStore((state) => state.addProject);

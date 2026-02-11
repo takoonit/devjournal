@@ -7,6 +7,14 @@ export const metadata: Metadata = {
     description: "Document your development journey and showcase your process",
 };
 
+/**
+ * Root HTML layout for the application that sets global data attributes and provides app-wide context.
+ *
+ * Renders an <html> and <body> with theme, density, focus, reward, and motion data attributes, and places the supplied children inside the global Providers component.
+ *
+ * @param children - Page content to render inside the application's root layout
+ * @returns The root JSX element containing the HTML and body structure with Providers-wrapped children
+ */
 export default function RootLayout({
     children,
 }: Readonly<{

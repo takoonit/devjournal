@@ -93,6 +93,15 @@ type EntryDraft = {
     step: number;
 };
 
+/**
+ * Render the "New Entry" page that guides the user through a 3-step flow to create, review, and save a project entry.
+ *
+ * This component manages entry state (title, category, subcategory, and dynamic form fields), persists a draft to localStorage,
+ * can initialize from an inbox capture query parameter, and submits the finalized entry to the dev journal store.
+ *
+ * @param params - Route params promise resolving to an object with `id` (the project id to which the entry will be added)
+ * @returns The page's React element which renders the multi-step entry creation UI
+ */
 export default function NewEntryPage({
     params,
 }: {

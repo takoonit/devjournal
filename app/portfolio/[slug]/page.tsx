@@ -12,6 +12,15 @@ import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import BlurText from "@/components/reactbits/blur-text";
 import ScrollReveal from "@/components/reactbits/scroll-reveal";
 
+/**
+ * Renders the detailed project page including header, tech stack, repository link, and a timeline of public entries grouped by year and month.
+ *
+ * @param params - A promise that resolves to an object containing the route `slug` for the target project.
+ * @returns The React element tree for the project detail view.
+ *
+ * @remarks
+ * If no project matches the provided `slug`, this component invokes `notFound()` to trigger a 404 response.
+ */
 export default function ProjectDetailPage({
     params,
 }: {

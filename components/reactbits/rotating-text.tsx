@@ -18,6 +18,12 @@ import {
   type TargetAndTransition,
 } from "framer-motion";
 
+/**
+ * Concatenates class name values into a single space-separated string, ignoring falsy entries.
+ *
+ * @param classes - One or more class name values; falsy entries (undefined, null, false, empty string, etc.) are omitted
+ * @returns A single string containing the truthy class names separated by single spaces
+ */
 function cn(
   ...classes: (string | undefined | null | boolean)[]
 ): string {

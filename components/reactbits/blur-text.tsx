@@ -35,6 +35,23 @@ const buildKeyframes = (
   return keyframes;
 };
 
+/**
+ * Animates text by staggering per-segment (word or letter) transitions of blur, opacity, and vertical offset when the element enters the viewport.
+ *
+ * @param text - The input string to animate.
+ * @param delay - Base stagger delay in milliseconds between segments.
+ * @param className - Additional CSS classes applied to the container paragraph.
+ * @param animateBy - Segment mode: `"words"` splits on spaces, `"letters"` splits into characters.
+ * @param direction - Animation direction for initial offset: `"top"` shifts upward, `"bottom"` shifts downward.
+ * @param threshold - IntersectionObserver threshold that triggers the animation.
+ * @param rootMargin - IntersectionObserver rootMargin applied when observing visibility.
+ * @param animationFrom - Optional override for the initial animation style object (applied to all segments).
+ * @param animationTo - Optional override for the array of intermediate/final snapshots (applied to all segments).
+ * @param easing - Easing function for the transition (expects a value in [0,1] and returns a value in [0,1]).
+ * @param onAnimationComplete - Callback invoked after the last segment finishes its animation.
+ * @param stepDuration - Duration in seconds for each step between snapshots (controls total animation length).
+ * @returns A JSX element (paragraph) containing motion-wrapped segments that animate when scrolled into view.
+ */
 export default function BlurText({
   text = "",
   delay = 200,

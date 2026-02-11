@@ -8,6 +8,13 @@ interface ProjectCardProps {
     href: string;
 }
 
+/**
+ * Render a stylized project card showing title, status badge, optional repository link, description, tech stack tags, and a build log cue.
+ *
+ * @param project - Project data used to populate the card (name, status, description, techStack, optional repositoryLink)
+ * @param href - Destination URL for the project title link
+ * @returns The rendered ProjectCard element
+ */
 export function ProjectCard({ project, href }: ProjectCardProps) {
     return (
         <SpotlightCard className="group relative p-6 h-full flex flex-col">

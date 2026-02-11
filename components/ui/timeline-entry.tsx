@@ -61,6 +61,17 @@ const subcategoryConfig: Record<string, { icon: any; label: string }> = {
     "review": { icon: Search, label: "Review" }
 };
 
+/**
+ * Render a timeline item for the provided entry, including category/subcategory metadata, date, and
+ * a content card that adapts structure based on the entry's subcategory.
+ *
+ * Renders the left-side time metadata (desktop), a centered timeline node with category icon, and a
+ * right-side content card whose layout and sections vary by subcategory (Plan, Build, Reflect, or a
+ * content fallback).
+ *
+ * @param entry - The timeline entry data used to populate metadata, title, and templateData-driven content.
+ * @returns A JSX element representing the rendered timeline entry.
+ */
 export function TimelineEntry({ entry }: TimelineEntryProps) {
     const config = categoryConfig[entry.category];
     const date = new Date(entry.createdAt);

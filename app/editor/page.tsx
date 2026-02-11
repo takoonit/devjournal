@@ -13,6 +13,13 @@ import ScrollReveal from "@/components/reactbits/scroll-reveal";
 import BlurText from "@/components/reactbits/blur-text";
 import CountUp from "@/components/reactbits/count-up";
 
+/**
+ * Renders the Editor page UI for managing projects and performing quick inbox captures.
+ *
+ * Displays a projects list (with animated header and count), an inbox quick-capture input that stores short notes into the inbox (up to the first 8 shown), per-capture actions to convert or delete captures, and an empty-state CTA when no projects exist. Successful quick captures show a success toast.
+ *
+ * @returns The Editor page React element containing project management, inbox capture controls, and related actions.
+ */
 export default function EditorPage() {
     const projects = useDevJournalStore((state) => state.projects);
     const inboxCaptures = useDevJournalStore((state) => state.inboxCaptures);

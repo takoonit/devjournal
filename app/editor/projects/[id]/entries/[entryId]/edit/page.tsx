@@ -100,6 +100,16 @@ const initializeEntryState = (entry: Entry) => {
     };
 };
 
+/**
+ * Renders the Edit Entry page UI that lets a user modify an existing journal entry and submit updates.
+ *
+ * The component loads the project and entry from the store using route params, initializes form state
+ * from the entry's template data, and provides controls to edit title, visibility, category/subcategory,
+ * and template fields. On successful submit it updates the entry and navigates back to the project editor.
+ *
+ * @param params - Route parameters containing `id` (project id) and `entryId` (entry id)
+ * @returns The page's JSX element for editing an entry
+ */
 export default function EditEntryPage({
     params,
 }: {

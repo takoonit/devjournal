@@ -5,6 +5,15 @@ import { Github, Twitter, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
 import GradientText from "@/components/reactbits/gradient-text";
 
+/**
+ * Render a sidebar showing the developer's profile, social links, and a link to the editor.
+ *
+ * Renders the user's name, role (with a gradient-styled component), bio, a row of social icon links
+ * (skips empty links; email uses `mailto:` and other links open in a new tab), and a full-width
+ * "Editor →" navigation button.
+ *
+ * @returns The sidebar JSX element containing the user's profile, social links, and editor link.
+ */
 export function BioSidebar() {
     const user = useDevJournalStore((state) => state.user);
 

@@ -10,6 +10,14 @@ interface SpotlightCardProps {
     spotlightColor?: string;
 }
 
+/**
+ * Renders a card with an interactive radial spotlight overlay that follows the mouse and responds to focus and motion preferences.
+ *
+ * @param children - Content rendered inside the card.
+ * @param className - Optional additional CSS classes applied to the root element.
+ * @param spotlightColor - CSS color used for the radial spotlight gradient; defaults to `rgba(6, 182, 212, 0.15)`.
+ * @returns The card element with an optional animated radial spotlight overlay.
+ */
 export function SpotlightCard({
     children,
     className = "",

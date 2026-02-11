@@ -23,6 +23,24 @@ interface ShinyTextProps {
   delay?: number;
 }
 
+/**
+ * Render text with an animated "shine" gradient.
+ *
+ * The component displays the provided text as a span; when not disabled or in focus mode, a shimmering gradient sweeps across the text according to the animation props.
+ *
+ * @param text - The text to render inside the component
+ * @param disabled - When true, disables the shimmer and renders plain text
+ * @param speed - Animation speed multiplier (higher is slower)
+ * @param className - Additional CSS class names applied to the span
+ * @param color - Base text/gradient color
+ * @param shineColor - Highlight color used for the shine
+ * @param spread - Angle (degrees) of the gradient band
+ * @param yoyo - When true, the shine oscillates back and forth instead of restarting
+ * @param pauseOnHover - When true, hovering the element pauses the animation
+ * @param direction - Direction the shine moves from: "left" or "right"
+ * @param delay - Delay before each animation cycle, in seconds
+ * @returns A span element containing the provided text; when enabled, the span shows an animated gradient shine clipped to the text. 
+ */
 export default function ShinyText({
   text,
   disabled = false,

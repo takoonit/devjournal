@@ -11,6 +11,14 @@ import ScrollReveal from "@/components/reactbits/scroll-reveal";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
+/**
+ * Render the portfolio page with a bio sidebar and a grid of public projects.
+ *
+ * The projects grid shows only projects that have at least one associated entry marked as public.
+ * When there are no public projects, an empty-state panel with a link to the editor is shown.
+ *
+ * @returns A React element containing breadcrumbs, the bio sidebar, and the filtered projects list or empty state.
+ */
 export default function PortfolioPage() {
     // Get store state
     const allProjects = useDevJournalStore((state) => state.projects);

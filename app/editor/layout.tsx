@@ -10,6 +10,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useRef } from "react";
 
+/**
+ * Layout component that renders the Editor sidebar and main content area.
+ *
+ * Renders a sidebar with project list, import and new-project controls, and a settings link; computes breadcrumbs from the current pathname; applies UI preferences from state; and handles importing `.devjournal` files with toast feedback.
+ *
+ * @param children - Content to display in the main editor area (below the breadcrumbs)
+ * @returns The editor layout element containing the sidebar, breadcrumbs, and main content
+ */
 export default function EditorLayout({
     children,
 }: {

@@ -19,6 +19,29 @@ interface DecryptedTextProps extends HTMLMotionProps<"span"> {
   animateOn?: "view" | "hover" | "both";
 }
 
+/**
+ * Animates a scrambling-to-revealed text effect and renders the resulting span.
+ *
+ * The component displays `text` and, when triggered (hover and/or when the element enters view),
+ * repeatedly replaces unrevealed characters with scrambled characters until characters are revealed
+ * according to the configured strategy. It preserves spaces, supports sequential or iterative
+ * reveal modes, an optional center/start/end reveal order, and an option to scramble using only
+ * characters originally present in `text`. A visually hidden copy of the current display text is
+ * included for screen readers.
+ *
+ * @param text - The source text to display and reveal.
+ * @param speed - Base interval in milliseconds between scramble updates (default: 50).
+ * @param maxIterations - Maximum scramble update iterations for non-sequential mode (default: 10).
+ * @param sequential - When true, reveals characters one-by-one until all are revealed; when false, runs up to `maxIterations` then shows the final text.
+ * @param revealDirection - Order to reveal characters in sequential mode: `"start"`, `"end"`, or `"center"`.
+ * @param useOriginalCharsOnly - When true, scrambled characters are drawn only from the non-space characters present in `text`; otherwise from `characters`.
+ * @param characters - Fallback pool of characters to use when `useOriginalCharsOnly` is false.
+ * @param className - Class applied to revealed or final characters.
+ * @param parentClassName - Class applied to the outer container element.
+ * @param encryptedClassName - Class applied to scrambled (unrevealed) characters.
+ * @param animateOn - When to start the animation: `"hover"`, `"view"` (on enter viewport), or `"both"`.
+ * @returns The rendered motion-enabled span containing the animated text with per-character styling.
+ */
 export default function DecryptedText({
   text,
   speed = 50,

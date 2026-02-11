@@ -30,6 +30,14 @@ const intensityPresets: Record<
   },
 };
 
+/**
+ * Renders a SpotlightCard wrapper that styles its children according to an intensity preset.
+ *
+ * @param children - Content to render inside the surface.
+ * @param intensity - Visual intensity preset: "subtle", "standard", or "expressive".
+ * @param className - Additional CSS class names to apply to the outer container.
+ * @returns A JSX element rendering a SpotlightCard with the selected preset's spotlight color and composed classes.
+ */
 export function InteractiveSurface({
   children,
   intensity = "standard",

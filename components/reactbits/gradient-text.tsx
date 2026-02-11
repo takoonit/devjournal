@@ -20,6 +20,21 @@ interface GradientTextProps {
   yoyo?: boolean;
 }
 
+/**
+ * Render text with an animated linear-gradient background and an optional decorative border.
+ *
+ * The animation moves the gradient according to `direction` and `animationSpeed`, respects global motion preferences (reduced motion and focus mode), and can pause on hover when `pauseOnHover` is enabled.
+ *
+ * @param children - Content to render with the animated gradient
+ * @param className - Additional CSS classes applied to the outer container
+ * @param colors - Array of color strings used for the gradient (the first color is repeated to create a seamless loop)
+ * @param animationSpeed - Base animation duration in seconds
+ * @param showBorder - When true, render a matching gradient border (suppressed when focus mode is active)
+ * @param direction - Gradient movement direction: "horizontal", "vertical", or "diagonal"
+ * @param pauseOnHover - When true, hovering will pause the gradient animation
+ * @param yoyo - When true, the animation reverses direction at the ends to create a back-and-forth loop
+ * @returns The JSX element containing the gradient-animated text (and optional border)
+ */
 export default function GradientText({
   children,
   className = "",

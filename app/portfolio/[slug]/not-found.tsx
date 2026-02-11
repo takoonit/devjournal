@@ -1,5 +1,10 @@
 import Link from "next/link";
 
+/**
+ * Displays a centered 404 "Project not found" page with a styled link back to the portfolio.
+ *
+ * @returns A React element containing a full-screen centered 404 message and a link to "/portfolio".
+ */
 export default function NotFound() {
     return (
         <div className="min-h-screen flex items-center justify-center p-6">

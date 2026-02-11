@@ -57,6 +57,15 @@ const supportiveMessages: Record<ToastCopyKey, Partial<Record<ToastType, string>
   generic: {},
 };
 
+/**
+ * Compute the supportive toast text (title, message, and optional emphasis) for a UI notification.
+ *
+ * @param type - The toast category (`"success" | "error" | "info"`) that determines tone and title selection.
+ * @param rewardIntensity - User preference controlling verbosity; when `"off"` the function returns a minimal title and the provided `fallbackMessage`.
+ * @param fallbackMessage - Message to use when no keyed message exists for the given `copyKey` and `type`.
+ * @param copyKey - Optional key selecting a predefined message variant; defaults to `"generic"`.
+ * @returns An object with `title` (chosen by `type` and `rewardIntensity`), `message` (the keyed message if available, otherwise `fallbackMessage`), and `emphasis` (set to `"Keep building."` only when `rewardIntensity` is `"full"` and `type` is `"success"`). 
+ */
 export function resolveSupportiveToastCopy({
   type,
   rewardIntensity,

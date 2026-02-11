@@ -8,6 +8,12 @@ export interface BreadcrumbItem {
   href?: string;
 }
 
+/**
+ * Render an accessible breadcrumb trail from an ordered list of items.
+ *
+ * @param items - Ordered array of `BreadcrumbItem` objects that make up the trail
+ * @returns A `<nav>` element containing the breadcrumb list, or `null` if `items` is empty
+ */
 export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
   if (items.length === 0) return null;
 
