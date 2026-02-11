@@ -32,3 +32,4 @@
 - [ ] GitHub Repository initialization
 - [ ] Deployment to **Vercel**
 - [ ] Setup Modal for daily data triggers
+- [x] Introduce shared design tokens + semantic wrapper primitives before page-level redesign

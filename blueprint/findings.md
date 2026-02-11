@@ -34,3 +34,7 @@
 ### Reddit Wisdom (r/ExperiencedDevs)
 - **Insight:** Experienced developers use journals for widely different things: "Rubber Ducking" (debugging), "Context Switching" (saving state), and "Brag Docs" (milestones).
 - **Action:** Formalized these behaviors into the new subcategory prompts (`debugging`, `context-switch`, `milestone`).
+
+### Tokenized Theme Foundation
+- **Insight:** Page-level redesigns become inconsistent when animation timing, color ramps, and interaction intensity are configured ad hoc.
+- **Action:** Added semantic token groups (`color`, `motion`, `spacing`), mapped theme variables (`noir`, `calm-focus`) in global CSS, and introduced wrapper components (`FocusHeading`, `RewardLabel`, `InteractiveSurface`) so ReactBits usage stays system-aware.
