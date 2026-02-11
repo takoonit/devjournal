@@ -59,6 +59,11 @@ export default function GradientText({
     lastTimeRef.current = time;
     elapsedRef.current += deltaTime;
 
+    if (animationDuration <= 0) {
+      progress.set(0);
+      return;
+    }
+
     if (effectiveYoyo) {
       const fullCycle = animationDuration * 2;
       const cycleTime = elapsedRef.current % fullCycle;
@@ -72,7 +77,9 @@ export default function GradientText({
         );
       }
     } else {
-      progress.set(((elapsedRef.current % animationDuration) / animationDuration) * 100);
+      progress.set(
+        ((elapsedRef.current % animationDuration) / animationDuration) * 100
+      );
     }
   });
 
