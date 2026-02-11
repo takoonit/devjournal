@@ -151,6 +151,9 @@ export default function NewEntryPage({
     }, [addToast, consumeInboxCapture, searchParams]);
 
     useEffect(() => {
+        const captureId = searchParams.get("capture");
+        if (captureId) return;
+
         const rawDraft = localStorage.getItem(draftStorageKey);
         if (!rawDraft) return;
 
@@ -171,7 +174,7 @@ export default function NewEntryPage({
         } catch {
             localStorage.removeItem(draftStorageKey);
         }
-    }, [addToast, draftStorageKey]);
+    }, [addToast, draftStorageKey, searchParams]);
 
     useEffect(() => {
         const draft: EntryDraft = {
