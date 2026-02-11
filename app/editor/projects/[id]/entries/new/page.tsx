@@ -150,6 +150,7 @@ export default function NewEntryPage({
                 templateData = { subcategory: reflectSub };
                 if (reflectSub === "milestone") templateData.milestone = formData;
                 else if (reflectSub === "post-mortem") templateData.postMortem = formData;
+                else if (reflectSub === "review") templateData.review = formData;
             }
 
             // Fallback for unset fields to prevent undefined errors in rendering

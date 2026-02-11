@@ -220,6 +220,13 @@ export default function ProjectDetailPage({
                                 >
                                     {entry.isPublic ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                                 </button>
+                                <Link
+                                    href={`/editor/projects/${project.id}/entries/${entry.id}/edit`}
+                                    className="p-2 rounded-lg text-zinc-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors"
+                                    aria-label={`Edit entry: ${entry.title}`}
+                                >
+                                    <Pencil className="w-4 h-4" />
+                                </Link>
                                 <button
                                     onClick={() => setEntryToDelete(entry.id)}
                                     className="p-2 rounded-lg text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-colors"
