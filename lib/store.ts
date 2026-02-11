@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { User, Project, Entry, InboxCapture } from "./types";
-import { generateId, generateSlug } from "./utils";
+import { User, Project, Entry, InboxCapture } from "@/lib/types";
+import { generateId, generateSlug } from "@/lib/utils";
 
 export interface UiPreferences {
     themeMode: "noir" | "calm-focus";
@@ -45,6 +45,7 @@ interface DevJournalStore {
     inboxCaptures: InboxCapture[];
     addInboxCapture: (content: string, projectId?: string) => void;
     deleteInboxCapture: (id: string) => void;
+    peekInboxCapture: (id: string) => InboxCapture | undefined;
     consumeInboxCapture: (id: string) => InboxCapture | undefined;
 
     // UI preferences
@@ -185,6 +186,8 @@ export const useDevJournalStore = create<DevJournalStore>()(
                     inboxCaptures: state.inboxCaptures.filter((item) => item.id !== id),
                 })),
 
+            peekInboxCapture: (id) => get().inboxCaptures.find((capture) => capture.id === id),
+
             consumeInboxCapture: (id) => {
                 const item = get().inboxCaptures.find((capture) => capture.id === id);
                 if (!item) return undefined;
@@ -266,6 +269,8 @@ export const useDevJournalStore = create<DevJournalStore>()(
                     const projectsToImport: Project[] = [];
                     const entriesToImport: Entry[] = [];
 
+                    let importedUiPreferences: UiPreferences | undefined;
+
                     // 1. Resolve what to import
                     if (data.type === "global") {
                         if (!Array.isArray(data.projects) || !Array.isArray(data.entries)) {
@@ -279,12 +284,10 @@ export const useDevJournalStore = create<DevJournalStore>()(
                         entriesToImport.push(...data.entries);
 
                         if (data.uiPreferences && typeof data.uiPreferences === "object") {
-                            set({
-                                uiPreferences: {
-                                    ...defaultUiPreferences,
-                                    ...data.uiPreferences,
-                                },
-                            });
+                            importedUiPreferences = {
+                                ...defaultUiPreferences,
+                                ...data.uiPreferences,
+                            };
                         }
                         // Optionally update user bio/data? Keeping merging non-destructive for user too.
                     } else if (data.type === "selective" || data.type === "project") {
@@ -361,7 +364,8 @@ export const useDevJournalStore = create<DevJournalStore>()(
                     // Update state
                     set({
                         projects: existingProjects,
-                        entries: existingEntries
+                        entries: existingEntries,
+                        ...(importedUiPreferences ? { uiPreferences: importedUiPreferences } : {}),
                     });
 
                     return {

@@ -39,6 +39,7 @@ export default function PortfolioPage() {
                     <div className="flex-1">
                         <div className="mb-8">
                             <BlurText
+                                as="h2"
                                 text="Projects"
                                 className="text-3xl font-bold text-zinc-100 mb-2"
                                 delay={100}

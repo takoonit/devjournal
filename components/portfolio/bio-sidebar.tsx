@@ -23,7 +23,8 @@ export function BioSidebar() {
                     <GradientText
                         colors={["#06b6d4", "#10b981", "#06b6d4"]}
                         animationSpeed={6}
-                        className="font-mono text-sm"
+                        className="font-mono text-sm justify-start"
+                        isInteractive={false}
                     >
                         {user.role}
                     </GradientText>

@@ -10,7 +10,7 @@ DevJournal is a "Build in Public" platform that transforms daily developer logs 
 
 - **Framework:** Next.js 16 with App Router and Turbopack
 - **UI:** React 19, TypeScript
-- **Styling:** Tailwind CSS (Noir theme — zinc-950/900 backgrounds, cyan/emerald accents)
+- **Styling:** Tailwind CSS (Noir theme — zinc-950/900 backgrounds with a canonical base of `#060010`, cyan/emerald accents)
 - **Animations:** Framer Motion
 - **State:** Zustand with localStorage persistence (`lib/store.ts`)
 - **Icons:** Lucide React (semantic iconography)
@@ -33,7 +33,7 @@ DevJournal is a "Build in Public" platform that transforms daily developer logs 
 
 ## Project Structure
 
-```
+```text
 app/                  # Next.js App Router pages
   editor/             # Private editor interface
   portfolio/          # Public portfolio pages
@@ -81,7 +81,7 @@ interface Entry {
 
 ## Design Rules
 
-- **Noir Aesthetic:** Dark background (#060010), subtle noise texture, minimal color
+- **Noir Aesthetic:** Dark background (`#060010`, aligned with the zinc-950/900 palette), subtle noise texture, minimal color
 - **Accents:** Cyan/teal only
 - **Effects:** Spotlight hover effects on cards
 - **Typography:** Monospace for dates and metadata
@@ -116,7 +116,7 @@ ReactBits components live in `components/reactbits/` and are used **systematical
 
 1. **One moment per element** — never stack two ReactBits animations on the same element
 2. **Consistent config** — use the table values above; don't customize per-page
-3. **All page headings** must use `BlurText` — no plain `<h1>` tags on any page
+3. **All page headings** must use `BlurText` with semantic tags (`as="h1"|"h2"|...`) or be wrapped in real heading elements
 4. **All primary CTAs** (cyan accent buttons) must use `ShinyText` inside
 5. **All list/grid items** that appear on scroll must wrap in `ScrollReveal` with staggered delays
 6. **CountUp** accompanies any visible count that appears in a subtitle or stat line

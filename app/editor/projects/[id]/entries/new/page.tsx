@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDevJournalStore } from "@/lib/store";
 import {
@@ -100,7 +100,7 @@ export default function NewEntryPage({
 }) {
     const { id } = use(params);
     const router = useRouter();
-    const { projects, addEntry, consumeInboxCapture } = useDevJournalStore();
+    const { projects, addEntry, consumeInboxCapture, peekInboxCapture } = useDevJournalStore();
     const searchParams = useSearchParams();
     const { addToast } = useToast();
     const project = projects.find((p) => p.id === id);
@@ -113,6 +113,8 @@ export default function NewEntryPage({
     const [buildSub, setBuildSub] = useState<BuildSubcategory>("debugging");
     const [reflectSub, setReflectSub] = useState<ReflectSubcategory>("milestone");
     const [formData, setFormData] = useState<Record<string, string>>({});
+    const [pendingCaptureId, setPendingCaptureId] = useState<string | null>(null);
+    const restoredRef = useRef(false);
 
     const draftStorageKey = `devjournal-entry-draft-${id}`;
 
@@ -133,9 +135,10 @@ export default function NewEntryPage({
         const captureId = searchParams.get("capture");
         if (!captureId) return;
 
-        const capture = consumeInboxCapture(captureId);
+        const capture = peekInboxCapture(captureId);
         if (!capture) return;
 
+        setPendingCaptureId(captureId);
         setCategory("build");
         setBuildSub("context-switch");
         setTitle(capture.content.slice(0, 72));
@@ -149,11 +152,11 @@ export default function NewEntryPage({
             message: "Capture converted. Add next steps, then save your entry.",
             type: "info",
         });
-    }, [addToast, consumeInboxCapture, searchParams]);
+    }, [addToast, peekInboxCapture, searchParams]);
 
     useEffect(() => {
         const captureId = searchParams.get("capture");
-        if (captureId) return;
+        if (restoredRef.current || captureId) return;
 
         const rawDraft = localStorage.getItem(draftStorageKey);
         if (!rawDraft) return;
@@ -167,6 +170,7 @@ export default function NewEntryPage({
             setReflectSub(parsed.reflectSub ?? "milestone");
             setFormData(parsed.formData ?? {});
             setStep(parsed.step && parsed.step >= 1 && parsed.step <= 3 ? parsed.step : 1);
+            restoredRef.current = true;
 
             addToast({
                 message: "Restored your draft so you can continue where you left off.",
@@ -279,6 +283,10 @@ export default function NewEntryPage({
                 templateData,
                 isPublic: true,
             });
+
+            if (pendingCaptureId) {
+                consumeInboxCapture(pendingCaptureId);
+            }
 
             clearDraft();
             addToast({

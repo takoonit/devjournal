@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDevJournalStore } from "@/lib/store";
 import {
@@ -64,29 +64,44 @@ const TEMPLATE_INFO = {
 type EntryParams = Promise<{ id: string; entryId: string }>;
 
 const initializeEntryState = (entry: Entry) => {
-    const templateData = entry.templateData as any;
-    const subcategory = templateData.subcategory;
+    const templateData =
+        entry.templateData && typeof entry.templateData === "object"
+            ? (entry.templateData as unknown as Record<string, unknown>)
+            : {};
+    const subcategory =
+        typeof templateData.subcategory === "string" ? templateData.subcategory : undefined;
 
     let planSub: PlanSubcategory = "decision-log";
     let buildSub: BuildSubcategory = "debugging";
     let reflectSub: ReflectSubcategory = "milestone";
     let formData: Record<string, string> = {};
+    const pickRecord = (value: unknown) =>
+        value && typeof value === "object" ? (value as Record<string, string>) : {};
 
     if (entry.category === "plan-change") {
-        planSub = subcategory;
-        if (subcategory === "decision-log") formData = templateData.decisionLog || {};
-        else if (subcategory === "idea-spark") formData = templateData.ideaSpark || {};
-        else if (subcategory === "research-notes") formData = templateData.researchNotes || {};
+        planSub =
+            subcategory === "decision-log" || subcategory === "idea-spark" || subcategory === "research-notes"
+                ? subcategory
+                : "decision-log";
+        if (planSub === "decision-log") formData = pickRecord(templateData.decisionLog);
+        else if (planSub === "idea-spark") formData = pickRecord(templateData.ideaSpark);
+        else if (planSub === "research-notes") formData = pickRecord(templateData.researchNotes);
     } else if (entry.category === "build") {
-        buildSub = subcategory;
-        if (subcategory === "debugging") formData = templateData.debugging || {};
-        else if (subcategory === "context-switch") formData = templateData.contextSwitch || {};
-        else if (subcategory === "til-snippet") formData = templateData.tilSnippet || {};
+        buildSub =
+            subcategory === "debugging" || subcategory === "context-switch" || subcategory === "til-snippet"
+                ? subcategory
+                : "debugging";
+        if (buildSub === "debugging") formData = pickRecord(templateData.debugging);
+        else if (buildSub === "context-switch") formData = pickRecord(templateData.contextSwitch);
+        else if (buildSub === "til-snippet") formData = pickRecord(templateData.tilSnippet);
     } else {
-        reflectSub = subcategory;
-        if (subcategory === "milestone") formData = templateData.milestone || {};
-        else if (subcategory === "post-mortem") formData = templateData.postMortem || {};
-        else if (subcategory === "review") formData = templateData.review || {};
+        reflectSub =
+            subcategory === "milestone" || subcategory === "post-mortem" || subcategory === "review"
+                ? subcategory
+                : "milestone";
+        if (reflectSub === "milestone") formData = pickRecord(templateData.milestone);
+        else if (reflectSub === "post-mortem") formData = pickRecord(templateData.postMortem);
+        else if (reflectSub === "review") formData = pickRecord(templateData.review);
     }
 
     return {
@@ -120,9 +135,17 @@ export default function EditEntryPage({
     const [reflectSub, setReflectSub] = useState<ReflectSubcategory>("milestone");
     const [isPublic, setIsPublic] = useState(true);
     const [formData, setFormData] = useState<Record<string, string>>({});
+    const [formStateByCategory, setFormStateByCategory] = useState<
+        Record<EntryCategory, Record<string, string>>
+    >({
+        "plan-change": {},
+        build: {},
+        reflect: {},
+    });
+    const initializedEntryIdRef = useRef<string | null>(null);
 
     useEffect(() => {
-        if (!entry) return;
+        if (!entry || initializedEntryIdRef.current === entry.id) return;
         const initialState = initializeEntryState(entry);
         setCategory(initialState.category);
         setTitle(initialState.title);
@@ -131,7 +154,49 @@ export default function EditEntryPage({
         setBuildSub(initialState.buildSub);
         setReflectSub(initialState.reflectSub);
         setFormData(initialState.formData);
+        setFormStateByCategory((prev) => ({
+            ...prev,
+            [initialState.category]: initialState.formData,
+        }));
+        initializedEntryIdRef.current = entry.id;
     }, [entry]);
+
+    const switchCategory = (nextCategory: EntryCategory) => {
+        const currentCategory = category;
+        setFormStateByCategory((prev) => {
+            const nextState = {
+                ...prev,
+                [currentCategory]: formData,
+            };
+
+            setCategory(nextCategory);
+            setFormData(nextState[nextCategory] ?? {});
+
+            return nextState;
+        });
+    };
+
+    const switchSubcategory = (
+        kind: "plan" | "build" | "reflect",
+        sub: PlanSubcategory | BuildSubcategory | ReflectSubcategory
+    ) => {
+        setFormStateByCategory((prev) => {
+            const nextState = {
+                ...prev,
+                [category]: formData,
+            };
+
+            if (kind === "plan") setPlanSub(sub as PlanSubcategory);
+            if (kind === "build") setBuildSub(sub as BuildSubcategory);
+            if (kind === "reflect") setReflectSub(sub as ReflectSubcategory);
+            setFormData({});
+
+            return {
+                ...nextState,
+                [category]: {},
+            };
+        });
+    };
 
     const handleInputChange = (field: string, value: string) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -286,7 +351,7 @@ export default function EditEntryPage({
                     <div className="grid md:grid-cols-3 gap-4">
                         <button
                             type="button"
-                            onClick={() => { setCategory("plan-change"); setFormData({}); }}
+                            onClick={() => switchCategory("plan-change")}
                             className={`p-6 rounded-2xl border transition-all text-left relative overflow-hidden group ${category === "plan-change" ? "bg-indigo-500/10 border-indigo-500 text-indigo-400 ring-1 ring-indigo-500/50 shadow-lg shadow-indigo-900/20" : "bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-900"}`}
                         >
                             <Brain className={`w-6 h-6 mb-3 ${category === "plan-change" ? "text-indigo-400" : "text-zinc-600 group-hover:text-zinc-400"}`} />
@@ -295,7 +360,7 @@ export default function EditEntryPage({
                         </button>
                         <button
                             type="button"
-                            onClick={() => { setCategory("build"); setFormData({}); }}
+                            onClick={() => switchCategory("build")}
                             className={`p-6 rounded-2xl border transition-all text-left relative overflow-hidden group ${category === "build" ? "bg-amber-500/10 border-amber-500 text-amber-400 ring-1 ring-amber-500/50 shadow-lg shadow-amber-900/20" : "bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-900"}`}
                         >
                             <Hammer className={`w-6 h-6 mb-3 ${category === "build" ? "text-amber-400" : "text-zinc-600 group-hover:text-zinc-400"}`} />
@@ -304,7 +369,7 @@ export default function EditEntryPage({
                         </button>
                         <button
                             type="button"
-                            onClick={() => { setCategory("reflect"); setFormData({}); }}
+                            onClick={() => switchCategory("reflect")}
                             className={`p-6 rounded-2xl border transition-all text-left relative overflow-hidden group ${category === "reflect" ? "bg-emerald-500/10 border-emerald-500 text-emerald-400 ring-1 ring-emerald-500/50 shadow-lg shadow-emerald-900/20" : "bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-900"}`}
                         >
                             <Trophy className={`w-6 h-6 mb-3 ${category === "reflect" ? "text-emerald-400" : "text-zinc-600 group-hover:text-zinc-400"}`} />
@@ -315,13 +380,13 @@ export default function EditEntryPage({
 
                     <div className="flex gap-3 pb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                         {category === "plan-change" && (["decision-log", "idea-spark", "research-notes"] as const).map((sub) => (
-                            <button key={sub} type="button" onClick={() => { setPlanSub(sub); setFormData({}); }} className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${planSub === sub ? currentTheme.sub_active : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"}`}>{sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}</button>
+                            <button key={sub} type="button" onClick={() => switchSubcategory("plan", sub)} className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${planSub === sub ? currentTheme.sub_active : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"}`}>{sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}</button>
                         ))}
                         {category === "build" && (["debugging", "context-switch", "til-snippet"] as const).map((sub) => (
-                            <button key={sub} type="button" onClick={() => { setBuildSub(sub); setFormData({}); }} className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${buildSub === sub ? currentTheme.sub_active : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"}`}>{sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}</button>
+                            <button key={sub} type="button" onClick={() => switchSubcategory("build", sub)} className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${buildSub === sub ? currentTheme.sub_active : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"}`}>{sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}</button>
                         ))}
                         {category === "reflect" && (["milestone", "post-mortem", "review"] as const).map((sub) => (
-                            <button key={sub} type="button" onClick={() => { setReflectSub(sub); setFormData({}); }} className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${reflectSub === sub ? currentTheme.sub_active : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"}`}>{sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}</button>
+                            <button key={sub} type="button" onClick={() => switchSubcategory("reflect", sub)} className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${reflectSub === sub ? currentTheme.sub_active : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"}`}>{sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}</button>
                         ))}
                     </div>
 

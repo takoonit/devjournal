@@ -27,29 +27,32 @@ export function FocusHeading({
   className,
 }: FocusHeadingProps) {
   const classes = cn("leading-tight", toneStyles[tone], className);
+  const HeadingTag = tone === "hero" ? "h1" : tone === "section" ? "h2" : "h3";
 
   if (effect === "decrypt") {
     return (
-      <DecryptedText
-        text={text}
-        animateOn="view"
-        speed={36}
-        maxIterations={14}
-        revealDirection="start"
-        className={classes}
-        encryptedClassName="text-text-muted"
-      />
+      <HeadingTag className={classes}>
+        <DecryptedText
+          text={text}
+          animateOn="view"
+          speed={36}
+          maxIterations={14}
+          revealDirection="start"
+          encryptedClassName="text-text-muted"
+        />
+      </HeadingTag>
     );
   }
 
   return (
-    <BlurText
-      text={text}
-      animateBy={tone === "micro" ? "letters" : "words"}
-      delay={tone === "hero" ? 90 : 45}
-      className={classes}
-      direction="top"
-      stepDuration={0.3}
-    />
+    <HeadingTag className={classes}>
+      <BlurText
+        text={text}
+        animateBy={tone === "micro" ? "letters" : "words"}
+        delay={tone === "hero" ? 90 : 45}
+        direction="top"
+        stepDuration={0.3}
+      />
+    </HeadingTag>
   );
 }

@@ -56,12 +56,13 @@ export default function NewProjectPage() {
                 Back to editor
             </Link>
 
-            <BlurText
-                text="New Project"
-                className="text-3xl font-bold text-zinc-100 mb-8"
-                delay={80}
-                animateBy="letters"
-            />
+            <h1 className="text-3xl font-bold text-zinc-100 mb-8">
+                <BlurText
+                    text="New Project"
+                    delay={80}
+                    animateBy="letters"
+                />
+            </h1>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
