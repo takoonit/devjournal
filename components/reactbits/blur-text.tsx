@@ -51,8 +51,14 @@ export default function BlurText({
 }: BlurTextProps) {
   const { focusMode, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
   const elements = animateBy === "words" ? text.split(" ") : text.split("");
-  const effectiveDelay = motionLevel === "reduced" ? delay * 1.5 : delay;
-  const effectiveStepDuration = motionLevel === "reduced" ? stepDuration * 0.8 : stepDuration;
+  const effectiveDelay =
+    motionLevel === "reduced" ? delay * 1.5 : motionLevel === "expressive" ? delay * 0.8 : delay;
+  const effectiveStepDuration =
+    motionLevel === "reduced"
+      ? stepDuration * 0.8
+      : motionLevel === "expressive"
+        ? stepDuration * 1.15
+        : stepDuration;
   const [inView, setInView] = useState(false);
   const ref = useRef<HTMLParagraphElement>(null);
 
@@ -74,8 +80,16 @@ export default function BlurText({
   const defaultFrom = useMemo(
     () =>
       direction === "top"
-        ? { filter: `blur(${motionLevel === "reduced" ? 4 : 10}px)`, opacity: 0, y: motionLevel === "reduced" ? -20 : -50 }
-        : { filter: `blur(${motionLevel === "reduced" ? 4 : 10}px)`, opacity: 0, y: motionLevel === "reduced" ? 20 : 50 },
+        ? {
+            filter: `blur(${motionLevel === "reduced" ? 4 : motionLevel === "expressive" ? 12 : 10}px)`,
+            opacity: 0,
+            y: motionLevel === "reduced" ? -20 : motionLevel === "expressive" ? -58 : -50,
+          }
+        : {
+            filter: `blur(${motionLevel === "reduced" ? 4 : motionLevel === "expressive" ? 12 : 10}px)`,
+            opacity: 0,
+            y: motionLevel === "reduced" ? 20 : motionLevel === "expressive" ? 58 : 50,
+          },
     [direction, motionLevel]
   );
 

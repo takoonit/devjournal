@@ -8,6 +8,7 @@ import BlurText from "@/components/reactbits/blur-text";
 import ShinyText from "@/components/reactbits/shiny-text";
 import CountUp from "@/components/reactbits/count-up";
 import Link from "next/link";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
 export default function PortfolioPage() {
     // Get store state
@@ -28,6 +29,7 @@ export default function PortfolioPage() {
     return (
         <div className="min-h-screen p-6 lg:p-12">
             <div className="max-w-7xl mx-auto">
+                <Breadcrumbs items={[{ label: "Portfolio" }]} />
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
                     {/* Bio Sidebar */}
                     <BioSidebar />
@@ -52,7 +54,7 @@ export default function PortfolioPage() {
                         </div>
 
                         {projects.length === 0 ? (
-                            <div className="text-center py-20 border border-dashed border-zinc-800 rounded-xl">
+                            <div className="rounded-2xl border border-dashed border-zinc-700/80 bg-zinc-900/30 py-20 text-center">
                                 <p className="text-zinc-500 mb-4">No public projects yet.</p>
                                 <p className="text-sm text-zinc-600 mb-6">
                                     Start documenting your journey in the editor.

@@ -81,7 +81,12 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
   ) => {
     const { focusMode, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
     const [currentTextIndex, setCurrentTextIndex] = useState<number>(0);
-    const effectiveRotationInterval = motionLevel === "reduced" ? rotationInterval * 1.8 : rotationInterval;
+    const effectiveRotationInterval =
+      motionLevel === "reduced"
+        ? rotationInterval * 1.8
+        : motionLevel === "expressive"
+          ? rotationInterval * 0.8
+          : rotationInterval;
     const effectiveAuto = auto && !focusMode;
 
     const splitIntoCharacters = (text: string): string[] => {

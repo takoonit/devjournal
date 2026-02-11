@@ -21,7 +21,7 @@ export const designTokens = {
       soft: "var(--color-warning-soft)",
       contrast: "var(--color-warning-contrast)",
     },
-    "destructive-soft": {
+    destructive: {
       base: "var(--color-destructive-base)",
       soft: "var(--color-destructive-soft)",
       contrast: "var(--color-destructive-contrast)",
@@ -51,4 +51,6 @@ export const designTokens = {
 } as const;
 
 export type DesignTokens = typeof designTokens;
+export type ThemeMode = "noir" | "calm-focus";
+export type MotionScale = keyof DesignTokens["motion"];
 export type DensityScale = keyof DesignTokens["spacing"];

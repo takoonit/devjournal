@@ -32,7 +32,15 @@ export function SpotlightCard({
 
     const handleFocus = () => {
         setIsFocused(true);
-        setOpacity(focusMode ? 0 : motionLevel === "reduced" ? 0.3 : 0.6);
+        setOpacity(
+            focusMode
+                ? 0
+                : motionLevel === "reduced"
+                  ? 0.3
+                  : motionLevel === "expressive"
+                    ? 0.8
+                    : 0.6
+        );
     };
 
     const handleBlur = () => {
@@ -41,7 +49,15 @@ export function SpotlightCard({
     };
 
     const handleMouseEnter = () => {
-        setOpacity(focusMode ? 0 : motionLevel === "reduced" ? 0.3 : 0.6);
+        setOpacity(
+            focusMode
+                ? 0
+                : motionLevel === "reduced"
+                  ? 0.3
+                  : motionLevel === "expressive"
+                    ? 0.8
+                    : 0.6
+        );
     };
 
     const handleMouseLeave = () => {
@@ -63,7 +79,7 @@ export function SpotlightCard({
                     className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
                     style={{
                         opacity,
-                        background: `radial-gradient(${motionLevel === "reduced" ? 450 : 600}px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 40%)`,
+                        background: `radial-gradient(${motionLevel === "reduced" ? 450 : motionLevel === "expressive" ? 680 : 600}px circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 40%)`,
                     }}
                 />
             )}

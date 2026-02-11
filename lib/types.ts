@@ -116,3 +116,11 @@ export interface Entry {
     createdAt: string;
     updatedAt: string;
 }
+
+
+export interface InboxCapture {
+    id: string;
+    content: string;
+    projectId?: string;
+    createdAt: string;
+}

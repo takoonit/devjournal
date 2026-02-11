@@ -134,6 +134,7 @@ export default function SettingsPage() {
                             >
                                 <option value="reduced">Reduced</option>
                                 <option value="standard">Standard</option>
+                                <option value="expressive">Expressive</option>
                             </select>
                         </label>
                     </div>

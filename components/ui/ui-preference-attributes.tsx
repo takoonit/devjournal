@@ -22,10 +22,6 @@ export function UiPreferenceAttributes() {
         body.dataset.rewardIntensity = uiPreferences.rewardIntensity;
         body.dataset.motionLevel = uiPreferences.motionLevel;
 
-        body.classList.toggle("theme-calm-focus", uiPreferences.themeMode === "calm-focus");
-        body.classList.toggle("theme-noir", uiPreferences.themeMode === "noir");
-        body.classList.toggle("focus-mode", uiPreferences.focusMode);
-        body.classList.toggle("density-compact", uiPreferences.density === "compact");
     }, [uiPreferences]);
 
     return null;
