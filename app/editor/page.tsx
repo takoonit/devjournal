@@ -29,6 +29,10 @@ export default function EditorPage() {
             return;
         }
 
+        if (captureProjectId === "") {
+            return;
+        }
+
         const hasSelectedProject = projects.some((project) => project.id === captureProjectId);
         if (!hasSelectedProject) {
             setCaptureProjectId(projects[0].id);
