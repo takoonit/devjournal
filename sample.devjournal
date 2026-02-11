@@ -110,7 +110,7 @@
         "milestone": {
           "achievement": "Implemented the Reddit-inspired Hybrid Templates.",
           "impact": "Users now have 'Rubber Ducking' and 'Context Switching' built directly into their workflow.",
-          "demoLink": "http://localhost:3000"
+          "demoLink": "https://example.com/demo"
         }
       },
       "isPublic": true,

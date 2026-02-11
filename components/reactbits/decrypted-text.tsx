@@ -45,6 +45,12 @@ export default function DecryptedText({
 
   const [displayText, setDisplayText] = useState<string>(text);
   const [isHovering, setIsHovering] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!isHovering) {
+      setDisplayText(text);
+    }
+  }, [text, isHovering]);
   const [isScrambling, setIsScrambling] = useState<boolean>(false);
   const [revealedIndices, setRevealedIndices] = useState<Set<number>>(
     new Set()

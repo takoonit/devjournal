@@ -1,10 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { User, Project, Entry, InboxCapture } from "@/lib/types";
+import type { ThemeMode } from "@/lib/design-tokens";
 import { generateId, generateSlug } from "@/lib/utils";
 
 export interface UiPreferences {
-    themeMode: "noir" | "calm-focus";
+    themeMode: ThemeMode;
     focusMode: boolean;
     density: "cozy" | "compact";
     rewardIntensity: "off" | "subtle" | "full";
@@ -261,8 +262,8 @@ export const useDevJournalStore = create<DevJournalStore>()(
                     const text = await file.text();
                     const data = JSON.parse(text);
 
-                    if (!data.version) {
-                        return { success: false, message: "Invalid file format." };
+                    if (data.version !== "1.0") {
+                        return { success: false, message: "Unsupported or invalid DevJournal file version." };
                     }
 
                     const state = get();

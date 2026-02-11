@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" data-theme-mode="noir" data-density="cozy" data-focus-mode="false" data-reward-intensity="subtle" data-motion-level="standard">
-            <body data-theme-mode="noir" data-focus-mode="false" data-density="cozy" data-reward-intensity="subtle" data-motion-level="standard">
+            <body>
                 <Providers>{children}</Providers>
             </body>
         </html>

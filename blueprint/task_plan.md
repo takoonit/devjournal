@@ -19,7 +19,7 @@ This plan operationalizes the redesign into explicit, sequential phases with mea
 
 ## 🏗️ A/S: Architect + Style Redesign Phases
 
-### Phase 1 — Foundation ✅ In Progress
+### Phase 1 — Foundation ✅ Complete
 **Scope**
 - Design tokens (color/motion/spacing) hardened and documented
 - Theme variables finalized for supported themes
@@ -39,7 +39,7 @@ This plan operationalizes the redesign into explicit, sequential phases with mea
 
 ---
 
-### Phase 2 — Feedback ✅ In Progress
+### Phase 2 — Feedback ✅ Complete
 **Scope**
 - Toast redesign for clearer, emotionally supportive system feedback
 - Supportive copy module for microcopy consistency
@@ -57,7 +57,7 @@ This plan operationalizes the redesign into explicit, sequential phases with mea
 
 ---
 
-### Phase 3 — Flow ✅ In Progress
+### Phase 3 — Flow ✅ Complete
 **Scope**
 - Step-based entry creation/edit flows
 - Progress indicators in multi-step experiences
@@ -75,7 +75,7 @@ This plan operationalizes the redesign into explicit, sequential phases with mea
 
 ---
 
-### Phase 4 — Wayfinding + Capture ✅ In Progress
+### Phase 4 — Wayfinding + Capture ✅ Complete
 **Scope**
 - Breadcrumbs across editor and portfolio navigation layers
 - Inbox quick-capture flow
@@ -93,7 +93,7 @@ This plan operationalizes the redesign into explicit, sequential phases with mea
 
 ---
 
-### Phase 5 — Polish + QA ✅ In Progress
+### Phase 5 — Polish + QA 🔄 In Progress
 **Scope**
 - Motion tuning based on UI preference profile
 - Contrast and accessibility pass
@@ -112,9 +112,9 @@ This plan operationalizes the redesign into explicit, sequential phases with mea
 ---
 
 ## 🚀 T: Trigger
-- [ ] Final regression pass (`pnpm lint`, `pnpm build`) at completion of each phase
-- [ ] Deploy phased milestones to Vercel preview environments
-- [ ] Publish phase-end changelog with metric deltas (clicks-to-start, abandonment)
+- [x] Final regression pass (`pnpm lint`, `pnpm build`) at completion of each completed phase (Phases 1–4)
+- [x] Deploy phased milestones to Vercel preview environments for completed phases (Phases 1–4)
+- [x] Publish phase-end changelog with metric deltas (clicks-to-start, abandonment) for completed phases (Phases 1–4)
 
 ## Program-Level Success Metrics
 - **Reduced clicks-to-start:** Fewer interactions required to begin a new log
