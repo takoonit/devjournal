@@ -118,7 +118,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
                     </div>
                     <div className="p-3 bg-zinc-900/50 rounded-lg border border-zinc-800">
                         <span className="text-xs font-mono text-zinc-500 uppercase block mb-1">Vibe</span>
-                        <p className="text-zinc-300 text-sm italic">"{data.ideaSpark.vibe}"</p>
+                        <p className="text-zinc-300 text-sm italic">&ldquo;{data.ideaSpark.vibe}&rdquo;</p>
                     </div>
                 </div>
             )
@@ -226,7 +226,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
                         </div>
                         {data.milestone.demoLink && (
                             <div className="inline-flex">
-                                <a href={data.milestone.demoLink} target="_blank" className="text-xs font-bold text-emerald-400 hover:text-emerald-300 border-b border-emerald-500/30 hover:border-emerald-400 transition-colors pb-0.5">
+                                <a href={data.milestone.demoLink} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-emerald-400 hover:text-emerald-300 border-b border-emerald-500/30 hover:border-emerald-400 transition-colors pb-0.5">
                                     View Demo →
                                 </a>
                             </div>

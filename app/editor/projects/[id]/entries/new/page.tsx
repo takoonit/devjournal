@@ -343,7 +343,7 @@ export default function NewEntryPage({
                         <div className="bg-black/20 rounded-lg p-4 border border-white/5">
                             <span className="text-xs font-mono text-zinc-500 uppercase block mb-1">Example</span>
                             <p className="text-sm text-zinc-300 italic font-medium">
-                                "{TEMPLATE_INFO[(category === 'plan-change' ? planSub : category === 'build' ? buildSub : reflectSub) as keyof typeof TEMPLATE_INFO]?.example}"
+                                &ldquo;{TEMPLATE_INFO[(category === 'plan-change' ? planSub : category === 'build' ? buildSub : reflectSub) as keyof typeof TEMPLATE_INFO]?.example}&rdquo;
                             </p>
                         </div>
                     </div>
