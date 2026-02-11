@@ -5,6 +5,9 @@ import { useDevJournalStore, type UiPreferences } from "@/lib/store";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { ExportImportSection } from "@/components/settings/export-import-section";
+import BlurText from "@/components/reactbits/blur-text";
+import ShinyText from "@/components/reactbits/shiny-text";
+import { useToast } from "@/components/ui/toast";
 
 export default function SettingsPage() {
     const user = useDevJournalStore((state) => state.user);
@@ -14,7 +17,7 @@ export default function SettingsPage() {
 
     const [formData, setFormData] = useState(user);
     const [uiFormData, setUiFormData] = useState<UiPreferences>(uiPreferences);
-    const [saved, setSaved] = useState(false);
+    const { addToast } = useToast();
 
     useEffect(() => {
         setFormData(user);
@@ -28,8 +31,7 @@ export default function SettingsPage() {
         e.preventDefault();
         updateUser(formData);
         updateUiPreferences(uiFormData);
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
+        addToast({ message: "Settings saved.", type: "success" });
     };
 
     const updatePreference = <K extends keyof UiPreferences>(key: K, value: UiPreferences[K]) => {
@@ -46,7 +48,12 @@ export default function SettingsPage() {
                 Back to editor
             </Link>
 
-            <h1 className="mb-2 text-3xl font-bold text-zinc-100">Settings</h1>
+            <BlurText
+                text="Settings"
+                className="mb-2 text-3xl font-bold text-zinc-100"
+                delay={80}
+                animateBy="letters"
+            />
             <p className="mb-8 text-zinc-400">
                 Configure your public portfolio profile and editor experience.
             </p>
@@ -222,11 +229,10 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-4 pt-4">
                     <button
                         type="submit"
-                        className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-6 py-3 font-medium text-cyan-400 transition-colors hover:bg-cyan-500/20"
+                        className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-6 py-3 font-medium transition-colors hover:bg-cyan-500/20"
                     >
-                        Save Changes
+                        <ShinyText text="Save Changes" className="text-cyan-400" speed={3} />
                     </button>
-                    {saved && <span className="text-sm text-emerald-400">✓ Saved!</span>}
                 </div>
             </form>
 

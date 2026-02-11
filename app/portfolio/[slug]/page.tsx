@@ -10,6 +10,7 @@ import { ArrowLeft, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import BlurText from "@/components/reactbits/blur-text";
+import ScrollReveal from "@/components/reactbits/scroll-reveal";
 
 export default function ProjectDetailPage({
     params,
@@ -123,8 +124,10 @@ export default function ProjectDetailPage({
                                                         {month}
                                                     </h3>
                                                     <div className="space-y-6">
-                                                        {groupedEntries[year][month].map((entry) => (
-                                                            <TimelineEntry key={entry.id} entry={entry} />
+                                                        {groupedEntries[year][month].map((entry, index) => (
+                                                            <ScrollReveal key={entry.id} delay={index * 0.08}>
+                                                                <TimelineEntry entry={entry} />
+                                                            </ScrollReveal>
                                                         ))}
                                                     </div>
                                                 </div>

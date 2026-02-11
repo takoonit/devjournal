@@ -9,6 +9,9 @@ import RotatingText from "@/components/reactbits/rotating-text";
 import ShinyText from "@/components/reactbits/shiny-text";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { useToast } from "@/components/ui/toast";
+import ScrollReveal from "@/components/reactbits/scroll-reveal";
+import BlurText from "@/components/reactbits/blur-text";
+import CountUp from "@/components/reactbits/count-up";
 
 export default function EditorPage() {
     const projects = useDevJournalStore((state) => state.projects);
@@ -43,8 +46,20 @@ export default function EditorPage() {
             <Breadcrumbs items={[{ label: "Editor" }]} />
 
             <div className="mb-8">
-                <h1 className="mb-2 text-3xl font-bold text-zinc-100">Your Projects</h1>
-                <p className="text-zinc-400">Manage your projects and build logs.</p>
+                <BlurText
+                    text="Your Projects"
+                    className="mb-2 text-3xl font-bold text-zinc-100"
+                    delay={80}
+                    animateBy="letters"
+                />
+                <p className="text-zinc-400">
+                    Manage your projects and build logs.
+                    {projects.length > 0 && (
+                        <span className="ml-2 font-mono text-cyan-400">
+                            <CountUp to={projects.length} duration={1.5} /> {projects.length === 1 ? "project" : "projects"}
+                        </span>
+                    )}
+                </p>
             </div>
 
             <section className="mb-8 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5">
@@ -157,12 +172,13 @@ export default function EditorPage() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    {projects.map((project) => (
-                        <ProjectCard
-                            key={project.id}
-                            project={project}
-                            href={`/editor/projects/${project.id}`}
-                        />
+                    {projects.map((project, index) => (
+                        <ScrollReveal key={project.id} delay={index * 0.1}>
+                            <ProjectCard
+                                project={project}
+                                href={`/editor/projects/${project.id}`}
+                            />
+                        </ScrollReveal>
                     ))}
                 </div>
             )}

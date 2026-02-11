@@ -11,6 +11,9 @@ import { ProjectActions } from "@/components/editor/project-actions";
 import { EditProjectModal } from "@/components/editor/edit-project-modal";
 import { useToast } from "@/components/ui/toast";
 import CountUp from "@/components/reactbits/count-up";
+import BlurText from "@/components/reactbits/blur-text";
+import ShinyText from "@/components/reactbits/shiny-text";
+import ScrollReveal from "@/components/reactbits/scroll-reveal";
 
 export default function ProjectDetailPage({
     params,
@@ -134,9 +137,12 @@ export default function ProjectDetailPage({
             <div className="mb-8 pb-8 border-b border-zinc-800">
                 <div className="flex items-start justify-between mb-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-zinc-100 mb-2">
-                            {project.name}
-                        </h1>
+                        <BlurText
+                            text={project.name}
+                            className="text-3xl font-bold text-zinc-100 mb-2"
+                            delay={80}
+                            animateBy="letters"
+                        />
                         <p className="text-zinc-400">{project.description}</p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -189,7 +195,7 @@ export default function ProjectDetailPage({
                     className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/20 transition-colors font-medium"
                 >
                     <Plus className="w-5 h-5" />
-                    New Entry
+                    <ShinyText text="New Entry" className="text-cyan-400" speed={3} />
                 </Link>
             </div>
 
@@ -207,9 +213,9 @@ export default function ProjectDetailPage({
             ) : (
                 <div className="space-y-6">
                     <h2 className="text-xl font-semibold text-zinc-300">Build Log Entries</h2>
-                    {entries.map((entry) => (
+                    {entries.map((entry, index) => (
+                        <ScrollReveal key={entry.id} delay={index * 0.06}>
                         <div
-                            key={entry.id}
                             className="relative border border-zinc-800 rounded-lg p-6 bg-zinc-900/30 hover:border-zinc-700 transition-colors"
                         >
                             {/* Entry Actions — always visible for keyboard accessibility */}
@@ -243,6 +249,7 @@ export default function ProjectDetailPage({
                             {/* Entry Content */}
                             <TimelineEntry entry={entry} />
                         </div>
+                        </ScrollReveal>
                     ))}
                 </div>
             )}

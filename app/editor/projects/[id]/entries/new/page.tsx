@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/components/ui/toast";
+import BlurText from "@/components/reactbits/blur-text";
 
 const TEMPLATE_INFO = {
     "decision-log": {
@@ -337,7 +338,12 @@ export default function NewEntryPage({
                     </Link>
                     <div className="flex items-start justify-between">
                         <div>
-                            <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-white">New Entry</h1>
+                            <BlurText
+                                text="New Entry"
+                                className="mb-2 text-4xl font-extrabold tracking-tight text-white"
+                                delay={80}
+                                animateBy="letters"
+                            />
                             <p className="text-lg text-zinc-400">
                                 Contributing to <span className={currentTheme.text}>{project.name}</span>
                             </p>

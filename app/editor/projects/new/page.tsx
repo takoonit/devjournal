@@ -5,6 +5,8 @@ import { useDevJournalStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Plus, X } from "lucide-react";
 import Link from "next/link";
+import BlurText from "@/components/reactbits/blur-text";
+import ShinyText from "@/components/reactbits/shiny-text";
 
 export default function NewProjectPage() {
     const router = useRouter();
@@ -54,7 +56,12 @@ export default function NewProjectPage() {
                 Back to editor
             </Link>
 
-            <h1 className="text-3xl font-bold text-zinc-100 mb-8">New Project</h1>
+            <BlurText
+                text="New Project"
+                className="text-3xl font-bold text-zinc-100 mb-8"
+                delay={80}
+                animateBy="letters"
+            />
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
@@ -179,9 +186,9 @@ export default function NewProjectPage() {
                 <div className="flex gap-4 pt-4">
                     <button
                         type="submit"
-                        className="px-6 py-3 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/20 transition-colors font-medium"
+                        className="px-6 py-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/20 transition-colors font-medium"
                     >
-                        Create Project
+                        <ShinyText text="Create Project" className="text-cyan-400" speed={3} />
                     </button>
                     <Link
                         href="/editor"

@@ -97,6 +97,31 @@ Follow the **Context-Aware Progressive Disclosure** pattern (see `blueprint/desi
 - **Personalization:** Segment users at entry (beginner vs. power user). Use AI to filter irrelevant content. Design for monotasking to minimize context-switching overhead.
 - **Friction Audit:** Validate with task completion rates, error rates, and user hesitation/backtracking patterns during testing.
 
+## ReactBits Design System — Signature Moments
+
+ReactBits components live in `components/reactbits/` and are used **systematically** as page-level "signature moments" — not random effects. Every use maps to one of these roles:
+
+| Moment | Component | When to Use | Config |
+|--------|-----------|-------------|--------|
+| **Page Load** | `BlurText` | Every page title / main heading | `delay={80} animateBy="letters"` |
+| **Scroll Reveal** | `ScrollReveal` | Content blocks, cards, timeline entries | `delay={index * 0.08}` stagger per item |
+| **Brand Touch** | `DecryptedText` | "DevJournal" branding in sidebar | `characters="01" animateOn="hover"` |
+| **CTA Shimmer** | `ShinyText` | Primary action buttons (cyan accent) | `speed={3}` |
+| **Live Stats** | `CountUp` | Numeric counts (projects, entries) | `duration={1.5}` |
+| **Status/Role** | `GradientText` | User role in portfolio bio sidebar | Cyan→emerald gradient |
+| **Cards** | `SpotlightCard` | All interactive cards | Mouse-tracking spotlight |
+| **Empty States** | `RotatingText` | Cycling tips/prompts when no content | `rotationInterval={3000}` |
+
+### Rules
+
+1. **One moment per element** — never stack two ReactBits animations on the same element
+2. **Consistent config** — use the table values above; don't customize per-page
+3. **All page headings** must use `BlurText` — no plain `<h1>` tags on any page
+4. **All primary CTAs** (cyan accent buttons) must use `ShinyText` inside
+5. **All list/grid items** that appear on scroll must wrap in `ScrollReveal` with staggered delays
+6. **CountUp** accompanies any visible count that appears in a subtitle or stat line
+7. **Import from `framer-motion`** (not `motion/react`) to match project convention
+
 ## BLAST Framework
 
 Follow for every new feature or refactor:

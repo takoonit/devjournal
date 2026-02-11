@@ -7,6 +7,7 @@ import { ProjectCard } from "@/components/portfolio/project-card";
 import BlurText from "@/components/reactbits/blur-text";
 import ShinyText from "@/components/reactbits/shiny-text";
 import CountUp from "@/components/reactbits/count-up";
+import ScrollReveal from "@/components/reactbits/scroll-reveal";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 
@@ -68,12 +69,13 @@ export default function PortfolioPage() {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {projects.map((project) => (
-                                    <ProjectCard
-                                        key={project.id}
-                                        project={project}
-                                        href={`/portfolio/${project.slug}`}
-                                    />
+                                {projects.map((project, index) => (
+                                    <ScrollReveal key={project.id} delay={index * 0.1}>
+                                        <ProjectCard
+                                            project={project}
+                                            href={`/portfolio/${project.slug}`}
+                                        />
+                                    </ScrollReveal>
                                 ))}
                             </div>
                         )}
