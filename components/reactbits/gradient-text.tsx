@@ -18,6 +18,7 @@ interface GradientTextProps {
   direction?: "horizontal" | "vertical" | "diagonal";
   pauseOnHover?: boolean;
   yoyo?: boolean;
+  isInteractive?: boolean;
 }
 
 export default function GradientText({
@@ -29,6 +30,7 @@ export default function GradientText({
   direction = "horizontal",
   pauseOnHover = false,
   yoyo = true,
+  isInteractive = false,
 }: GradientTextProps) {
   const [isPaused, setIsPaused] = useState(false);
   const { focusMode, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
@@ -85,7 +87,7 @@ export default function GradientText({
     } else if (direction === "vertical") {
       return `50% ${p}%`;
     } else {
-      return `${p}% 50%`;
+      return `${p}% ${p}%`;
     }
   });
 
@@ -118,7 +120,7 @@ export default function GradientText({
 
   return (
     <motion.div
-      className={`relative mx-auto flex max-w-fit flex-row items-center justify-center rounded-[1.25rem] font-medium backdrop-blur transition-shadow duration-500 overflow-hidden cursor-pointer ${effectiveShowBorder ? "py-1 px-2" : ""} ${className}`}
+      className={`relative flex max-w-fit flex-row items-center justify-center overflow-hidden rounded-[1.25rem] font-medium backdrop-blur transition-shadow duration-500 ${isInteractive ? "cursor-pointer" : ""} ${effectiveShowBorder ? "py-1 px-2" : ""} ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

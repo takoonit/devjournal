@@ -65,12 +65,13 @@ export default function ProjectDetailPage({
                         <div className="mb-12">
                             <div className="flex items-start justify-between mb-4">
                                 <div>
-                                    <BlurText
-                                        text={project.name}
-                                        className="text-4xl font-bold text-zinc-100 mb-2"
-                                        delay={80}
-                                        animateBy="letters"
-                                    />
+                                    <h1 className="text-4xl font-bold text-zinc-100 mb-2">
+                                        <BlurText
+                                            text={project.name}
+                                            delay={80}
+                                            animateBy="letters"
+                                        />
+                                    </h1>
                                     <p className="text-zinc-400 text-lg">{project.description}</p>
                                 </div>
                                 {project.repositoryLink && (

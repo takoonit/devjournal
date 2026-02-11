@@ -237,7 +237,7 @@ export default function DecryptedText({
       {...hoverProps}
       {...props}
     >
-      <span className="sr-only">{displayText}</span>
+      <span className="sr-only">{text}</span>
 
       <span aria-hidden="true">
         {displayText.split("").map((char, index) => {
@@ -246,7 +246,7 @@ export default function DecryptedText({
 
           return (
             <span
-              key={`${char}-${index}`}
+              key={index}
               className={isRevealedOrDone ? className : encryptedClassName}
             >
               {char}

@@ -109,7 +109,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               exit={{ opacity: 0, y: -8, scale: 0.96 }}
               transition={{ duration: motionDuration }}
               className="rounded-xl border border-zinc-800 bg-zinc-950/95 p-3 shadow-[0_20px_45px_-28px_rgba(0,0,0,0.85)] backdrop-blur"
-              role="alert"
+              role={toast.type === "error" ? "alert" : "status"}
             >
               <div className="flex items-start gap-3">
                 <div className={`mt-0.5 rounded-md border px-1.5 py-1 ${toneClasses[toast.type]}`}>{icons[toast.type]}</div>

@@ -17,12 +17,7 @@ import {
   type Target,
   type TargetAndTransition,
 } from "framer-motion";
-
-function cn(
-  ...classes: (string | undefined | null | boolean)[]
-): string {
-  return classes.filter(Boolean).join(" ");
-}
+import { cn } from "@/lib/utils";
 
 export interface RotatingTextRef {
   next: () => void;
@@ -130,6 +125,22 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
       }));
     }, [texts, currentTextIndex, splitBy]);
 
+    const totalCharacters = useMemo(
+      () => elements.reduce((sum, word) => sum + word.characters.length, 0),
+      [elements]
+    );
+
+    const shuffledIndices = useMemo(() => {
+      const values = Array.from({ length: totalCharacters }, (_, i) => i);
+
+      for (let i = values.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [values[i], values[j]] = [values[j], values[i]];
+      }
+
+      return values;
+    }, [totalCharacters]);
+
     const getStaggerDelay = useCallback(
       (index: number, totalChars: number): number => {
         const total = totalChars;
@@ -141,12 +152,11 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
           return Math.abs(center - index) * staggerDuration;
         }
         if (staggerFrom === "random") {
-          const randomIndex = Math.floor(Math.random() * total);
-          return Math.abs(randomIndex - index) * staggerDuration;
+          return Math.abs((shuffledIndices[index] ?? index) - index) * staggerDuration;
         }
         return Math.abs((staggerFrom as number) - index) * staggerDuration;
       },
-      [staggerFrom, staggerDuration]
+      [shuffledIndices, staggerFrom, staggerDuration]
     );
 
     const handleIndexChange = useCallback(
@@ -264,11 +274,7 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
                         ...transition,
                         delay: getStaggerDelay(
                           previousCharsCount + charIndex,
-                          array.reduce(
-                            (sum, word) =>
-                              sum + word.characters.length,
-                            0
-                          )
+                          totalCharacters
                         ),
                       }}
                       className={cn(

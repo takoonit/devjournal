@@ -30,7 +30,9 @@ To maintain **Flow State**—a state of energized focus—the system must adapt 
 
 - **Segmentation at Entry:** Use a "welcome screen microsurvey" to determine the user's "Job to be Done." Immediately tailor the interface to show only the features relevant to that specific goal (e.g., beginner vs. power user paths).
 - **AI-Driven Curation:** Utilize AI to filter "extraneous tokens" (irrelevant content) from the user's view. For example, algorithms should personalize content feeds or feature suggestions based on past behavior to prevent "context saturation."
-- **Monotasking Architecture:** Design workflows that encourage focusing on one task at a time. Minimize "context switching" (e.g., jumping between unrelated tabs/screens), which drains mental energy and reduces productivity by up to 40%.
+- **Monotasking Architecture:** Design workflows that encourage focusing on one task at a time. Minimize "context switching" (e.g., jumping between unrelated tabs/screens), which drains mental energy and can reduce productivity by up to 40% according to APA summary reporting from the American Institute of Stress.<sup>[1](https://www.apa.org/topics/research/multitasking)</sup>
+
+<sup>[1]</sup> American Psychological Association. "Multitasking: Switching costs." https://www.apa.org/topics/research/multitasking
 
 ## 4. Validation & Metrics: The "Friction Audit"
 

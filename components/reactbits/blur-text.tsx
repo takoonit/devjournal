@@ -2,9 +2,12 @@
 
 import { motion, Transition, Easing } from "framer-motion";
 import { useDevJournalStore } from "@/lib/store";
-import { useEffect, useRef, useState, useMemo } from "react";
+import { forwardRef, useEffect, useRef, useState, useMemo, type HTMLAttributes } from "react";
+
+type BlurTextTag = "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "div" | "span";
 
 type BlurTextProps = {
+  as?: BlurTextTag;
   text?: string;
   delay?: number;
   className?: string;
@@ -17,7 +20,7 @@ type BlurTextProps = {
   easing?: Easing | Easing[];
   onAnimationComplete?: () => void;
   stepDuration?: number;
-};
+} & Omit<HTMLAttributes<HTMLElement>, "children">;
 
 const buildKeyframes = (
   from: Record<string, string | number>,
@@ -35,7 +38,9 @@ const buildKeyframes = (
   return keyframes;
 };
 
-export default function BlurText({
+const BlurText = forwardRef<HTMLElement, BlurTextProps>(function BlurText(
+  {
+  as = "p",
   text = "",
   delay = 200,
   className = "",
@@ -48,7 +53,10 @@ export default function BlurText({
   easing = (t: number) => t,
   onAnimationComplete,
   stepDuration = 0.35,
-}: BlurTextProps) {
+  ...restProps
+}: BlurTextProps,
+  forwardedRef
+) {
   const { focusMode, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
   const elements = animateBy === "words" ? text.split(" ") : text.split("");
   const effectiveDelay =
@@ -60,20 +68,32 @@ export default function BlurText({
         ? stepDuration * 1.15
         : stepDuration;
   const [inView, setInView] = useState(false);
-  const ref = useRef<HTMLParagraphElement>(null);
+  const localRef = useRef<HTMLElement | null>(null);
+
+  const setRefs = (node: HTMLElement | null) => {
+    localRef.current = node;
+    if (typeof forwardedRef === "function") {
+      forwardedRef(node);
+      return;
+    }
+
+    if (forwardedRef) {
+      forwardedRef.current = node;
+    }
+  };
 
   useEffect(() => {
-    if (!ref.current) return;
+    if (!localRef.current) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setInView(true);
-          observer.unobserve(ref.current as Element);
+          observer.unobserve(localRef.current as Element);
         }
       },
       { threshold, rootMargin }
     );
-    observer.observe(ref.current);
+    observer.observe(localRef.current);
     return () => observer.disconnect();
   }, [threshold, rootMargin]);
 
@@ -114,8 +134,10 @@ export default function BlurText({
     stepCount === 1 ? 0 : i / (stepCount - 1)
   );
 
+  const Component = as;
+
   return (
-    <p ref={ref} className={`blur-text ${className} flex flex-wrap`}>
+    <Component ref={setRefs} className={`blur-text ${className} flex flex-wrap`} {...restProps}>
       {elements.map((segment, index) => {
         const animateKeyframes = buildKeyframes(fromSnapshot, toSnapshots);
 
@@ -145,6 +167,8 @@ export default function BlurText({
           </motion.span>
         );
       })}
-    </p>
+    </Component>
   );
-}
+});
+
+export default BlurText;
