@@ -4,7 +4,8 @@ import { useDevJournalStore } from "@/lib/store";
 import Link from "next/link";
 import { Plus, Folder, Settings, FolderInput } from "lucide-react";
 import { useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/toast";
+import DecryptedText from "@/components/reactbits/decrypted-text";
 
 export default function EditorLayout({
     children,
@@ -14,7 +15,7 @@ export default function EditorLayout({
     const projects = useDevJournalStore((state) => state.projects);
     const importDevJournal = useDevJournalStore((state) => state.importDevJournal);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const router = useRouter();
+    const { addToast } = useToast();
 
     const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -22,9 +23,9 @@ export default function EditorLayout({
 
         const result = await importDevJournal(file);
         if (result.success) {
-            alert(result.message);
+            addToast(result.message, "success");
         } else {
-            alert(result.message);
+            addToast(result.message, "error");
         }
 
         if (fileInputRef.current) fileInputRef.current.value = "";
@@ -39,12 +40,20 @@ export default function EditorLayout({
                         href="/portfolio"
                         className="text-xl font-bold text-zinc-100 hover:text-cyan-400 transition-colors"
                     >
-                        DevJournal
+                        <DecryptedText
+                            text="DevJournal"
+                            animateOn="hover"
+                            speed={60}
+                            maxIterations={8}
+                            characters="01"
+                            className="text-zinc-100"
+                            encryptedClassName="text-cyan-400/60"
+                        />
                     </Link>
                     <p className="text-xs text-zinc-500 mt-1">Editor Mode</p>
                 </div>
 
-                <nav className="space-y-6">
+                <nav className="space-y-6" aria-label="Editor navigation">
                     <div>
                         <div className="flex items-center justify-between mb-3">
                             <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wide">
@@ -55,6 +64,7 @@ export default function EditorLayout({
                                     onClick={() => fileInputRef.current?.click()}
                                     className="p-1 rounded hover:bg-zinc-800 text-zinc-500 hover:text-cyan-400 transition-colors"
                                     title="Import Project"
+                                    aria-label="Import project from file"
                                 >
                                     <FolderInput className="w-4 h-4" />
                                 </button>
@@ -62,6 +72,7 @@ export default function EditorLayout({
                                     href="/editor/projects/new"
                                     className="p-1 rounded hover:bg-zinc-800 text-zinc-500 hover:text-cyan-400 transition-colors"
                                     title="New Project"
+                                    aria-label="Create new project"
                                 >
                                     <Plus className="w-4 h-4" />
                                 </Link>
@@ -72,6 +83,7 @@ export default function EditorLayout({
                                 onChange={handleImport}
                                 accept=".devjournal"
                                 className="hidden"
+                                aria-label="Import .devjournal file"
                             />
                         </div>
                         <div className="space-y-1">

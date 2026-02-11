@@ -4,6 +4,10 @@ import { useMemo } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { BioSidebar } from "@/components/portfolio/bio-sidebar";
 import { ProjectCard } from "@/components/portfolio/project-card";
+import BlurText from "@/components/reactbits/blur-text";
+import ShinyText from "@/components/reactbits/shiny-text";
+import CountUp from "@/components/reactbits/count-up";
+import Link from "next/link";
 
 export default function PortfolioPage() {
     // Get store state
@@ -31,18 +35,34 @@ export default function PortfolioPage() {
                     {/* Projects Grid */}
                     <div className="flex-1">
                         <div className="mb-8">
-                            <h2 className="text-3xl font-bold text-zinc-100 mb-2">Projects</h2>
+                            <BlurText
+                                text="Projects"
+                                className="text-3xl font-bold text-zinc-100 mb-2"
+                                delay={100}
+                                animateBy="letters"
+                            />
                             <p className="text-zinc-400">
                                 Build logs documenting the development process.
+                                {projects.length > 0 && (
+                                    <span className="ml-2 text-cyan-400 font-mono">
+                                        <CountUp to={projects.length} duration={1.5} /> active
+                                    </span>
+                                )}
                             </p>
                         </div>
 
                         {projects.length === 0 ? (
-                            <div className="text-center py-20">
+                            <div className="text-center py-20 border border-dashed border-zinc-800 rounded-xl">
                                 <p className="text-zinc-500 mb-4">No public projects yet.</p>
-                                <p className="text-sm text-zinc-600">
+                                <p className="text-sm text-zinc-600 mb-6">
                                     Start documenting your journey in the editor.
                                 </p>
+                                <Link
+                                    href="/editor"
+                                    className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 transition-colors"
+                                >
+                                    <ShinyText text="Open Editor" className="text-cyan-400 font-medium" speed={3} />
+                                </Link>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

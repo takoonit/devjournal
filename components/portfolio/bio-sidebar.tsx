@@ -3,6 +3,7 @@
 import { useDevJournalStore } from "@/lib/store";
 import { Github, Twitter, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
+import GradientText from "@/components/reactbits/gradient-text";
 
 export function BioSidebar() {
     const user = useDevJournalStore((state) => state.user);
@@ -19,7 +20,13 @@ export function BioSidebar() {
             <div className="p-8 rounded-xl border border-zinc-800 bg-zinc-900/30 backdrop-blur-sm">
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold text-zinc-100 mb-1">{user.name}</h1>
-                    <p className="text-cyan-400 font-mono text-sm">{user.role}</p>
+                    <GradientText
+                        colors={["#06b6d4", "#10b981", "#06b6d4"]}
+                        animationSpeed={6}
+                        className="font-mono text-sm"
+                    >
+                        {user.role}
+                    </GradientText>
                 </div>
 
                 <p className="text-zinc-400 text-sm mb-6 leading-relaxed">{user.bio}</p>

@@ -8,6 +8,7 @@ import { groupEntriesByYearMonth } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import BlurText from "@/components/reactbits/blur-text";
 
 export default function ProjectDetailPage({
     params,
@@ -61,9 +62,12 @@ export default function ProjectDetailPage({
                         <div className="mb-12">
                             <div className="flex items-start justify-between mb-4">
                                 <div>
-                                    <h1 className="text-4xl font-bold text-zinc-100 mb-2">
-                                        {project.name}
-                                    </h1>
+                                    <BlurText
+                                        text={project.name}
+                                        className="text-4xl font-bold text-zinc-100 mb-2"
+                                        delay={80}
+                                        animateBy="letters"
+                                    />
                                     <p className="text-zinc-400 text-lg">{project.description}</p>
                                 </div>
                                 {project.repositoryLink && (
