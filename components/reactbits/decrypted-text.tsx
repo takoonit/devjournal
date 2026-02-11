@@ -34,8 +34,14 @@ export default function DecryptedText({
   ...props
 }: DecryptedTextProps) {
   const { focusMode, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
-  const effectiveSpeed = motionLevel === "reduced" ? speed * 1.8 : speed;
-  const effectiveMaxIterations = motionLevel === "reduced" ? Math.max(2, Math.floor(maxIterations / 2)) : maxIterations;
+  const effectiveSpeed =
+    motionLevel === "reduced" ? speed * 1.8 : motionLevel === "expressive" ? speed * 0.75 : speed;
+  const effectiveMaxIterations =
+    motionLevel === "reduced"
+      ? Math.max(2, Math.floor(maxIterations / 2))
+      : motionLevel === "expressive"
+        ? Math.ceil(maxIterations * 1.2)
+        : maxIterations;
 
   const [displayText, setDisplayText] = useState<string>(text);
   const [isHovering, setIsHovering] = useState<boolean>(false);

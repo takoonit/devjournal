@@ -99,7 +99,7 @@ export default function ProjectDetailPage({
 
     const handleDeleteProject = () => {
         deleteProject(project.id);
-        addToast(`"${project.name}" deleted.`, "success");
+        addToast({ message: `"${project.name}" deleted.`, type: "success", copyKey: "project-deleted" });
         router.push("/editor");
     };
 
@@ -107,13 +107,17 @@ export default function ProjectDetailPage({
         if (!entryToDelete) return;
         const entry = entries.find((e) => e.id === entryToDelete);
         deleteEntry(entryToDelete);
-        addToast(`Entry "${entry?.title || "Untitled"}" deleted.`, "success");
+        addToast({ message: `Entry "${entry?.title || "Untitled"}" deleted.`, type: "success", copyKey: "entry-deleted" });
         setEntryToDelete(null);
     };
 
     const toggleEntryVisibility = (entryId: string, currentStatus: boolean) => {
         updateEntry(entryId, { isPublic: !currentStatus });
-        addToast(currentStatus ? "Entry set to private." : "Entry set to public.", "info");
+        addToast({
+            message: currentStatus ? "Entry set to private." : "Entry set to public.",
+            type: "info",
+            copyKey: currentStatus ? "entry-private" : "entry-public",
+        });
     };
 
     return (

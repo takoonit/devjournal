@@ -5,9 +5,10 @@ import { useToast } from "@/components/ui/toast";
 import { useDevJournalStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { Folder, FolderInput, Plus, Settings } from "lucide-react";
+import { Breadcrumbs, type BreadcrumbItem } from "@/components/ui/breadcrumbs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 
 export default function EditorLayout({
     children,
@@ -21,6 +22,41 @@ export default function EditorLayout({
     const pathname = usePathname();
     const isSettingsActive = pathname === "/editor/settings";
     const uiPreferences = useDevJournalStore((state) => state.uiPreferences);
+
+    const breadcrumbItems = useMemo<BreadcrumbItem[]>(() => {
+        const segments = pathname.split("/").filter(Boolean);
+        const items: BreadcrumbItem[] = [{ label: "Editor", href: "/editor" }];
+
+        if (segments.length <= 1) return items;
+
+        if (segments[1] === "settings") {
+            items.push({ label: "Settings" });
+            return items;
+        }
+
+        if (segments[1] === "projects") {
+            if (segments[2] === "new") {
+                items.push({ label: "New Project" });
+                return items;
+            }
+
+            const project = projects.find((p) => p.id === segments[2]);
+            items.push({
+                label: project?.name ?? "Project",
+                href: segments[2] ? `/editor/projects/${segments[2]}` : undefined,
+            });
+
+            if (segments[3] === "entries") {
+                if (segments[4] === "new") {
+                    items.push({ label: "New Entry" });
+                } else if (segments[5] === "edit") {
+                    items.push({ label: "Edit Entry" });
+                }
+            }
+        }
+
+        return items;
+    }, [pathname, projects]);
 
     const getNavItemClasses = (isActive: boolean) =>
         cn(
@@ -36,9 +72,9 @@ export default function EditorLayout({
 
         const result = await importDevJournal(file);
         if (result.success) {
-            addToast(result.message, "success");
+            addToast({ message: result.message, type: "success", copyKey: "import-success" });
         } else {
-            addToast(result.message, "error");
+            addToast({ message: result.message, type: "error", copyKey: "import-error" });
         }
 
         if (fileInputRef.current) fileInputRef.current.value = "";
@@ -180,7 +216,10 @@ export default function EditorLayout({
             </aside>
 
             {/* Main Content */}
-            <main className={cn("flex-1", uiPreferences.density === "compact" ? "p-5" : "p-8")}>{children}</main>
+            <main className={cn("flex-1", uiPreferences.density === "compact" ? "p-5" : "p-8")}>
+                <Breadcrumbs items={breadcrumbItems} />
+                {children}
+            </main>
         </div>
     );
 }

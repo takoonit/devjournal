@@ -33,7 +33,8 @@ export default function CountUp({
   const ref = useRef<HTMLSpanElement>(null);
   const motionValue = useMotionValue(direction === "down" ? to : from);
 
-  const effectiveDuration = motionLevel === "reduced" ? duration * 0.7 : duration;
+  const effectiveDuration =
+    motionLevel === "reduced" ? duration * 0.7 : motionLevel === "expressive" ? duration * 1.15 : duration;
   const damping = 20 + 40 * (1 / effectiveDuration);
   const stiffness = 100 * (1 / effectiveDuration);
 

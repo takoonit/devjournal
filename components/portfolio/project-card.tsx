@@ -14,7 +14,7 @@ export function ProjectCard({ project, href }: ProjectCardProps) {
             <div className="flex items-start justify-between mb-4">
                 <div className="relative z-10 antialias">
                     <h3 className="text-xl font-semibold text-zinc-100 mb-1 group-hover:text-cyan-400 transition-colors">
-                        <Link href={href} className="after:absolute after:inset-0 after:z-0">
+                        <Link href={href} className="rounded-sm after:absolute after:inset-0 after:z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500/70">
                             {project.name}
                         </Link>
                     </h3>
@@ -32,7 +32,8 @@ export function ProjectCard({ project, href }: ProjectCardProps) {
                         href={project.repositoryLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="relative z-20 text-zinc-500 hover:text-zinc-300 transition-colors p-1 -m-1"
+                        className="relative z-20 -m-1 rounded p-1 text-zinc-400 transition-colors hover:text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500/70"
+                        aria-label={`Open ${project.name} repository`}
                         onClick={(e) => e.stopPropagation()}
                     >
                         <GitBranch className="w-5 h-5" />

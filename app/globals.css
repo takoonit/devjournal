@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root,
-:root[data-theme="noir"] {
+:root[data-theme-mode="noir"] {
   --font-inter: 'Inter', sans-serif;
   --font-jetbrains-mono: 'JetBrains Mono', monospace;
 
@@ -50,11 +50,17 @@
   --space-compact-stack-lg: 1rem;
   --space-compact-section: 1.5rem;
 
+  --space-stack-xs: var(--space-cozy-stack-xs);
+  --space-stack-sm: var(--space-cozy-stack-sm);
+  --space-stack-md: var(--space-cozy-stack-md);
+  --space-stack-lg: var(--space-cozy-stack-lg);
+  --space-section: var(--space-cozy-section);
+
   --background: rgb(var(--color-surface-canvas));
   --foreground: rgb(var(--color-text-primary));
 }
 
-:root[data-theme="calm-focus"] {
+:root[data-theme-mode="calm-focus"] {
   --color-surface-canvas: 7 10 18;
   --color-surface-base: 12 18 30;
   --color-surface-raised: 17 25 39;
@@ -75,6 +81,22 @@
   --color-destructive-base: 248 113 113;
   --color-destructive-soft: 185 28 28;
   --color-destructive-contrast: 254 226 226;
+}
+
+:root[data-density="compact"] {
+  --space-stack-xs: var(--space-compact-stack-xs);
+  --space-stack-sm: var(--space-compact-stack-sm);
+  --space-stack-md: var(--space-compact-stack-md);
+  --space-stack-lg: var(--space-compact-stack-lg);
+  --space-section: var(--space-compact-section);
+}
+
+:root[data-density="cozy"] {
+  --space-stack-xs: var(--space-cozy-stack-xs);
+  --space-stack-sm: var(--space-cozy-stack-sm);
+  --space-stack-md: var(--space-cozy-stack-md);
+  --space-stack-lg: var(--space-cozy-stack-lg);
+  --space-section: var(--space-cozy-section);
 }
 
 * {
@@ -142,12 +164,6 @@ a:hover {
   }
 }
 
-
-body[data-theme-mode="calm-focus"] {
-  --background: #090b12;
-  --foreground: #d8dee9;
-}
-
 body[data-focus-mode="true"]::before {
   opacity: 0;
 }
@@ -155,5 +171,27 @@ body[data-focus-mode="true"]::before {
 body[data-motion-level="reduced"] *,
 body[data-motion-level="reduced"] *::before,
 body[data-motion-level="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: var(--motion-subtle) !important;
   scroll-behavior: auto !important;
+}
+
+
+body[data-motion-level="standard"] {
+  --motion-subtle: 160ms;
+  --motion-standard: 260ms;
+  --motion-expressive: 420ms;
+}
+
+body[data-motion-level="expressive"] {
+  --motion-subtle: 220ms;
+  --motion-standard: 340ms;
+  --motion-expressive: 520ms;
+}
+
+body[data-motion-level="reduced"] {
+  --motion-subtle: 120ms;
+  --motion-standard: 180ms;
+  --motion-expressive: 260ms;
 }

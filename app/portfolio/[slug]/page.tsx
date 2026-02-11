@@ -8,6 +8,7 @@ import { groupEntriesByYearMonth } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import BlurText from "@/components/reactbits/blur-text";
 
 export default function ProjectDetailPage({
@@ -49,6 +50,7 @@ export default function ProjectDetailPage({
 
                     {/* Build Log */}
                     <div className="flex-1">
+                        <Breadcrumbs items={[{ label: "Portfolio", href: "/portfolio" }, { label: project.name }]} />
                         {/* Back Button */}
                         <Link
                             href="/portfolio"

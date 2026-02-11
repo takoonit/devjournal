@@ -1,7 +1,7 @@
 "use client";
 
-import { use, useState } from "react";
-import { useRouter } from "next/navigation";
+import { use, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useDevJournalStore } from "@/lib/store";
 import {
     EntryCategory,
@@ -9,58 +9,87 @@ import {
     BuildSubcategory,
     ReflectSubcategory,
 } from "@/lib/types";
-import { ArrowLeft, Save, Loader2, RefreshCw, Brain, Hammer, Trophy } from "lucide-react";
+import {
+    ArrowLeft,
+    Save,
+    Loader2,
+    Brain,
+    Hammer,
+    Trophy,
+    ChevronLeft,
+    ChevronRight,
+    Check,
+} from "lucide-react";
 import Link from "next/link";
+import { useToast } from "@/components/ui/toast";
 
 const TEMPLATE_INFO = {
-    // PLAN
     "decision-log": {
         title: "Decision Log",
         purpose: "Record significant architectural or product decisions to avoid re-debating them later.",
-        example: "Context: Choosing a DB. Options: Postgres vs Mongo. Decision: Postgres. Rationale: Relational data needs."
+        example: "Context: Choosing a DB. Options: Postgres vs Mongo. Decision: Postgres. Rationale: Relational data needs.",
     },
     "idea-spark": {
         title: "Idea Spark",
         purpose: "Capture a fleeting idea before it disappears. Focus on the core value and the 'vibe'.",
-        example: "Core Value: 'Tinder for Code Reviews'. Vibe: Fast, gamified, mobile-first."
+        example: "Core Value: 'Tinder for Code Reviews'. Vibe: Fast, gamified, mobile-first.",
     },
     "research-notes": {
         title: "Research Notes",
         purpose: "Document what you learned while exploring a new technology or problem space.",
-        example: "Topic: React Server Components. Learnings: Great for initial load, harder for interactivity. Resources: <link>"
+        example: "Topic: React Server Components. Learnings: Great for initial load, harder for interactivity. Resources: <link>",
     },
-    // BUILD
-    "debugging": {
+    debugging: {
         title: "Debugging Log",
-        purpose: "The 'scientific method' for fixing bugs. Forces you to slow down and think before you hack.",
-        example: "Symptom: 500 Error. Hypothesis: DB Connection. Tried: Restarting container. Solution: Fixed env var."
+        purpose: "Use a scientific method for bugs so you can reason before patching.",
+        example: "Symptom: 500 Error. Hypothesis: DB Connection. Tried: Restarting container. Solution: Fixed env var.",
     },
     "context-switch": {
         title: "Context Switch",
-        purpose: "Save your state before a break or meeting so you can resume flow immediately.",
-        example: "Current State: API is fetching but UI isn't updating. Next Steps: Check the Redux reducer."
+        purpose: "Save your current state before context switching so you can quickly resume.",
+        example: "Current State: API fetch works but UI isn't updating. Next Steps: Check reducer and stale memo.",
     },
     "til-snippet": {
         title: "TIL / Snippet",
-        purpose: "Save a useful snippet or command you just figured out.",
-        example: "Problem: Vertically center div. Solution: grid place-items-center. Code: display: grid; ..."
+        purpose: "Store useful snippets and commands you can reuse later.",
+        example: "Problem: Vertically center div. Solution: grid place-items-center.",
     },
-    // REFLECT
-    "milestone": {
+    "implementation-guide": {
+        title: "Implementation Guide",
+        purpose: "Document how a feature works end-to-end for future maintenance and onboarding.",
+        example: "Feature: Invite workflow. How it Works: token + email magic link. Edge Cases: expired invites.",
+    },
+    milestone: {
         title: "Milestone",
-        purpose: "Celebrate a win! These go into your 'Brag Doc' for performance reviews or morale boosts.",
-        example: "Achievement: Shipped v1.0. Impact: 100 new users."
+        purpose: "Celebrate progress and capture outcomes for your brag-doc trail.",
+        example: "Achievement: Shipped v1.0. Impact: 100 new users.",
     },
     "post-mortem": {
         title: "Post-Mortem",
-        purpose: "Honest analysis of what went wrong to prevent it from happening again. Blameless.",
-        example: "Incident: Site down for 10m. Root Cause: Expired SSL cert. Prevention: Auto-renew bot."
+        purpose: "Reflect on incidents with blameless, prevention-focused analysis.",
+        example: "Incident: Site down for 10m. Root Cause: Expired SSL cert. Prevention: Auto-renew bot.",
     },
-    "review": {
+    review: {
         title: "Periodic Review",
-        purpose: "Look back at a sprint or week to calibrate your process.",
-        example: "Went Well: Velocity up. Could Be Better: Too many meetings."
-    }
+        purpose: "Look back over a sprint or week to improve your process.",
+        example: "Went Well: Velocity up. Could Be Better: Too many meetings.",
+    },
+};
+
+const FLOW_STEPS = [
+    { id: 1, label: "Choose Track" },
+    { id: 2, label: "Write Entry" },
+    { id: 3, label: "Review & Save" },
+] as const;
+
+type EntryDraft = {
+    title: string;
+    category: EntryCategory;
+    planSub: PlanSubcategory;
+    buildSub: BuildSubcategory;
+    reflectSub: ReflectSubcategory;
+    formData: Record<string, string>;
+    step: number;
 };
 
 export default function NewEntryPage({
@@ -70,26 +99,106 @@ export default function NewEntryPage({
 }) {
     const { id } = use(params);
     const router = useRouter();
-    const { projects, addEntry } = useDevJournalStore();
+    const { projects, addEntry, consumeInboxCapture } = useDevJournalStore();
+    const searchParams = useSearchParams();
+    const { addToast } = useToast();
     const project = projects.find((p) => p.id === id);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [step, setStep] = useState<number>(1);
     const [title, setTitle] = useState("");
     const [category, setCategory] = useState<EntryCategory>("plan-change");
-
-    // Unified Subcategory State
     const [planSub, setPlanSub] = useState<PlanSubcategory>("decision-log");
     const [buildSub, setBuildSub] = useState<BuildSubcategory>("debugging");
     const [reflectSub, setReflectSub] = useState<ReflectSubcategory>("milestone");
+    const [formData, setFormData] = useState<Record<string, string>>({});
 
-    // Form data states
-    const [formData, setFormData] = useState<any>({});
+    const draftStorageKey = `devjournal-entry-draft-${id}`;
 
-    const handleInputChange = (field: string, value: string) => {
-        setFormData((prev: any) => ({ ...prev, [field]: value }));
+    const selectedSubcategory =
+        category === "plan-change" ? planSub : category === "build" ? buildSub : reflectSub;
+
+    const progressPercent = (step / FLOW_STEPS.length) * 100;
+
+    const hasAnyContent = useMemo(
+        () => Object.values(formData).some((value) => value.trim().length > 0),
+        [formData]
+    );
+
+    const canAdvanceFromStepTwo = title.trim().length > 0 && hasAnyContent;
+
+
+    useEffect(() => {
+        const captureId = searchParams.get("capture");
+        if (!captureId) return;
+
+        const capture = consumeInboxCapture(captureId);
+        if (!capture) return;
+
+        setCategory("build");
+        setBuildSub("context-switch");
+        setTitle(capture.content.slice(0, 72));
+        setFormData({
+            currentState: capture.content,
+            nextSteps: "",
+        });
+        setStep(2);
+
+        addToast({
+            message: "Capture converted. Add next steps, then save your entry.",
+            type: "info",
+        });
+    }, [addToast, consumeInboxCapture, searchParams]);
+
+    useEffect(() => {
+        const rawDraft = localStorage.getItem(draftStorageKey);
+        if (!rawDraft) return;
+
+        try {
+            const parsed = JSON.parse(rawDraft) as EntryDraft;
+            setTitle(parsed.title ?? "");
+            setCategory(parsed.category ?? "plan-change");
+            setPlanSub(parsed.planSub ?? "decision-log");
+            setBuildSub(parsed.buildSub ?? "debugging");
+            setReflectSub(parsed.reflectSub ?? "milestone");
+            setFormData(parsed.formData ?? {});
+            setStep(parsed.step && parsed.step >= 1 && parsed.step <= 3 ? parsed.step : 1);
+
+            addToast({
+                message: "Restored your draft so you can continue where you left off.",
+                type: "info",
+            });
+        } catch {
+            localStorage.removeItem(draftStorageKey);
+        }
+    }, [addToast, draftStorageKey]);
+
+    useEffect(() => {
+        const draft: EntryDraft = {
+            title,
+            category,
+            planSub,
+            buildSub,
+            reflectSub,
+            formData,
+            step,
+        };
+
+        localStorage.setItem(draftStorageKey, JSON.stringify(draft));
+    }, [title, category, planSub, buildSub, reflectSub, formData, step, draftStorageKey]);
+
+    const clearDraft = () => {
+        localStorage.removeItem(draftStorageKey);
     };
 
-    // Theme definition based on category
+    const saveAndReturn = () => {
+        addToast({
+            message: "Draft saved. Come back anytime to continue.",
+            type: "success",
+        });
+        router.push(`/editor/projects/${id}`);
+    };
+
     const currentTheme = {
         "plan-change": {
             bg: "from-indigo-500/10 via-zinc-950 to-zinc-950",
@@ -98,36 +207,42 @@ export default function NewEntryPage({
             button: "bg-indigo-500 hover:bg-indigo-400",
             ring: "focus:ring-indigo-500/50",
             icon: "bg-indigo-500/20 text-indigo-400",
-            sub_active: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
-            label: "Plan & Change"
+            subActive: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
+            label: "Plan & Change",
         },
-        "build": {
+        build: {
             bg: "from-amber-500/10 via-zinc-950 to-zinc-950",
             border: "border-amber-500/20",
             text: "text-amber-400",
             button: "bg-amber-500 hover:bg-amber-400",
             ring: "focus:ring-amber-500/50",
             icon: "bg-amber-500/20 text-amber-400",
-            sub_active: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-            label: "Build"
+            subActive: "bg-amber-500/20 text-amber-400 border-amber-500/30",
+            label: "Build",
         },
-        "reflect": {
+        reflect: {
             bg: "from-emerald-500/10 via-zinc-950 to-zinc-950",
             border: "border-emerald-500/20",
             text: "text-emerald-400",
             button: "bg-emerald-500 hover:bg-emerald-400",
             ring: "focus:ring-emerald-500/50",
             icon: "bg-emerald-500/20 text-emerald-400",
-            sub_active: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-            label: "Reflect"
-        }
+            subActive: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+            label: "Reflect",
+        },
     }[category];
 
     if (!project) {
         return (
-            <div className="p-8 text-center"><h1 className="text-2xl font-bold text-zinc-100 mb-4">Project Not Found</h1></div>
+            <div className="p-8 text-center">
+                <h1 className="mb-4 text-2xl font-bold text-zinc-100">Project Not Found</h1>
+            </div>
         );
     }
+
+    const handleInputChange = (field: string, value: string) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -153,9 +268,6 @@ export default function NewEntryPage({
                 else if (reflectSub === "review") templateData.review = formData;
             }
 
-            // Fallback for unset fields to prevent undefined errors in rendering
-            // (In a real app we'd use Zod, but for now we trust the form)
-
             addEntry({
                 projectId: project.id,
                 category,
@@ -164,6 +276,11 @@ export default function NewEntryPage({
                 isPublic: true,
             });
 
+            clearDraft();
+            addToast({
+                message: "Entry saved. Nice progress.",
+                type: "success",
+            });
             router.push(`/editor/projects/${project.id}`);
         } catch (error) {
             console.error("Failed to create entry:", error);
@@ -171,29 +288,33 @@ export default function NewEntryPage({
         }
     };
 
-    // Helper to render a text input with dynamic theming
-    const renderInput = (id: string, label: string, placeholder: string, isTextArea = false) => (
-        <div className="space-y-2 group">
-            <label htmlFor={id} className="block text-sm font-medium text-zinc-400 group-hover:text-zinc-200 transition-colors">
+    const renderInput = (
+        inputId: string,
+        label: string,
+        placeholder: string,
+        isTextArea = false
+    ) => (
+        <div className="group space-y-2">
+            <label htmlFor={inputId} className="block text-sm font-medium text-zinc-400 transition-colors group-hover:text-zinc-200">
                 {label}
             </label>
             {isTextArea ? (
                 <textarea
-                    id={id}
+                    id={inputId}
                     required
-                    value={formData[id] || ""}
-                    onChange={(e) => handleInputChange(id, e.target.value)}
-                    className={`w-full bg-zinc-900/50 border border-zinc-800 rounded-lg p-3 text-zinc-100 focus:outline-none focus:ring-2 ${currentTheme.ring} focus:border-transparent transition-all font-mono text-sm h-32`}
+                    value={formData[inputId] || ""}
+                    onChange={(e) => handleInputChange(inputId, e.target.value)}
+                    className={`h-32 w-full rounded-lg border border-zinc-800 bg-zinc-900/50 p-3 font-mono text-sm text-zinc-100 transition-all focus:border-transparent focus:outline-none focus:ring-2 ${currentTheme.ring}`}
                     placeholder={placeholder}
                 />
             ) : (
                 <input
                     type="text"
-                    id={id}
+                    id={inputId}
                     required
-                    value={formData[id] || ""}
-                    onChange={(e) => handleInputChange(id, e.target.value)}
-                    className={`w-full bg-zinc-900/50 border border-zinc-800 rounded-lg px-4 py-3 text-zinc-100 focus:outline-none focus:ring-2 ${currentTheme.ring} focus:border-transparent transition-all`}
+                    value={formData[inputId] || ""}
+                    onChange={(e) => handleInputChange(inputId, e.target.value)}
+                    className={`w-full rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-zinc-100 transition-all focus:border-transparent focus:outline-none focus:ring-2 ${currentTheme.ring}`}
                     placeholder={placeholder}
                 />
             )}
@@ -202,256 +323,294 @@ export default function NewEntryPage({
 
     return (
         <div className={`min-h-screen bg-gradient-to-br ${currentTheme.bg} transition-colors duration-700`}>
-            <div className="max-w-4xl mx-auto pb-20 pt-8 px-6">
-                <header className="mb-10 relative">
+            <div className="mx-auto max-w-4xl px-6 pb-20 pt-8">
+                <header className="relative mb-8">
                     <Link
                         href={`/editor/projects/${project.id}`}
-                        className="inline-flex items-center text-sm text-zinc-500 hover:text-zinc-300 transition-colors mb-4 group"
+                        className="group mb-4 inline-flex items-center text-sm text-zinc-500 transition-colors hover:text-zinc-300"
                     >
-                        <ArrowLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" />
+                        <ArrowLeft className="mr-1 h-4 w-4 transition-transform group-hover:-translate-x-1" />
                         Back to Project
                     </Link>
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-start justify-between">
                         <div>
-                            <h1 className="text-4xl font-extrabold text-white tracking-tight mb-2">
-                                New Entry
-                            </h1>
-                            <p className="text-zinc-400 text-lg">
+                            <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-white">New Entry</h1>
+                            <p className="text-lg text-zinc-400">
                                 Contributing to <span className={currentTheme.text}>{project.name}</span>
                             </p>
                         </div>
-                        <div className={`p-4 rounded-2xl ${currentTheme.icon} backdrop-blur-sm border ${currentTheme.border}`}>
-                            {category === "plan-change" ? <Brain className="w-8 h-8" /> :
-                                category === "build" ? <Hammer className="w-8 h-8" /> :
-                                    <Trophy className="w-8 h-8" />}
+                        <div className={`rounded-2xl border p-4 backdrop-blur-sm ${currentTheme.icon} ${currentTheme.border}`}>
+                            {category === "plan-change" ? <Brain className="h-8 w-8" /> : category === "build" ? <Hammer className="h-8 w-8" /> : <Trophy className="h-8 w-8" />}
                         </div>
                     </div>
                 </header>
 
+                <div className="mb-8 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+                    <div className="mb-3 flex items-center justify-between text-xs text-zinc-400">
+                        <span>Step {step} of {FLOW_STEPS.length}</span>
+                        <span>{Math.round(progressPercent)}% complete</span>
+                    </div>
+                    <div className="mb-4 h-2 overflow-hidden rounded-full bg-zinc-800">
+                        <div className="h-full rounded-full bg-cyan-400 transition-all duration-300" style={{ width: `${progressPercent}%` }} />
+                    </div>
+                    <div className="grid gap-2 md:grid-cols-3">
+                        {FLOW_STEPS.map((item) => (
+                            <div
+                                key={item.id}
+                                className={`rounded-lg border px-3 py-2 text-sm ${
+                                    item.id === step
+                                        ? "border-cyan-500/50 bg-cyan-500/10 text-cyan-300"
+                                        : item.id < step
+                                          ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+                                          : "border-zinc-800 bg-zinc-900/50 text-zinc-500"
+                                }`}
+                            >
+                                <div className="flex items-center gap-2">
+                                    {item.id < step ? <Check className="h-3.5 w-3.5" /> : null}
+                                    <span>{item.label}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
                 <form onSubmit={handleSubmit} className="space-y-8">
-                    {/* Category Selection - Visual Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <button
-                            type="button"
-                            onClick={() => { setCategory("plan-change"); setFormData({}); }}
-                            className={`p-6 rounded-2xl border transition-all text-left relative overflow-hidden group ${category === "plan-change"
-                                ? "bg-indigo-500/10 border-indigo-500 text-indigo-400 ring-1 ring-indigo-500/50 shadow-lg shadow-indigo-900/20"
-                                : "bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-900"
-                                }`}
-                        >
-                            <Brain className={`w-6 h-6 mb-3 ${category === "plan-change" ? "text-indigo-400" : "text-zinc-600 group-hover:text-zinc-400"}`} />
-                            <span className="block font-bold text-lg mb-1">Plan & Change</span>
-                            <span className="text-xs opacity-70">Decisions, Ideas, Research</span>
-                            {category === "plan-change" && <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 blur-2xl -mr-6 -mt-6"></div>}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => { setCategory("build"); setFormData({}); }}
-                            className={`p-6 rounded-2xl border transition-all text-left relative overflow-hidden group ${category === "build"
-                                ? "bg-amber-500/10 border-amber-500 text-amber-400 ring-1 ring-amber-500/50 shadow-lg shadow-amber-900/20"
-                                : "bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-900"
-                                }`}
-                        >
-                            <Hammer className={`w-6 h-6 mb-3 ${category === "build" ? "text-amber-400" : "text-zinc-600 group-hover:text-zinc-400"}`} />
-                            <span className="block font-bold text-lg mb-1">Build</span>
-                            <span className="text-xs opacity-70">Logs, Debugging, Context</span>
-                            {category === "build" && <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 blur-2xl -mr-6 -mt-6"></div>}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => { setCategory("reflect"); setFormData({}); }}
-                            className={`p-6 rounded-2xl border transition-all text-left relative overflow-hidden group ${category === "reflect"
-                                ? "bg-emerald-500/10 border-emerald-500 text-emerald-400 ring-1 ring-emerald-500/50 shadow-lg shadow-emerald-900/20"
-                                : "bg-zinc-900/50 border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-900"
-                                }`}
-                        >
-                            <Trophy className={`w-6 h-6 mb-3 ${category === "reflect" ? "text-emerald-400" : "text-zinc-600 group-hover:text-zinc-400"}`} />
-                            <span className="block font-bold text-lg mb-1">Reflect</span>
-                            <span className="text-xs opacity-70">Milestones, Reviews</span>
-                            {category === "reflect" && <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 blur-2xl -mr-6 -mt-6"></div>}
-                        </button>
-                    </div>
+                    {step === 1 ? (
+                        <>
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                                <button
+                                    type="button"
+                                    onClick={() => { setCategory("plan-change"); setFormData({}); }}
+                                    className={`relative overflow-hidden rounded-2xl border p-6 text-left transition-all ${category === "plan-change" ? "border-indigo-500 bg-indigo-500/10 text-indigo-400 ring-1 ring-indigo-500/50" : "border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-900"}`}
+                                >
+                                    <Brain className="mb-3 h-6 w-6" />
+                                    <span className="mb-1 block text-lg font-bold">Plan & Change</span>
+                                    <span className="text-xs opacity-70">Decisions, Ideas, Research</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => { setCategory("build"); setFormData({}); }}
+                                    className={`relative overflow-hidden rounded-2xl border p-6 text-left transition-all ${category === "build" ? "border-amber-500 bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/50" : "border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-900"}`}
+                                >
+                                    <Hammer className="mb-3 h-6 w-6" />
+                                    <span className="mb-1 block text-lg font-bold">Build</span>
+                                    <span className="text-xs opacity-70">Logs, Debugging, Context</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => { setCategory("reflect"); setFormData({}); }}
+                                    className={`relative overflow-hidden rounded-2xl border p-6 text-left transition-all ${category === "reflect" ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/50" : "border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-900"}`}
+                                >
+                                    <Trophy className="mb-3 h-6 w-6" />
+                                    <span className="mb-1 block text-lg font-bold">Reflect</span>
+                                    <span className="text-xs opacity-70">Milestones, Reviews</span>
+                                </button>
+                            </div>
 
-                    {/* Subcategory Pills */}
-                    <div className="flex gap-3 pb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                        {category === "plan-change" && (["decision-log", "idea-spark", "research-notes"] as const).map((sub) => (
-                            <button
-                                key={sub}
-                                type="button"
-                                onClick={() => { setPlanSub(sub); setFormData({}); }}
-                                className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${planSub === sub
-                                    ? currentTheme.sub_active
-                                    : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"
-                                    }`}
-                            >
-                                {sub.replace("-", " ").replace(/\b\w/g, l => l.toUpperCase())}
-                            </button>
-                        ))}
-                        {category === "build" && (["debugging", "context-switch", "til-snippet"] as const).map((sub) => (
-                            <button
-                                key={sub}
-                                type="button"
-                                onClick={() => { setBuildSub(sub); setFormData({}); }}
-                                className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${buildSub === sub
-                                    ? currentTheme.sub_active
-                                    : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"
-                                    }`}
-                            >
-                                {sub.replace("-", " ").replace(/\b\w/g, l => l.toUpperCase())}
-                            </button>
-                        ))}
-                        {category === "reflect" && (["milestone", "post-mortem", "review"] as const).map((sub) => (
-                            <button
-                                key={sub}
-                                type="button"
-                                onClick={() => { setReflectSub(sub); setFormData({}); }}
-                                className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${reflectSub === sub
-                                    ? currentTheme.sub_active
-                                    : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"
-                                    }`}
-                            >
-                                {sub.replace("-", " ").replace(/\b\w/g, l => l.toUpperCase())}
-                            </button>
-                        ))}
-                    </div>
+                            <div className="flex gap-3 overflow-x-auto whitespace-nowrap pb-2">
+                                {category === "plan-change" && (["decision-log", "idea-spark", "research-notes"] as const).map((sub) => (
+                                    <button
+                                        key={sub}
+                                        type="button"
+                                        onClick={() => { setPlanSub(sub); setFormData({}); }}
+                                        className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${planSub === sub ? currentTheme.subActive : "border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"}`}
+                                    >
+                                        {sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
+                                    </button>
+                                ))}
+                                {category === "build" && (["debugging", "context-switch", "til-snippet"] as const).map((sub) => (
+                                    <button
+                                        key={sub}
+                                        type="button"
+                                        onClick={() => { setBuildSub(sub); setFormData({}); }}
+                                        className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${buildSub === sub ? currentTheme.subActive : "border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"}`}
+                                    >
+                                        {sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
+                                    </button>
+                                ))}
+                                {category === "reflect" && (["milestone", "post-mortem", "review"] as const).map((sub) => (
+                                    <button
+                                        key={sub}
+                                        type="button"
+                                        onClick={() => { setReflectSub(sub); setFormData({}); }}
+                                        className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${reflectSub === sub ? currentTheme.subActive : "border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"}`}
+                                    >
+                                        {sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
+                                    </button>
+                                ))}
+                            </div>
+                        </>
+                    ) : null}
 
-                    {/* Title Input - Large & Clean */}
-                    <div className="space-y-2">
-                        <label htmlFor="title" className="sr-only">
-                            Entry Title
-                        </label>
-                        <input
-                            type="text"
-                            id="title"
-                            required
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className={`w-full bg-transparent border-b-2 border-zinc-800 px-0 py-4 text-zinc-100 focus:outline-none focus:border-${currentTheme.text.split('-')[1]}-500 transition-all font-bold text-3xl placeholder-zinc-700`}
-                            placeholder="What's on your mind?"
-                        />
-                    </div>
+                    {step === 2 ? (
+                        <>
+                            <div className="space-y-2">
+                                <label htmlFor="title" className="sr-only">Entry Title</label>
+                                <input
+                                    type="text"
+                                    id="title"
+                                    required
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    className={`w-full border-b-2 border-zinc-800 bg-transparent px-0 py-4 text-3xl font-bold text-zinc-100 placeholder-zinc-700 transition-all focus:outline-none ${currentTheme.ring}`}
+                                    placeholder="What's on your mind?"
+                                />
+                            </div>
 
-                    {/* TEMPLATE GUIDELINES */}
-                    <div className={`bg-zinc-900/30 border border-zinc-800 rounded-xl p-6 ${currentTheme.border} relative overflow-hidden`}>
-                        <div className={`absolute left-0 top-0 bottom-0 w-1 ${currentTheme.button}`}></div>
-                        <h3 className={`text-base font-bold text-zinc-200 mb-2 flex items-center gap-2`}>
-                            {TEMPLATE_INFO[(category === 'plan-change' ? planSub : category === 'build' ? buildSub : reflectSub) as keyof typeof TEMPLATE_INFO]?.title || "Guidance"}
-                        </h3>
-                        <p className="text-sm text-zinc-400 mb-4 leading-relaxed">
-                            {TEMPLATE_INFO[(category === 'plan-change' ? planSub : category === 'build' ? buildSub : reflectSub) as keyof typeof TEMPLATE_INFO]?.purpose}
-                        </p>
-                        <div className="bg-black/20 rounded-lg p-4 border border-white/5">
-                            <span className="text-xs font-mono text-zinc-500 uppercase block mb-1">Example</span>
-                            <p className="text-sm text-zinc-300 italic font-medium">
-                                &ldquo;{TEMPLATE_INFO[(category === 'plan-change' ? planSub : category === 'build' ? buildSub : reflectSub) as keyof typeof TEMPLATE_INFO]?.example}&rdquo;
+                            <div className={`relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/30 p-6 ${currentTheme.border}`}>
+                                <div className={`absolute bottom-0 left-0 top-0 w-1 ${currentTheme.button}`}></div>
+                                <h3 className="mb-2 text-base font-bold text-zinc-200">
+                                    {TEMPLATE_INFO[selectedSubcategory].title}
+                                </h3>
+                                <p className="mb-2 text-sm text-zinc-400">{TEMPLATE_INFO[selectedSubcategory].purpose}</p>
+                                <p className="text-xs text-zinc-500">Example: {TEMPLATE_INFO[selectedSubcategory].example}</p>
+                            </div>
+
+                            <div className="space-y-6">
+                                {category === "plan-change" && planSub === "decision-log" && (
+                                    <>
+                                        {renderInput("context", "Context", "What situation triggered this decision?")}
+                                        {renderInput("options", "Options Considered", "Option A vs Option B vs Option C")}
+                                        {renderInput("decision", "Decision", "We are going with Option A")}
+                                        {renderInput("rationale", "Rationale", "Why this decision?", true)}
+                                    </>
+                                )}
+                                {category === "plan-change" && planSub === "idea-spark" && (
+                                    <>
+                                        {renderInput("coreValue", "Core Value", "What is the one thing this idea does well?")}
+                                        {renderInput("vibe", "Vibe / Aesthetic", "Cyberpunk? Minimalist? Professional?")}
+                                    </>
+                                )}
+                                {category === "plan-change" && planSub === "research-notes" && (
+                                    <>
+                                        {renderInput("topic", "Topic", "What are you researching?")}
+                                        {renderInput("learnings", "Key Learnings", "What did you find out?", true)}
+                                        {renderInput("resources", "Resources", "Links to articles/docs", true)}
+                                    </>
+                                )}
+                                {category === "build" && buildSub === "debugging" && (
+                                    <>
+                                        {renderInput("symptom", "Symptom", "What is broken?")}
+                                        {renderInput("hypothesis", "Hypothesis", "What do you think is causing it?")}
+                                        {renderInput("attempted", "What I Tried", "List troubleshooting attempts", true)}
+                                        {renderInput("solution", "Solution", "What fixed it?", true)}
+                                    </>
+                                )}
+                                {category === "build" && buildSub === "context-switch" && (
+                                    <>
+                                        {renderInput("currentState", "Current State", "Where did you stop?", true)}
+                                        {renderInput("nextSteps", "Next Steps", "What should future-you do first?", true)}
+                                    </>
+                                )}
+                                {category === "build" && buildSub === "til-snippet" && (
+                                    <>
+                                        {renderInput("problem", "Problem", "What problem did this solve?")}
+                                        {renderInput("solution", "Solution", "Short answer")}
+                                        {renderInput("code", "Code Snippet", "Paste the snippet", true)}
+                                    </>
+                                )}
+                                {category === "reflect" && reflectSub === "milestone" && (
+                                    <>
+                                        {renderInput("achievement", "Achievement", "What did you ship/finish?")}
+                                        {renderInput("impact", "Impact", "What changed because of it?")}
+                                        {renderInput("demoLink", "Demo Link", "https://...")}
+                                    </>
+                                )}
+                                {category === "reflect" && reflectSub === "post-mortem" && (
+                                    <>
+                                        {renderInput("incident", "Incident", "What happened?")}
+                                        {renderInput("rootCause", "Root Cause", "Why did it happen?")}
+                                        {renderInput("prevention", "Prevention", "How will you avoid repeats?", true)}
+                                    </>
+                                )}
+                                {category === "reflect" && reflectSub === "review" && (
+                                    <>
+                                        {renderInput("period", "Period", "Sprint/Week")}
+                                        {renderInput("wentWell", "What Went Well", "Wins and strengths", true)}
+                                        {renderInput("couldBeBetter", "What Could Be Better", "Gaps and next improvements", true)}
+                                    </>
+                                )}
+                            </div>
+                        </>
+                    ) : null}
+
+                    {step === 3 ? (
+                        <div className="space-y-4 rounded-xl border border-zinc-800 bg-zinc-900/40 p-6">
+                            <h3 className="text-lg font-semibold text-zinc-100">Review your entry</h3>
+                            <dl className="grid gap-4 sm:grid-cols-2">
+                                <div>
+                                    <dt className="text-xs uppercase tracking-wide text-zinc-500">Category</dt>
+                                    <dd className="text-sm text-zinc-200">{currentTheme.label}</dd>
+                                </div>
+                                <div>
+                                    <dt className="text-xs uppercase tracking-wide text-zinc-500">Prompt</dt>
+                                    <dd className="text-sm text-zinc-200">{TEMPLATE_INFO[selectedSubcategory].title}</dd>
+                                </div>
+                                <div className="sm:col-span-2">
+                                    <dt className="text-xs uppercase tracking-wide text-zinc-500">Title</dt>
+                                    <dd className="text-sm text-zinc-200">{title || "(untitled)"}</dd>
+                                </div>
+                                <div className="sm:col-span-2">
+                                    <dt className="text-xs uppercase tracking-wide text-zinc-500">Captured fields</dt>
+                                    <dd className="text-sm text-zinc-300">{Object.keys(formData).length} fields ready to save</dd>
+                                </div>
+                            </dl>
+                            <p className="text-xs text-zinc-500">
+                                Save now or use Save & Return to continue later. Drafts are persisted per project in local storage.
                             </p>
                         </div>
-                    </div>
+                    ) : null}
 
-                    {/* DYNAMIC FORM FIELDS */}
-                    <div className="space-y-6 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-800 pt-6">
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setStep((prev) => Math.max(1, prev - 1))}
+                                disabled={step === 1}
+                                className="inline-flex items-center gap-2 rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition-colors hover:bg-zinc-800 disabled:opacity-40"
+                            >
+                                <ChevronLeft className="h-4 w-4" />
+                                Previous
+                            </button>
+                            {step < 3 ? (
+                                <button
+                                    type="button"
+                                    onClick={() => setStep((prev) => Math.min(3, prev + 1))}
+                                    disabled={step === 2 && !canAdvanceFromStepTwo}
+                                    className="inline-flex items-center gap-2 rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-300 transition-colors hover:bg-cyan-500/20 disabled:opacity-40"
+                                >
+                                    Next
+                                    <ChevronRight className="h-4 w-4" />
+                                </button>
+                            ) : null}
+                        </div>
 
-                        {/* PLAN: Decision Log */}
-                        {category === "plan-change" && planSub === "decision-log" && (
-                            <>
-                                {renderInput("context", "Context", "What is the situation? (e.g. 'Choosing a database')", true)}
-                                {renderInput("options", "Options Considered", "Option A vs Option B vs Option C")}
-                                {renderInput("decision", "Decision", "We are going with Option A")}
-                                {renderInput("rationale", "Rationale", "Why? (e.g. 'Better performance, cheaper')", true)}
-                            </>
-                        )}
-
-                        {/* PLAN: Idea Spark */}
-                        {category === "plan-change" && planSub === "idea-spark" && (
-                            <>
-                                {renderInput("coreValue", "Core Value", "What is the one thing this idea does well?")}
-                                {renderInput("vibe", "Vibe / Aesthetic", "Cyberpunk? Minimalist? Professional?")}
-                            </>
-                        )}
-
-                        {/* PLAN: Research Notes */}
-                        {category === "plan-change" && planSub === "research-notes" && (
-                            <>
-                                {renderInput("topic", "Topic", "What are you researching?")}
-                                {renderInput("learnings", "Key Learnings", "What did you find out?", true)}
-                                {renderInput("resources", "Resources", "Links to articles/docs", true)}
-                            </>
-                        )}
-
-                        {/* BUILD: Debugging */}
-                        {category === "build" && buildSub === "debugging" && (
-                            <>
-                                {renderInput("symptom", "Symptom", "What is broken? 'Error 500 on login'")}
-                                {renderInput("hypothesis", "Hypothesis", "I think it's the auth token expiration")}
-                                {renderInput("attempted", "What I Tried", "- Cleared cookies\n- Restarted server", true)}
-                                {renderInput("solution", "Solution", "Updated the JWT secret env var", true)}
-                            </>
-                        )}
-
-                        {/* BUILD: Context Switch */}
-                        {category === "build" && buildSub === "context-switch" && (
-                            <>
-                                {renderInput("currentState", "Current State", "The new dashboard is rendering but empty", true)}
-                                {renderInput("nextSteps", "Next Steps (For Future You)", "1. Hook up the API\n2. Fix the loading state", true)}
-                            </>
-                        )}
-
-                        {/* BUILD: TIL Snippet */}
-                        {category === "build" && buildSub === "til-snippet" && (
-                            <>
-                                {renderInput("problem", "Problem", "How to center a div horizontally and vertically?")}
-                                {renderInput("solution", "Solution", "Flexbox!")}
-                                {renderInput("code", "Code Snippet", "display: flex;\njustify-content: center;\nalign-items: center;", true)}
-                            </>
-                        )}
-
-                        {/* REFLECT: Milestone */}
-                        {category === "reflect" && reflectSub === "milestone" && (
-                            <>
-                                {renderInput("achievement", "Achievement", "Launched v1.0!")}
-                                {renderInput("impact", "Impact", "Users can now sign up without crashing")}
-                                {renderInput("demoLink", "Demo Link (Optional)", "https://myapp.com")}
-                            </>
-                        )}
-
-                        {/* REFLECT: Post-Mortem */}
-                        {category === "reflect" && reflectSub === "post-mortem" && (
-                            <>
-                                {renderInput("incident", "Incident", "Production DB outage for 2 hours")}
-                                {renderInput("rootCause", "Root Cause", "Ran a migration on the wrong TABLE")}
-                                {renderInput("prevention", "Prevention", "Added a 'dry-run' flag to the CLI tool", true)}
-                            </>
-                        )}
-
-                        {/* REFLECT: Review */}
-                        {category === "reflect" && reflectSub === "review" && (
-                            <>
-                                {renderInput("period", "Period", "Sprint 24 (Feb 1-14)")}
-                                {renderInput("wentWell", "What Went Well", "- Shipped the new Dashboard\n- Fixed 5 critical bugs", true)}
-                                {renderInput("couldBeBetter", "What Could Be Better", "- Deployment took too long\n- Missed one edge case", true)}
-                            </>
-                        )}
-
-                    </div>
-
-                    <div className="flex justify-end pt-8 border-t border-zinc-800">
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`inline-flex items-center justify-center rounded-lg text-sm font-bold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-black h-12 px-8 shadow-lg active:scale-95 ${currentTheme.button}`}
-                        >
-                            {isSubmitting ? (
-                                <>
-                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                    Saving...
-                                </>
-                            ) : (
-                                <>
-                                    <Save className="w-4 h-4 mr-2" />
-                                    Save Entry
-                                </>
-                            )}
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={saveAndReturn}
+                                className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300 transition-colors hover:bg-zinc-800"
+                            >
+                                Save & Return
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={isSubmitting || step !== 3}
+                                className={`inline-flex h-11 items-center justify-center rounded-lg px-6 text-sm font-bold text-black shadow-lg transition-colors disabled:opacity-50 ${currentTheme.button}`}
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Saving...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="mr-2 h-4 w-4" />
+                                        Save Entry
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>

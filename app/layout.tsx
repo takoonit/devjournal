@@ -13,8 +13,8 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
-            <body className="theme-noir density-cozy" data-theme-mode="noir" data-focus-mode="false" data-density="cozy" data-reward-intensity="subtle" data-motion-level="standard">
+        <html lang="en" data-theme-mode="noir" data-density="cozy" data-focus-mode="false" data-reward-intensity="subtle" data-motion-level="standard">
+            <body data-theme-mode="noir" data-focus-mode="false" data-density="cozy" data-reward-intensity="subtle" data-motion-level="standard">
                 <Providers>{children}</Providers>
             </body>
         </html>

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { User, Project, Entry } from "./types";
+import { User, Project, Entry, InboxCapture } from "./types";
 import { generateId, generateSlug } from "./utils";
 
 export interface UiPreferences {
@@ -8,7 +8,7 @@ export interface UiPreferences {
     focusMode: boolean;
     density: "cozy" | "compact";
     rewardIntensity: "off" | "subtle" | "full";
-    motionLevel: "reduced" | "standard";
+    motionLevel: "reduced" | "standard" | "expressive";
 }
 
 export const defaultUiPreferences: UiPreferences = {
@@ -40,6 +40,12 @@ interface DevJournalStore {
     getEntriesByProjectId: (projectId: string) => Entry[];
     getPublicEntriesByProjectId: (projectId: string) => Entry[];
     getPublicProjects: () => Project[];
+
+    // Inbox capture
+    inboxCaptures: InboxCapture[];
+    addInboxCapture: (content: string, projectId?: string) => void;
+    deleteInboxCapture: (id: string) => void;
+    consumeInboxCapture: (id: string) => InboxCapture | undefined;
 
     // UI preferences
     uiPreferences: UiPreferences;
@@ -157,6 +163,38 @@ export const useDevJournalStore = create<DevJournalStore>()(
                     );
                     return publicEntries.length > 0;
                 }),
+
+            // Inbox capture
+            inboxCaptures: [],
+
+            addInboxCapture: (content, projectId) =>
+                set((state) => ({
+                    inboxCaptures: [
+                        {
+                            id: generateId(),
+                            content: content.trim(),
+                            projectId,
+                            createdAt: new Date().toISOString(),
+                        },
+                        ...state.inboxCaptures,
+                    ],
+                })),
+
+            deleteInboxCapture: (id) =>
+                set((state) => ({
+                    inboxCaptures: state.inboxCaptures.filter((item) => item.id !== id),
+                })),
+
+            consumeInboxCapture: (id) => {
+                const item = get().inboxCaptures.find((capture) => capture.id === id);
+                if (!item) return undefined;
+
+                set((state) => ({
+                    inboxCaptures: state.inboxCaptures.filter((capture) => capture.id !== id),
+                }));
+
+                return item;
+            },
 
             // Unified Export (.devjournal)
             exportJournal: () => {
@@ -342,7 +380,7 @@ export const useDevJournalStore = create<DevJournalStore>()(
         }),
         {
             name: "devjournal-storage",
-            version: 2,
+            version: 3,
             migrate: (persistedState) => {
                 const state = persistedState as Partial<DevJournalStore>;
 
@@ -352,6 +390,7 @@ export const useDevJournalStore = create<DevJournalStore>()(
                         ...defaultUiPreferences,
                         ...state.uiPreferences,
                     },
+                    inboxCaptures: state.inboxCaptures ?? [],
                 };
             },
         }

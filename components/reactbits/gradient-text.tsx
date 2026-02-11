@@ -38,7 +38,8 @@ export default function GradientText({
 
   const effectiveShowBorder = showBorder && !focusMode;
   const effectiveYoyo = motionLevel === "reduced" ? false : yoyo;
-  const speedMultiplier = motionLevel === "reduced" ? 1.7 : 1;
+  const speedMultiplier =
+    motionLevel === "reduced" ? 1.7 : motionLevel === "expressive" ? 0.75 : 1;
   const animationDuration = animationSpeed * speedMultiplier * 1000;
 
   useAnimationFrame((time) => {

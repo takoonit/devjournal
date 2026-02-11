@@ -45,3 +45,35 @@
 ### Tokenized Theme Foundation
 - **Insight:** Page-level redesigns become inconsistent when animation timing, color ramps, and interaction intensity are configured ad hoc.
 - **Action:** Added semantic token groups (`color`, `motion`, `spacing`), mapped theme variables (`noir`, `calm-focus`) in global CSS, and introduced wrapper components (`FocusHeading`, `RewardLabel`, `InteractiveSurface`) so ReactBits usage stays system-aware.
+
+### Phased Redesign Delivery Model
+- **Insight:** Large UX overhauls ship more reliably when broken into phase-gated deliverables tied to measurable outcomes.
+- **Action:** Adopted a five-phase execution plan (Foundation → Feedback → Flow → Wayfinding/Capture → Polish/QA) with explicit acceptance criteria for clicks-to-start, abandonment, persistence, and component consistency.
+
+### Phase 1 Execution: Theme + Preference Hardening
+- **Issue:** Theme and density preferences were only partially mapped to document-level attributes, leaving inconsistent token application paths and stale body-level overrides.
+- **Fix:** Consolidated theme/density behavior around root dataset attributes, introduced active spacing aliases (`--space-stack-*`), expanded motion preference range to include `expressive`, and removed redundant class toggles/body overrides so token-driven styling remains deterministic.
+
+### Phase 1 Motion Preference Calibration
+- **Issue:** Adding an `expressive` preference without calibrating downstream animation primitives makes it behave like `standard`, reducing user-perceived control.
+- **Fix:** Tuned ReactBits wrappers (`BlurText`, `ShinyText`, `GradientText`, `DecryptedText`, `RotatingText`, `CountUp`, `SpotlightCard`) so `reduced`, `standard`, and `expressive` each have distinct timing/intensity behavior.
+
+
+### Phase 2 Feedback System Alignment
+- **Issue:** Feedback surfaces were functional but emotionally flat, and reward intensity preferences were not shaping tone/animation outcomes.
+- **Fix:** Redesigned toast presentation, introduced a supportive copy module, and wired feedback intensity + motion behavior to persisted UI preferences so responses feel consistent and user-controlled.
+
+
+### Phase 3 Flow Friction Reduction
+- **Issue:** Single-screen entry forms increased cognitive load and raised abandonment risk when users were interrupted mid-entry.
+- **Fix:** Reworked entry creation into a 3-step flow (track selection → writing → review), added visible progress, and introduced persistent draft save-and-return behavior tied to project-scoped local storage.
+
+
+### Phase 4 Wayfinding + Capture Enablement
+- **Issue:** Navigation context was shallow across editor/portfolio routes, and idea capture required entering full entry flows immediately, increasing drop-off risk.
+- **Fix:** Added shared breadcrumbs across main surfaces, introduced an editor inbox quick-capture model in store state, and added capture-to-entry conversion that preloads the new-entry flow for structured follow-through.
+
+
+### Phase 5 Polish + QA Pass
+- **Issue:** Wayfinding links and empty-state surfaces had minor contrast/focus inconsistencies, and motion preference tiers needed CSS-level timing alignment for shared transitions.
+- **Fix:** Improved breadcrumb/link focus affordances, raised contrast on empty states, added motion-duration variable tuning for reduced/standard/expressive modes, and aligned editor/portfolio surface treatments for consistency.

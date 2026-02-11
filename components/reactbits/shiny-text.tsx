@@ -44,7 +44,8 @@ export default function ShinyText({
   const directionRef = useRef(direction === "left" ? 1 : -1);
 
   const effectiveDisabled = disabled || focusMode;
-  const motionMultiplier = motionLevel === "reduced" ? 1.8 : 1;
+  const motionMultiplier =
+    motionLevel === "reduced" ? 1.8 : motionLevel === "expressive" ? 0.85 : 1;
   const animationDuration = speed * motionMultiplier * 1000;
   const delayDuration = delay * 1000;
 
