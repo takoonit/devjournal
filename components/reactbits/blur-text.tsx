@@ -83,17 +83,20 @@ const BlurText = forwardRef<HTMLElement, BlurTextProps>(function BlurText(
   };
 
   useEffect(() => {
-    if (!localRef.current) return;
+    const el = localRef.current;
+    if (!el) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setInView(true);
-          observer.unobserve(localRef.current as Element);
+          observer.unobserve(el);
         }
       },
       { threshold, rootMargin }
     );
-    observer.observe(localRef.current);
+
+    observer.observe(el);
     return () => observer.disconnect();
   }, [threshold, rootMargin]);
 
@@ -125,8 +128,14 @@ const BlurText = forwardRef<HTMLElement, BlurTextProps>(function BlurText(
     [direction]
   );
 
-  const fromSnapshot = focusMode ? { filter: "blur(0px)", opacity: 1, y: 0 } : animationFrom ?? defaultFrom;
-  const toSnapshots = focusMode ? [{ filter: "blur(0px)", opacity: 1, y: 0 }] : animationTo ?? defaultTo;
+  const fromSnapshot = useMemo(
+    () => (focusMode ? { filter: "blur(0px)", opacity: 1, y: 0 } : animationFrom ?? defaultFrom),
+    [focusMode, animationFrom, defaultFrom]
+  );
+  const toSnapshots = useMemo(
+    () => (focusMode ? [{ filter: "blur(0px)", opacity: 1, y: 0 }] : animationTo ?? defaultTo),
+    [focusMode, animationTo, defaultTo]
+  );
 
   const stepCount = toSnapshots.length + 1;
   const totalDuration = effectiveStepDuration * (stepCount - 1);
@@ -134,12 +143,16 @@ const BlurText = forwardRef<HTMLElement, BlurTextProps>(function BlurText(
     stepCount === 1 ? 0 : i / (stepCount - 1)
   );
 
+  const animateKeyframes = useMemo(
+    () => buildKeyframes(fromSnapshot, toSnapshots),
+    [fromSnapshot, toSnapshots]
+  );
+
   const Component = as;
 
   return (
     <Component ref={setRefs} className={`blur-text ${className} flex flex-wrap`} {...restProps}>
       {elements.map((segment, index) => {
-        const animateKeyframes = buildKeyframes(fromSnapshot, toSnapshots);
 
         const spanTransition: Transition = {
           duration: totalDuration,

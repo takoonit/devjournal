@@ -126,7 +126,7 @@ export default function ProjectDetailPage({
                                                     </h3>
                                                     <div className="space-y-6">
                                                         {groupedEntries[year][month].map((entry, index) => (
-                                                            <ScrollReveal key={entry.id} delay={index * 0.08}>
+                                                            <ScrollReveal key={entry.id} delay={Math.min(index * 0.08, 0.5)}>
                                                                 <TimelineEntry entry={entry} />
                                                             </ScrollReveal>
                                                         ))}

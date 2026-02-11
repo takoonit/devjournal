@@ -10,7 +10,7 @@ DevJournal is a "Build in Public" platform that transforms daily developer logs 
 
 - **Framework:** Next.js 16 with App Router and Turbopack
 - **UI:** React 19, TypeScript
-- **Styling:** Tailwind CSS (Noir theme — zinc-950/900 backgrounds with a canonical base of `#060010`, cyan/emerald accents)
+- **Styling:** Tailwind CSS (Noir theme — zinc-950/900 backgrounds with cyan/emerald accents)
 - **Animations:** Framer Motion
 - **State:** Zustand with localStorage persistence (`lib/store.ts`)
 - **Icons:** Lucide React (semantic iconography)
@@ -81,7 +81,7 @@ interface Entry {
 
 ## Design Rules
 
-- **Noir Aesthetic:** Dark background (`#060010`, aligned with the zinc-950/900 palette), subtle noise texture, minimal color
+- **Noir Aesthetic:** Dark background (zinc-950/900), subtle noise texture, minimal color
 - **Accents:** Cyan/teal only
 - **Effects:** Spotlight hover effects on cards
 - **Typography:** Monospace for dates and metadata

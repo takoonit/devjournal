@@ -9,6 +9,7 @@ import {
     BuildSubcategory,
     ReflectSubcategory,
 } from "@/lib/types";
+import { TEMPLATE_INFO, ENTRY_THEME, buildEntryTemplateData, formatSubcategoryLabel } from "@/lib/entry-templates";
 import {
     ArrowLeft,
     Save,
@@ -23,59 +24,6 @@ import {
 import Link from "next/link";
 import { useToast } from "@/components/ui/toast";
 import BlurText from "@/components/reactbits/blur-text";
-
-const TEMPLATE_INFO = {
-    "decision-log": {
-        title: "Decision Log",
-        purpose: "Record significant architectural or product decisions to avoid re-debating them later.",
-        example: "Context: Choosing a DB. Options: Postgres vs Mongo. Decision: Postgres. Rationale: Relational data needs.",
-    },
-    "idea-spark": {
-        title: "Idea Spark",
-        purpose: "Capture a fleeting idea before it disappears. Focus on the core value and the 'vibe'.",
-        example: "Core Value: 'Tinder for Code Reviews'. Vibe: Fast, gamified, mobile-first.",
-    },
-    "research-notes": {
-        title: "Research Notes",
-        purpose: "Document what you learned while exploring a new technology or problem space.",
-        example: "Topic: React Server Components. Learnings: Great for initial load, harder for interactivity. Resources: <link>",
-    },
-    debugging: {
-        title: "Debugging Log",
-        purpose: "Use a scientific method for bugs so you can reason before patching.",
-        example: "Symptom: 500 Error. Hypothesis: DB Connection. Tried: Restarting container. Solution: Fixed env var.",
-    },
-    "context-switch": {
-        title: "Context Switch",
-        purpose: "Save your current state before context switching so you can quickly resume.",
-        example: "Current State: API fetch works but UI isn't updating. Next Steps: Check reducer and stale memo.",
-    },
-    "til-snippet": {
-        title: "TIL / Snippet",
-        purpose: "Store useful snippets and commands you can reuse later.",
-        example: "Problem: Vertically center div. Solution: grid place-items-center.",
-    },
-    "implementation-guide": {
-        title: "Implementation Guide",
-        purpose: "Document how a feature works end-to-end for future maintenance and onboarding.",
-        example: "Feature: Invite workflow. How it Works: token + email magic link. Edge Cases: expired invites.",
-    },
-    milestone: {
-        title: "Milestone",
-        purpose: "Celebrate progress and capture outcomes for your brag-doc trail.",
-        example: "Achievement: Shipped v1.0. Impact: 100 new users.",
-    },
-    "post-mortem": {
-        title: "Post-Mortem",
-        purpose: "Reflect on incidents with blameless, prevention-focused analysis.",
-        example: "Incident: Site down for 10m. Root Cause: Expired SSL cert. Prevention: Auto-renew bot.",
-    },
-    review: {
-        title: "Periodic Review",
-        purpose: "Look back over a sprint or week to improve your process.",
-        example: "Went Well: Velocity up. Could Be Better: Too many meetings.",
-    },
-};
 
 const FLOW_STEPS = [
     { id: 1, label: "Choose Track" },
@@ -206,44 +154,13 @@ export default function NewEntryPage({
         });
         router.push(`/editor/projects/${id}`);
     };
-
-    const currentTheme = {
-        "plan-change": {
-            bg: "from-indigo-500/10 via-zinc-950 to-zinc-950",
-            border: "border-indigo-500/20",
-            text: "text-indigo-400",
-            button: "bg-indigo-500 hover:bg-indigo-400",
-            ring: "focus:ring-indigo-500/50",
-            icon: "bg-indigo-500/20 text-indigo-400",
-            subActive: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
-            label: "Plan & Change",
-        },
-        build: {
-            bg: "from-amber-500/10 via-zinc-950 to-zinc-950",
-            border: "border-amber-500/20",
-            text: "text-amber-400",
-            button: "bg-amber-500 hover:bg-amber-400",
-            ring: "focus:ring-amber-500/50",
-            icon: "bg-amber-500/20 text-amber-400",
-            subActive: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-            label: "Build",
-        },
-        reflect: {
-            bg: "from-emerald-500/10 via-zinc-950 to-zinc-950",
-            border: "border-emerald-500/20",
-            text: "text-emerald-400",
-            button: "bg-emerald-500 hover:bg-emerald-400",
-            ring: "focus:ring-emerald-500/50",
-            icon: "bg-emerald-500/20 text-emerald-400",
-            subActive: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-            label: "Reflect",
-        },
-    }[category];
+    const currentTheme = ENTRY_THEME[category];
 
     if (!project) {
         return (
             <div className="p-8 text-center">
                 <h1 className="mb-4 text-2xl font-bold text-zinc-100">Project Not Found</h1>
+                <Link href="/editor" className="text-cyan-400 hover:text-cyan-300">Back to editor</Link>
             </div>
         );
     }
@@ -257,24 +174,13 @@ export default function NewEntryPage({
         setIsSubmitting(true);
 
         try {
-            let templateData: any = {};
-
-            if (category === "plan-change") {
-                templateData = { subcategory: planSub };
-                if (planSub === "decision-log") templateData.decisionLog = formData;
-                else if (planSub === "idea-spark") templateData.ideaSpark = formData;
-                else if (planSub === "research-notes") templateData.researchNotes = formData;
-            } else if (category === "build") {
-                templateData = { subcategory: buildSub };
-                if (buildSub === "debugging") templateData.debugging = formData;
-                else if (buildSub === "context-switch") templateData.contextSwitch = formData;
-                else if (buildSub === "til-snippet") templateData.tilSnippet = formData;
-            } else {
-                templateData = { subcategory: reflectSub };
-                if (reflectSub === "milestone") templateData.milestone = formData;
-                else if (reflectSub === "post-mortem") templateData.postMortem = formData;
-                else if (reflectSub === "review") templateData.review = formData;
-            }
+            const templateData = buildEntryTemplateData({
+                category,
+                planSub,
+                buildSub,
+                reflectSub,
+                formData,
+            });
 
             addEntry({
                 projectId: project.id,
@@ -432,7 +338,7 @@ export default function NewEntryPage({
                                         onClick={() => { setPlanSub(sub); setFormData({}); }}
                                         className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${planSub === sub ? currentTheme.subActive : "border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"}`}
                                     >
-                                        {sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
+                                        {formatSubcategoryLabel(sub)}
                                     </button>
                                 ))}
                                 {category === "build" && (["debugging", "context-switch", "til-snippet"] as const).map((sub) => (
@@ -442,7 +348,7 @@ export default function NewEntryPage({
                                         onClick={() => { setBuildSub(sub); setFormData({}); }}
                                         className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${buildSub === sub ? currentTheme.subActive : "border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"}`}
                                     >
-                                        {sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
+                                        {formatSubcategoryLabel(sub)}
                                     </button>
                                 ))}
                                 {category === "reflect" && (["milestone", "post-mortem", "review"] as const).map((sub) => (
@@ -452,7 +358,7 @@ export default function NewEntryPage({
                                         onClick={() => { setReflectSub(sub); setFormData({}); }}
                                         className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${reflectSub === sub ? currentTheme.subActive : "border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"}`}
                                     >
-                                        {sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}
+                                        {formatSubcategoryLabel(sub)}
                                     </button>
                                 ))}
                             </div>

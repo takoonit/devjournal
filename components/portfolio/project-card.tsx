@@ -1,5 +1,5 @@
 import { Project } from "@/lib/types";
-import { SpotlightCard } from "../reactbits/spotlight-card";
+import { SpotlightCard } from "@/components/reactbits/spotlight-card";
 import Link from "next/link";
 import { ExternalLink, GitBranch } from "lucide-react";
 

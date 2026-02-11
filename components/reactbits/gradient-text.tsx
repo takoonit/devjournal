@@ -72,7 +72,7 @@ export default function GradientText({
         );
       }
     } else {
-      progress.set((elapsedRef.current / animationDuration) * 100);
+      progress.set(((elapsedRef.current % animationDuration) / animationDuration) * 100);
     }
   });
 

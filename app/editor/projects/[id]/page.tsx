@@ -48,7 +48,7 @@ export default function ProjectDetailPage({
     const deleteModalRef = useRef<HTMLDivElement>(null);
     const entryDeleteModalRef = useRef<HTMLDivElement>(null);
 
-    const trapFocus = useCallback((modalRef: React.RefObject<HTMLDivElement | null>) => {
+    const trapFocus = useCallback((modalRef: React.RefObject<HTMLDivElement | null>, onClose: () => void) => {
         const modal = modalRef.current;
         if (!modal) return;
         const focusable = modal.querySelectorAll<HTMLElement>(
@@ -58,8 +58,7 @@ export default function ProjectDetailPage({
 
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Escape") {
-                setShowDeleteConfirm(false);
-                setEntryToDelete(null);
+                onClose();
                 return;
             }
             if (e.key !== "Tab") return;
@@ -82,11 +81,11 @@ export default function ProjectDetailPage({
     }, []);
 
     useEffect(() => {
-        if (showDeleteConfirm) return trapFocus(deleteModalRef);
+        if (showDeleteConfirm) return trapFocus(deleteModalRef, () => setShowDeleteConfirm(false));
     }, [showDeleteConfirm, trapFocus]);
 
     useEffect(() => {
-        if (entryToDelete) return trapFocus(entryDeleteModalRef);
+        if (entryToDelete) return trapFocus(entryDeleteModalRef, () => setEntryToDelete(null));
     }, [entryToDelete, trapFocus]);
 
     if (!project) {
@@ -183,7 +182,7 @@ export default function ProjectDetailPage({
                     </span>
                     <span>•</span>
                     <span className="font-mono">
-                        <CountUp to={entries.length} duration={1} /> {entries.length === 1 ? "entry" : "entries"}
+                        <CountUp to={entries.length} duration={1} /> {Math.max(entries.length, 1) === 1 ? "entry" : "entries"}
                     </span>
                 </div>
             </div>
@@ -214,7 +213,7 @@ export default function ProjectDetailPage({
                 <div className="space-y-6">
                     <h2 className="text-xl font-semibold text-zinc-300">Build Log Entries</h2>
                     {entries.map((entry, index) => (
-                        <ScrollReveal key={entry.id} delay={index * 0.06}>
+                        <ScrollReveal key={entry.id} delay={Math.min(index * 0.06, 0.6)}>
                         <div
                             className="relative border border-zinc-800 rounded-lg p-6 bg-zinc-900/30 hover:border-zinc-700 transition-colors"
                         >

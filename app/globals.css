@@ -34,7 +34,7 @@
   --motion-standard: 260ms;
   --motion-expressive: 420ms;
 
-  --easing-subtle: cubic-bezier(0.2, 0, 0, 1);
+  --easing-subtle: cubic-bezier(0.25, 0.1, 0.25, 1);
   --easing-standard: cubic-bezier(0.2, 0, 0, 1);
   --easing-expressive: cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -164,34 +164,29 @@ a:hover {
   }
 }
 
-body[data-focus-mode="true"]::before {
+html[data-focus-mode="true"] body::before {
   opacity: 0;
 }
 
-body[data-motion-level="reduced"] *,
-body[data-motion-level="reduced"] *::before,
-body[data-motion-level="reduced"] *::after {
+html[data-motion-level="reduced"] {
+  --motion-subtle: 120ms;
+  --motion-standard: 180ms;
+  --motion-expressive: 260ms;
+}
+
+html[data-motion-level="reduced"] *,
+html[data-motion-level="reduced"] *::before,
+html[data-motion-level="reduced"] *::after {
   animation-duration: 0.01ms !important;
   animation-iteration-count: 1 !important;
   transition-duration: var(--motion-subtle) !important;
   scroll-behavior: auto !important;
 }
 
-
-body[data-motion-level="standard"] {
-  --motion-subtle: 160ms;
-  --motion-standard: 260ms;
-  --motion-expressive: 420ms;
-}
-
-body[data-motion-level="expressive"] {
+html[data-motion-level="expressive"] {
   --motion-subtle: 220ms;
   --motion-standard: 340ms;
   --motion-expressive: 520ms;
 }
 
-body[data-motion-level="reduced"] {
-  --motion-subtle: 120ms;
-  --motion-standard: 180ms;
-  --motion-expressive: 260ms;
-}
+

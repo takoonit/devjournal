@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { ProjectCard } from "@/components/portfolio/project-card";
 import { ArrowRightCircle, CheckCircle2, Plus, Sparkles, Trash2 } from "lucide-react";
@@ -22,6 +22,18 @@ export default function EditorPage() {
 
     const [captureText, setCaptureText] = useState("");
     const [captureProjectId, setCaptureProjectId] = useState<string>(projects[0]?.id ?? "");
+
+    useEffect(() => {
+        if (projects.length === 0) {
+            setCaptureProjectId("");
+            return;
+        }
+
+        const hasSelectedProject = projects.some((project) => project.id === captureProjectId);
+        if (!hasSelectedProject) {
+            setCaptureProjectId(projects[0].id);
+        }
+    }, [projects, captureProjectId]);
 
     const captureProjectMap = useMemo(
         () => new Map(projects.map((project) => [project.id, project.name])),
@@ -105,46 +117,53 @@ export default function EditorPage() {
                     {inboxCaptures.length === 0 ? (
                         <p className="text-xs text-zinc-500">Inbox is clear. Capture something fast to convert it later.</p>
                     ) : (
-                        inboxCaptures.slice(0, 8).map((capture) => {
-                            const projectName = capture.projectId
-                                ? captureProjectMap.get(capture.projectId)
-                                : undefined;
+                        <>
+                            {inboxCaptures.slice(0, 8).map((capture) => {
+                                const projectName = capture.projectId
+                                    ? captureProjectMap.get(capture.projectId)
+                                    : undefined;
 
-                            return (
-                                <div
-                                    key={capture.id}
-                                    className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-800 bg-zinc-950/60 px-3 py-2"
-                                >
-                                    <div className="min-w-0 flex-1">
-                                        <p className="truncate text-sm text-zinc-200">{capture.content}</p>
-                                        <p className="text-xs text-zinc-500">
-                                            {projectName ? `Project: ${projectName}` : "Unassigned"} • {new Date(capture.createdAt).toLocaleTimeString()}
-                                        </p>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        {capture.projectId ? (
-                                            <Link
-                                                href={`/editor/projects/${capture.projectId}/entries/new?capture=${capture.id}`}
-                                                className="inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-xs text-emerald-300 hover:bg-emerald-500/20"
+                                return (
+                                    <div
+                                        key={capture.id}
+                                        className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-zinc-800 bg-zinc-950/60 px-3 py-2"
+                                    >
+                                        <div className="min-w-0 flex-1">
+                                            <p className="truncate text-sm text-zinc-200">{capture.content}</p>
+                                            <p className="text-xs text-zinc-500">
+                                                {projectName ? `Project: ${projectName}` : "Unassigned"} • {new Date(capture.createdAt).toLocaleString()}
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            {capture.projectId ? (
+                                                <Link
+                                                    href={`/editor/projects/${capture.projectId}/entries/new?capture=${capture.id}`}
+                                                    className="inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-xs text-emerald-300 hover:bg-emerald-500/20"
+                                                >
+                                                    Convert
+                                                    <ArrowRightCircle className="h-3.5 w-3.5" />
+                                                </Link>
+                                            ) : (
+                                                <span className="text-xs text-amber-400">Assign a project to convert</span>
+                                            )}
+                                            <button
+                                                type="button"
+                                                onClick={() => deleteInboxCapture(capture.id)}
+                                                className="rounded-md border border-zinc-700 p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
+                                                aria-label="Delete capture"
                                             >
-                                                Convert
-                                                <ArrowRightCircle className="h-3.5 w-3.5" />
-                                            </Link>
-                                        ) : (
-                                            <span className="text-xs text-amber-400">Assign a project to convert</span>
-                                        )}
-                                        <button
-                                            type="button"
-                                            onClick={() => deleteInboxCapture(capture.id)}
-                                            className="rounded-md border border-zinc-700 p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
-                                            aria-label="Delete capture"
-                                        >
-                                            <Trash2 className="h-3.5 w-3.5" />
-                                        </button>
+                                                <Trash2 className="h-3.5 w-3.5" />
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        })
+                                );
+                            })}
+                            {inboxCaptures.length > 8 && (
+                                <p className="mt-1 text-xs text-zinc-500">
+                                    +{inboxCaptures.length - 8} more captures not shown
+                                </p>
+                            )}
+                        </>
                     )}
                 </div>
             </section>
@@ -173,7 +192,7 @@ export default function EditorPage() {
             ) : (
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     {projects.map((project, index) => (
-                        <ScrollReveal key={project.id} delay={index * 0.1}>
+                        <ScrollReveal key={project.id} delay={Math.min(index * 0.08, 0.8)}>
                             <ProjectCard
                                 project={project}
                                 href={`/editor/projects/${project.id}`}

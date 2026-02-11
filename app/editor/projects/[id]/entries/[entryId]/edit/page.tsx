@@ -10,56 +10,9 @@ import {
     ReflectSubcategory,
     Entry,
 } from "@/lib/types";
+import { TEMPLATE_INFO, ENTRY_THEME, buildEntryTemplateData, formatSubcategoryLabel } from "@/lib/entry-templates";
 import { ArrowLeft, Save, Loader2, Brain, Hammer, Trophy } from "lucide-react";
 import Link from "next/link";
-
-const TEMPLATE_INFO = {
-    "decision-log": {
-        title: "Decision Log",
-        purpose: "Record significant architectural or product decisions to avoid re-debating them later.",
-        example: "Context: Choosing a DB. Options: Postgres vs Mongo. Decision: Postgres. Rationale: Relational data needs."
-    },
-    "idea-spark": {
-        title: "Idea Spark",
-        purpose: "Capture a fleeting idea before it disappears. Focus on the core value and the 'vibe'.",
-        example: "Core Value: 'Tinder for Code Reviews'. Vibe: Fast, gamified, mobile-first."
-    },
-    "research-notes": {
-        title: "Research Notes",
-        purpose: "Document what you learned while exploring a new technology or problem space.",
-        example: "Topic: React Server Components. Learnings: Great for initial load, harder for interactivity. Resources: <link>"
-    },
-    "debugging": {
-        title: "Debugging Log",
-        purpose: "The 'scientific method' for fixing bugs. Forces you to slow down and think before you hack.",
-        example: "Symptom: 500 Error. Hypothesis: DB Connection. Tried: Restarting container. Solution: Fixed env var."
-    },
-    "context-switch": {
-        title: "Context Switch",
-        purpose: "Save your state before a break or meeting so you can resume flow immediately.",
-        example: "Current State: API is fetching but UI isn't updating. Next Steps: Check the Redux reducer."
-    },
-    "til-snippet": {
-        title: "TIL / Snippet",
-        purpose: "Save a useful snippet or command you just figured out.",
-        example: "Problem: Vertically center div. Solution: grid place-items-center. Code: display: grid; ..."
-    },
-    "milestone": {
-        title: "Milestone",
-        purpose: "Celebrate a win! These go into your 'Brag Doc' for performance reviews or morale boosts.",
-        example: "Achievement: Shipped v1.0. Impact: 100 new users."
-    },
-    "post-mortem": {
-        title: "Post-Mortem",
-        purpose: "Honest analysis of what went wrong to prevent it from happening again. Blameless.",
-        example: "Incident: Site down for 10m. Root Cause: Expired SSL cert. Prevention: Auto-renew bot."
-    },
-    "review": {
-        title: "Periodic Review",
-        purpose: "Look back at a sprint or week to calibrate your process.",
-        example: "Went Well: Velocity up. Could Be Better: Too many meetings."
-    }
-};
 
 type EntryParams = Promise<{ id: string; entryId: string }>;
 
@@ -201,36 +154,7 @@ export default function EditEntryPage({
     const handleInputChange = (field: string, value: string) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
-
-    const currentTheme = {
-        "plan-change": {
-            bg: "from-indigo-500/10 via-zinc-950 to-zinc-950",
-            border: "border-indigo-500/20",
-            text: "text-indigo-400",
-            button: "bg-indigo-500 hover:bg-indigo-400",
-            ring: "focus:ring-indigo-500/50",
-            icon: "bg-indigo-500/20 text-indigo-400",
-            sub_active: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
-        },
-        "build": {
-            bg: "from-amber-500/10 via-zinc-950 to-zinc-950",
-            border: "border-amber-500/20",
-            text: "text-amber-400",
-            button: "bg-amber-500 hover:bg-amber-400",
-            ring: "focus:ring-amber-500/50",
-            icon: "bg-amber-500/20 text-amber-400",
-            sub_active: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-        },
-        "reflect": {
-            bg: "from-emerald-500/10 via-zinc-950 to-zinc-950",
-            border: "border-emerald-500/20",
-            text: "text-emerald-400",
-            button: "bg-emerald-500 hover:bg-emerald-400",
-            ring: "focus:ring-emerald-500/50",
-            icon: "bg-emerald-500/20 text-emerald-400",
-            sub_active: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-        }
-    }[category];
+    const currentTheme = ENTRY_THEME[category];
 
     if (!project) {
         return (
@@ -257,42 +181,26 @@ export default function EditEntryPage({
         );
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        try {
-            let templateData: any = {};
+        const templateData = buildEntryTemplateData({
+            category,
+            planSub,
+            buildSub,
+            reflectSub,
+            formData,
+        });
 
-            if (category === "plan-change") {
-                templateData = { subcategory: planSub };
-                if (planSub === "decision-log") templateData.decisionLog = formData;
-                else if (planSub === "idea-spark") templateData.ideaSpark = formData;
-                else if (planSub === "research-notes") templateData.researchNotes = formData;
-            } else if (category === "build") {
-                templateData = { subcategory: buildSub };
-                if (buildSub === "debugging") templateData.debugging = formData;
-                else if (buildSub === "context-switch") templateData.contextSwitch = formData;
-                else if (buildSub === "til-snippet") templateData.tilSnippet = formData;
-            } else {
-                templateData = { subcategory: reflectSub };
-                if (reflectSub === "milestone") templateData.milestone = formData;
-                else if (reflectSub === "post-mortem") templateData.postMortem = formData;
-                else if (reflectSub === "review") templateData.review = formData;
-            }
+        updateEntry(entry.id, {
+            title,
+            category,
+            templateData,
+            isPublic,
+        });
 
-            updateEntry(entry.id, {
-                title,
-                category,
-                templateData,
-                isPublic,
-            });
-
-            router.push(`/editor/projects/${project.id}`);
-        } catch (error) {
-            console.error("Failed to update entry:", error);
-            setIsSubmitting(false);
-        }
+        router.push(`/editor/projects/${project.id}`);
     };
 
     const renderInput = (inputId: string, label: string, placeholder: string, isTextArea = false) => (
@@ -380,13 +288,13 @@ export default function EditEntryPage({
 
                     <div className="flex gap-3 pb-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                         {category === "plan-change" && (["decision-log", "idea-spark", "research-notes"] as const).map((sub) => (
-                            <button key={sub} type="button" onClick={() => switchSubcategory("plan", sub)} className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${planSub === sub ? currentTheme.sub_active : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"}`}>{sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}</button>
+                            <button key={sub} type="button" onClick={() => switchSubcategory("plan", sub)} className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${planSub === sub ? currentTheme.subActive : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"}`}>{formatSubcategoryLabel(sub)}</button>
                         ))}
                         {category === "build" && (["debugging", "context-switch", "til-snippet"] as const).map((sub) => (
-                            <button key={sub} type="button" onClick={() => switchSubcategory("build", sub)} className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${buildSub === sub ? currentTheme.sub_active : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"}`}>{sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}</button>
+                            <button key={sub} type="button" onClick={() => switchSubcategory("build", sub)} className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${buildSub === sub ? currentTheme.subActive : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"}`}>{formatSubcategoryLabel(sub)}</button>
                         ))}
                         {category === "reflect" && (["milestone", "post-mortem", "review"] as const).map((sub) => (
-                            <button key={sub} type="button" onClick={() => switchSubcategory("reflect", sub)} className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${reflectSub === sub ? currentTheme.sub_active : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"}`}>{sub.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}</button>
+                            <button key={sub} type="button" onClick={() => switchSubcategory("reflect", sub)} className={`text-sm font-medium px-4 py-2 rounded-full transition-all border ${reflectSub === sub ? currentTheme.subActive : "bg-zinc-900/50 text-zinc-500 border-zinc-800 hover:text-zinc-300 hover:bg-zinc-800"}`}>{formatSubcategoryLabel(sub)}</button>
                         ))}
                     </div>
 

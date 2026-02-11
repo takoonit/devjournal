@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, ReactNode, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, XCircle, Info, Sparkles, X } from "lucide-react";
 import { useDevJournalStore } from "@/lib/store";
@@ -54,6 +54,7 @@ const toneClasses: Record<ToastTone, string> = {
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const timeoutRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const { rewardIntensity, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
 
   const addToast = useCallback(
@@ -80,17 +81,25 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           emphasis: resolved.emphasis,
           type: normalized.type,
         },
-      ]);
+      ].slice(-5));
 
       const timeoutMs = rewardIntensity === "full" ? 4800 : rewardIntensity === "off" ? 2600 : 3600;
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
+        timeoutRef.current.delete(id);
         setToasts((prev) => prev.filter((t) => t.id !== id));
       }, timeoutMs);
+      timeoutRef.current.set(id, timeoutId);
     },
     [rewardIntensity]
   );
 
   const removeToast = useCallback((id: string) => {
+    const timeoutId = timeoutRef.current.get(id);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutRef.current.delete(id);
+    }
+
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 

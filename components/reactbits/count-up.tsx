@@ -31,6 +31,10 @@ export default function CountUp({
 }: CountUpProps) {
   const { motionLevel } = useDevJournalStore((state) => state.uiPreferences);
   const ref = useRef<HTMLSpanElement>(null);
+  const hasStartedRef = useRef(false);
+  const hasEndedRef = useRef(false);
+  const onStartRef = useRef(onStart);
+  const onEndRef = useRef(onEnd);
   const motionValue = useMotionValue(direction === "down" ? to : from);
 
   const effectiveDuration =
@@ -86,27 +90,30 @@ export default function CountUp({
   }, [from, to, direction, formatValue]);
 
   useEffect(() => {
-    if (isInView && startWhen) {
-      if (typeof onStart === "function") {
-        onStart();
-      }
+    hasStartedRef.current = false;
+    hasEndedRef.current = false;
+  }, [to, from, direction, delay, startWhen]);
 
+  useEffect(() => {
+    onStartRef.current = onStart;
+  }, [onStart]);
+
+  useEffect(() => {
+    onEndRef.current = onEnd;
+  }, [onEnd]);
+
+  useEffect(() => {
+    if (isInView && startWhen) {
       const timeoutId = setTimeout(() => {
+        if (!hasStartedRef.current && typeof onStartRef.current === "function") {
+          onStartRef.current();
+        }
+        hasStartedRef.current = true;
         motionValue.set(direction === "down" ? from : to);
       }, delay * 1000);
 
-      const durationTimeoutId = setTimeout(
-        () => {
-          if (typeof onEnd === "function") {
-            onEnd();
-          }
-        },
-        delay * 1000 + effectiveDuration * 1000
-      );
-
       return () => {
         clearTimeout(timeoutId);
-        clearTimeout(durationTimeoutId);
       };
     }
   }, [
@@ -117,20 +124,31 @@ export default function CountUp({
     from,
     to,
     delay,
-    onStart,
-    onEnd,
-    effectiveDuration,
   ]);
 
   useEffect(() => {
+    const target = direction === "down" ? from : to;
+    const epsilon = Math.max(0.01, Math.abs(target) * 0.001);
+    const velocityThreshold = 0.05;
+
     const unsubscribe = springValue.on("change", (latest: number) => {
       if (ref.current) {
         ref.current.textContent = formatValue(latest);
       }
+
+      const velocity = Math.abs(springValue.getVelocity());
+      const isSettled = Math.abs(latest - target) <= epsilon && velocity <= velocityThreshold;
+
+      if (hasStartedRef.current && !hasEndedRef.current && isSettled) {
+        hasEndedRef.current = true;
+        if (typeof onEndRef.current === "function") {
+          onEndRef.current();
+        }
+      }
     });
 
     return () => unsubscribe();
-  }, [springValue, formatValue]);
+  }, [springValue, formatValue, direction, from, to]);
 
   return <span className={className} ref={ref} />;
 }

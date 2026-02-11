@@ -24,7 +24,7 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
                   {item.label}
                 </Link>
               ) : (
-                <span className={isLast ? "text-zinc-200" : "text-zinc-400"}>{item.label}</span>
+                <span className={isLast ? "text-zinc-200" : "text-zinc-400"} {...(isLast ? { "aria-current": "page" as const } : {})}>{item.label}</span>
               )}
               {!isLast ? <ChevronRight className="h-3.5 w-3.5 text-zinc-700" /> : null}
             </li>
