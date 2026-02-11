@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "type": "global",
-  "exportedAt": "2026-02-09T18:00:00.000Z",
+  "exportedAt": "2026-02-11T16:00:00.000Z",
   "user": {
     "id": "alex-dev",
     "name": "Alex Admin",
@@ -18,11 +18,17 @@
       "name": "DevJournal Core",
       "slug": "devjournal-core",
       "description": "The primary repository for the DevJournal application.",
-      "techStack": ["Next.js 16", "Zustand", "Tailwind CSS"],
+      "techStack": [
+        "Next.js 16",
+        "Zustand",
+        "Tailwind CSS",
+        "ESLint Flat Config",
+        "App Router"
+      ],
       "repositoryLink": "https://github.com/alexdev/devjournal",
       "status": "in-progress",
       "createdAt": "2026-02-09T08:00:00.000Z",
-      "updatedAt": "2026-02-09T18:00:00.000Z"
+      "updatedAt": "2026-02-11T16:00:00.000Z"
     }
   ],
   "entries": [
@@ -34,8 +40,8 @@
       "templateData": {
         "subcategory": "idea-spark",
         "ideaSpark": {
-            "coreValue": "Frictionless Documentation",
-            "vibe": "Narrative-first, but guided."
+          "coreValue": "Frictionless Documentation",
+          "vibe": "Narrative-first, but guided."
         }
       },
       "isPublic": true,
@@ -43,23 +49,23 @@
       "updatedAt": "2026-02-09T09:00:00.000Z"
     },
     {
-        "id": "entry-decision",
-        "projectId": "proj-devjournal",
-        "category": "plan-change",
-        "title": "Pivot to Hybrid Templates",
-        "templateData": {
-          "subcategory": "decision-log",
-          "decisionLog": {
-              "context": "User felt 'empty markdown' lacked guidance, but 'strict forms' felt like tax documents.",
-              "options": "1. Revert to strict forms.\n2. Keep empty markdown.\n3. Hybrid (Structured Input -> Narrative Output).",
-              "decision": "Option 3: Hybrid.",
-              "rationale": "We need the *prompting* of a form to unblock the user, but the *readability* of a story for the timeline."
-          }
-        },
-        "isPublic": true,
-        "createdAt": "2026-02-09T10:00:00.000Z",
-        "updatedAt": "2026-02-09T10:00:00.000Z"
+      "id": "entry-decision",
+      "projectId": "proj-devjournal",
+      "category": "plan-change",
+      "title": "Pivot to Hybrid Templates",
+      "templateData": {
+        "subcategory": "decision-log",
+        "decisionLog": {
+          "context": "User felt 'empty markdown' lacked guidance, but 'strict forms' felt like tax documents.",
+          "options": "1. Revert to strict forms.\n2. Keep empty markdown.\n3. Hybrid (Structured Input -> Narrative Output).",
+          "decision": "Option 3: Hybrid.",
+          "rationale": "We need the *prompting* of a form to unblock the user, but the *readability* of a story for the timeline."
+        }
       },
+      "isPublic": true,
+      "createdAt": "2026-02-09T10:00:00.000Z",
+      "updatedAt": "2026-02-09T10:00:00.000Z"
+    },
     {
       "id": "entry-debugging",
       "projectId": "proj-devjournal",
@@ -68,10 +74,10 @@
       "templateData": {
         "subcategory": "debugging",
         "debugging": {
-            "symptom": "TypeScript error: `EntryTemplateData` circularly references itself.",
-            "hypothesis": "I defined the union type incorrectly in `types.ts`.",
-            "attempted": "- Checked imports\n- Simplified unions",
-            "solution": "Separated the interfaces for Plan, Build, and Reflect into distinct types before unionizing them."
+          "symptom": "TypeScript error: `EntryTemplateData` circularly references itself.",
+          "hypothesis": "I defined the union type incorrectly in `types.ts`.",
+          "attempted": "- Checked imports\n- Simplified unions",
+          "solution": "Separated the interfaces for Plan, Build, and Reflect into distinct types before unionizing them."
         }
       },
       "isPublic": true,
@@ -79,71 +85,122 @@
       "updatedAt": "2026-02-09T14:30:00.000Z"
     },
     {
-        "id": "entry-context",
-        "projectId": "proj-devjournal",
-        "category": "build",
-        "title": "Audit Complete",
-        "templateData": {
-          "subcategory": "context-switch",
-          "contextSwitch": {
-              "currentState": "Templates are verified. Codebase is building.",
-              "nextSteps": "Update the sample data to reflect this history."
-          }
-        },
-        "isPublic": true,
-        "createdAt": "2026-02-09T18:00:00.000Z",
-        "updatedAt": "2026-02-09T18:00:00.000Z"
+      "id": "entry-context",
+      "projectId": "proj-devjournal",
+      "category": "build",
+      "title": "Context Switch: Import + Lint Stabilization",
+      "templateData": {
+        "subcategory": "context-switch",
+        "contextSwitch": {
+          "currentState": "Import flow now validates payload shape and updates state immutably. Linting migrated to ESLint flat config with Next core-web-vitals parity.",
+          "nextSteps": "Keep lint rules in flat config synced with Next upgrades and expand sample dataset for new scenarios."
+        }
       },
-      {
-        "id": "entry-milestone",
-        "projectId": "proj-devjournal",
-        "category": "reflect",
-        "title": "v1.0 Templates Shipped",
-        "templateData": {
-          "subcategory": "milestone",
-          "milestone": {
-              "achievement": "Implemented the Reddit-inspired Hybrid Templates.",
-              "impact": "Users now have 'Rubber Ducking' and 'Context Switching' built directly into their workflow.",
-              "demoLink": "http://localhost:3000"
-          }
-        },
-        "isPublic": true,
-        "createdAt": "2026-02-09T20:00:00.000Z",
-        "updatedAt": "2026-02-09T20:00:00.000Z"
+      "isPublic": true,
+      "createdAt": "2026-02-09T18:00:00.000Z",
+      "updatedAt": "2026-02-11T16:00:00.000Z"
+    },
+    {
+      "id": "entry-milestone",
+      "projectId": "proj-devjournal",
+      "category": "reflect",
+      "title": "v1.0 Templates Shipped",
+      "templateData": {
+        "subcategory": "milestone",
+        "milestone": {
+          "achievement": "Implemented the Reddit-inspired Hybrid Templates.",
+          "impact": "Users now have 'Rubber Ducking' and 'Context Switching' built directly into their workflow.",
+          "demoLink": "http://localhost:3000"
+        }
       },
-      {
-        "id": "entry-postmortem",
-        "projectId": "proj-devjournal",
-        "category": "reflect",
-        "title": "Build Failed on Vercel",
-        "templateData": {
-          "subcategory": "post-mortem",
-          "postMortem": {
-              "incident": "Production build failed due to missing env var.",
-              "rootCause": "Forgot to add `NEXT_PUBLIC_API_URL` to Vercel dashboard.",
-              "prevention": "Added a `.env.example` check in the build script."
-          }
-        },
-        "isPublic": true,
-        "createdAt": "2026-02-09T21:00:00.000Z",
-        "updatedAt": "2026-02-09T21:00:00.000Z"
+      "isPublic": true,
+      "createdAt": "2026-02-09T20:00:00.000Z",
+      "updatedAt": "2026-02-09T20:00:00.000Z"
+    },
+    {
+      "id": "entry-postmortem",
+      "projectId": "proj-devjournal",
+      "category": "reflect",
+      "title": "Build Failed on Vercel",
+      "templateData": {
+        "subcategory": "post-mortem",
+        "postMortem": {
+          "incident": "Production build failed due to missing env var.",
+          "rootCause": "Forgot to add `NEXT_PUBLIC_API_URL` to Vercel dashboard.",
+          "prevention": "Added a `.env.example` check in the build script."
+        }
       },
-      {
-        "id": "entry-review",
-        "projectId": "proj-devjournal",
-        "category": "reflect",
-        "title": "Weekly Review: Feb 3-9",
-        "templateData": {
-          "subcategory": "review",
-          "review": {
-              "period": "Feb 3 - Feb 9, 2026",
-              "wentWell": "- Shipped Hybrid Templates\n- Fixed circular dependency bug\n- Updated all documentation",
-              "couldBeBetter": "- Spent too long struggling with Next.js 16 async params.\n- Need to automate the sample data generation."
-          }
-        },
-        "isPublic": true,
-        "createdAt": "2026-02-09T22:00:00.000Z",
-        "updatedAt": "2026-02-09T22:00:00.000Z"
-      }
+      "isPublic": true,
+      "createdAt": "2026-02-09T21:00:00.000Z",
+      "updatedAt": "2026-02-09T21:00:00.000Z"
+    },
+    {
+      "id": "entry-review",
+      "projectId": "proj-devjournal",
+      "category": "reflect",
+      "title": "Weekly Review: Feb 3-9",
+      "templateData": {
+        "subcategory": "review",
+        "review": {
+          "period": "Feb 3 - Feb 9, 2026",
+          "wentWell": "- Shipped Hybrid Templates\n- Fixed circular dependency bug\n- Updated all documentation",
+          "couldBeBetter": "- Spent too long struggling with Next.js 16 async params.\n- Need to automate the sample data generation."
+        }
+      },
+      "isPublic": true,
+      "createdAt": "2026-02-09T22:00:00.000Z",
+      "updatedAt": "2026-02-09T22:00:00.000Z"
+    },
+    {
+      "id": "entry-import-hardening",
+      "projectId": "proj-devjournal",
+      "category": "build",
+      "title": "Hardened .devjournal Import Pipeline",
+      "templateData": {
+        "subcategory": "implementation-guide",
+        "implementationGuide": {
+          "feature": "Safer DevJournal imports",
+          "howItWorks": "Validate global payload arrays, normalize selective/project payloads, remap project IDs, and apply a single immutable Zustand set for projects/entries.",
+          "edgeCases": "Malformed payloads now fail fast with clear messages. Success counts only include valid project records."
+        }
+      },
+      "isPublic": true,
+      "createdAt": "2026-02-10T11:20:00.000Z",
+      "updatedAt": "2026-02-10T11:20:00.000Z"
+    },
+    {
+      "id": "entry-lint-migration",
+      "projectId": "proj-devjournal",
+      "category": "build",
+      "title": "Migrated to ESLint Flat Config for Next 16",
+      "templateData": {
+        "subcategory": "til-snippet",
+        "tilSnippet": {
+          "problem": "`next lint` no longer works in Next.js 16 CLI for this setup.",
+          "solution": "Use `eslint .` via `package.json` and provide `eslint.config.mjs` that loads Next/React rules with core-web-vitals.",
+          "code": "// package.json\\n\"lint\": \"eslint .\"\\n\\n// eslint.config.mjs\\n...nextPlugin.configs[\"core-web-vitals\"].rules"
+        }
+      },
+      "isPublic": true,
+      "createdAt": "2026-02-11T09:10:00.000Z",
+      "updatedAt": "2026-02-11T09:10:00.000Z"
+    },
+    {
+      "id": "entry-review-latest",
+      "projectId": "proj-devjournal",
+      "category": "reflect",
+      "title": "Review: Reliability and Tooling Cleanup",
+      "templateData": {
+        "subcategory": "review",
+        "review": {
+          "period": "Feb 10 - Feb 11, 2026",
+          "wentWell": "- Import flow is now resilient to malformed payloads\\n- Lint and build are both green after flat-config migration\\n- Security hardening added for external links",
+          "couldBeBetter": "- Automate schema validation tests for sample import fixtures\\n- Keep eslint-config-next and next majors aligned to reduce future friction"
+        }
+      },
+      "isPublic": true,
+      "createdAt": "2026-02-11T16:00:00.000Z",
+      "updatedAt": "2026-02-11T16:00:00.000Z"
+    }
   ]
 }

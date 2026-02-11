@@ -202,25 +202,51 @@ export const useDevJournalStore = create<DevJournalStore>()(
 
                     // 1. Resolve what to import
                     if (data.type === "global") {
+                        if (!Array.isArray(data.projects) || !Array.isArray(data.entries)) {
+                            return {
+                                success: false,
+                                message: "Invalid global DevJournal payload.",
+                            };
+                        }
+
                         projectsToImport.push(...data.projects);
                         entriesToImport.push(...data.entries);
                         // Optionally update user bio/data? Keeping merging non-destructive for user too.
                     } else if (data.type === "selective" || data.type === "project") {
-                        const projs = data.projects || (data.project ? [data.project] : []);
+                        const projs = Array.isArray(data.projects)
+                            ? data.projects
+                            : data.project
+                                ? [data.project]
+                                : [];
+                        const safeEntries = Array.isArray(data.entries) ? data.entries : [];
+
                         projectsToImport.push(...projs);
-                        entriesToImport.push(...data.entries);
+                        entriesToImport.push(...safeEntries);
                     } else {
                         return { success: false, message: "Unknown DevJournal content type." };
                     }
 
+                    if (projectsToImport.length === 0) {
+                        return { success: false, message: "No projects found to import." };
+                    }
+
+                    const existingProjects = [...state.projects];
+                    const existingEntries = [...state.entries];
+
                     // 2. Process each project with Windows-style renaming
                     const projectMappings: Record<string, string> = {}; // Old ID -> New ID
 
+                    let importedProjectsCount = 0;
+
                     projectsToImport.forEach(incomingProj => {
+                        if (!incomingProj?.id || !incomingProj?.name) {
+                            return;
+                        }
+
                         let finalName = incomingProj.name;
                         let counter = 1;
 
-                        while (state.projects.some(p => p.name === finalName)) {
+                        while (existingProjects.some(p => p.name === finalName)) {
                             finalName = `${incomingProj.name} (${counter})`;
                             counter++;
                         }
@@ -228,7 +254,7 @@ export const useDevJournalStore = create<DevJournalStore>()(
                         const newProjectId = generateId();
                         projectMappings[incomingProj.id] = newProjectId;
 
-                        state.projects.push({
+                        existingProjects.push({
                             ...incomingProj,
                             id: newProjectId,
                             name: finalName,
@@ -236,13 +262,19 @@ export const useDevJournalStore = create<DevJournalStore>()(
                             createdAt: incomingProj.createdAt || new Date().toISOString(),
                             updatedAt: new Date().toISOString(),
                         });
+
+                        importedProjectsCount++;
                     });
+
+                    if (importedProjectsCount === 0) {
+                        return { success: false, message: "No valid projects found to import." };
+                    }
 
                     // 3. Process entries linked to these projects
                     entriesToImport.forEach(incomingEntry => {
                         const newProjectId = projectMappings[incomingEntry.projectId];
                         if (newProjectId) {
-                            state.entries.push({
+                            existingEntries.push({
                                 ...incomingEntry,
                                 id: generateId(),
                                 projectId: newProjectId,
@@ -253,13 +285,13 @@ export const useDevJournalStore = create<DevJournalStore>()(
 
                     // Update state
                     set({
-                        projects: [...state.projects],
-                        entries: [...state.entries]
+                        projects: existingProjects,
+                        entries: existingEntries
                     });
 
                     return {
                         success: true,
-                        message: `Successfully imported ${projectsToImport.length} projects.`
+                        message: `Successfully imported ${importedProjectsCount} projects.`
                     };
 
                 } catch (error) {
