@@ -49,3 +49,48 @@ To ensure the pattern is effective, you must measure cognitive load using a mix 
 | **Flow** | **Contextual Help** | Use tooltips/hotspots instead of long manuals. |
 | **Data** | **Personalization** | Use AI to filter irrelevant options and prevent saturation. |
 | **Test** | **Load Measurement** | Validate utilizing NASA-TLX and eye-tracking. |
+
+---
+
+## Shared Design Foundation (Noir + Calm Focus)
+
+All new screen work should consume semantic wrappers and tokens before introducing page-specific styling.
+
+### 1) Tokens first
+
+- Use `lib/design-tokens.ts` as the source of truth for semantic groups:
+  - `color`: `surface`, `text`, `accent`, `warning`, `destructive-soft`
+  - `motion`: `subtle`, `standard`, `expressive`
+  - `spacing`: `cozy`, `compact`
+- Tokens map directly to CSS custom properties in `app/globals.css`.
+- Avoid hardcoded hex values or ad-hoc animation timings in feature code.
+
+### 2) Theme variants
+
+- Default theme is `noir` (`:root` / `data-theme="noir"`).
+- Secondary theme is `calm-focus` (`data-theme="calm-focus"`).
+- When building theme-aware UI, reference semantic Tailwind classes (`bg-surface-*`, `text-text-*`, `border-surface-border`, `text-accent`, etc.) instead of direct palette utilities.
+
+### 3) ReactBits wrappers only
+
+Use wrappers in `components/ui` instead of importing raw ReactBits primitives on page-level code:
+
+- `FocusHeading`
+  - Purpose: animated headings with `blur` or `decrypt` effect presets.
+  - Use for hero/section labels where scanability and focal hierarchy matter.
+- `RewardLabel`
+  - Purpose: semantic shimmering micro-copy for rewards, status, or momentum cues.
+  - Use `tone` presets (`neutral`, `accent`, `warning`) instead of custom gradients.
+- `InteractiveSurface`
+  - Purpose: spotlight cards with controlled interaction energy.
+  - Use intensity presets (`subtle`, `standard`, `expressive`) rather than one-off hover effects.
+
+### 4) Page-level redesign guardrails
+
+Before making page-specific style passes:
+
+1. Confirm a semantic token exists.
+2. Confirm a shared wrapper exists.
+3. Extend wrapper presets when needed, then consume them from the page.
+
+This keeps the system deterministic, theme-safe, and consistent with BLAST architecture goals.
