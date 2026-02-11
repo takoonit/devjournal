@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, Transition, Easing } from "framer-motion";
+import { useDevJournalStore } from "@/lib/store";
 import { useEffect, useRef, useState, useMemo } from "react";
 
 type BlurTextProps = {
@@ -48,7 +49,10 @@ export default function BlurText({
   onAnimationComplete,
   stepDuration = 0.35,
 }: BlurTextProps) {
+  const { focusMode, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
   const elements = animateBy === "words" ? text.split(" ") : text.split("");
+  const effectiveDelay = motionLevel === "reduced" ? delay * 1.5 : delay;
+  const effectiveStepDuration = motionLevel === "reduced" ? stepDuration * 0.8 : stepDuration;
   const [inView, setInView] = useState(false);
   const ref = useRef<HTMLParagraphElement>(null);
 
@@ -70,9 +74,9 @@ export default function BlurText({
   const defaultFrom = useMemo(
     () =>
       direction === "top"
-        ? { filter: "blur(10px)", opacity: 0, y: -50 }
-        : { filter: "blur(10px)", opacity: 0, y: 50 },
-    [direction]
+        ? { filter: `blur(${motionLevel === "reduced" ? 4 : 10}px)`, opacity: 0, y: motionLevel === "reduced" ? -20 : -50 }
+        : { filter: `blur(${motionLevel === "reduced" ? 4 : 10}px)`, opacity: 0, y: motionLevel === "reduced" ? 20 : 50 },
+    [direction, motionLevel]
   );
 
   const defaultTo = useMemo(
@@ -87,11 +91,11 @@ export default function BlurText({
     [direction]
   );
 
-  const fromSnapshot = animationFrom ?? defaultFrom;
-  const toSnapshots = animationTo ?? defaultTo;
+  const fromSnapshot = focusMode ? { filter: "blur(0px)", opacity: 1, y: 0 } : animationFrom ?? defaultFrom;
+  const toSnapshots = focusMode ? [{ filter: "blur(0px)", opacity: 1, y: 0 }] : animationTo ?? defaultTo;
 
   const stepCount = toSnapshots.length + 1;
-  const totalDuration = stepDuration * (stepCount - 1);
+  const totalDuration = effectiveStepDuration * (stepCount - 1);
   const times = Array.from({ length: stepCount }, (_, i) =>
     stepCount === 1 ? 0 : i / (stepCount - 1)
   );
@@ -104,7 +108,7 @@ export default function BlurText({
         const spanTransition: Transition = {
           duration: totalDuration,
           times,
-          delay: (index * delay) / 1000,
+          delay: (index * effectiveDelay) / 1000,
           ease: easing,
         };
 

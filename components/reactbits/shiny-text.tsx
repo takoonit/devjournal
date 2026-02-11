@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, useEffect, useRef } from "react";
+import { useDevJournalStore } from "@/lib/store";
 import {
   motion,
   useMotionValue,
@@ -36,16 +37,19 @@ export default function ShinyText({
   delay = 0,
 }: ShinyTextProps) {
   const [isPaused, setIsPaused] = useState(false);
+  const { focusMode, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
   const progress = useMotionValue(0);
   const elapsedRef = useRef(0);
   const lastTimeRef = useRef<number | null>(null);
   const directionRef = useRef(direction === "left" ? 1 : -1);
 
-  const animationDuration = speed * 1000;
+  const effectiveDisabled = disabled || focusMode;
+  const motionMultiplier = motionLevel === "reduced" ? 1.8 : 1;
+  const animationDuration = speed * motionMultiplier * 1000;
   const delayDuration = delay * 1000;
 
   useAnimationFrame((time) => {
-    if (disabled || isPaused) {
+    if (effectiveDisabled || isPaused) {
       lastTimeRef.current = null;
       return;
     }
@@ -116,6 +120,10 @@ export default function ShinyText({
     backgroundClip: "text",
     WebkitTextFillColor: "transparent",
   };
+
+  if (effectiveDisabled) {
+    return <span className={`inline-block ${className}`} style={{ color }}>{text}</span>;
+  }
 
   return (
     <motion.span

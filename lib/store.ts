@@ -3,6 +3,22 @@ import { persist } from "zustand/middleware";
 import { User, Project, Entry } from "./types";
 import { generateId, generateSlug } from "./utils";
 
+export interface UiPreferences {
+    themeMode: "noir" | "calm-focus";
+    focusMode: boolean;
+    density: "cozy" | "compact";
+    rewardIntensity: "off" | "subtle" | "full";
+    motionLevel: "reduced" | "standard";
+}
+
+export const defaultUiPreferences: UiPreferences = {
+    themeMode: "noir",
+    focusMode: false,
+    density: "cozy",
+    rewardIntensity: "subtle",
+    motionLevel: "standard",
+};
+
 interface DevJournalStore {
     // User
     user: User;
@@ -24,6 +40,10 @@ interface DevJournalStore {
     getEntriesByProjectId: (projectId: string) => Entry[];
     getPublicEntriesByProjectId: (projectId: string) => Entry[];
     getPublicProjects: () => Project[];
+
+    // UI preferences
+    uiPreferences: UiPreferences;
+    updateUiPreferences: (updates: Partial<UiPreferences>) => void;
 
     // Unified Portability (.devjournal)
     exportJournal: () => void;
@@ -51,6 +71,13 @@ export const useDevJournalStore = create<DevJournalStore>()(
             updateUser: (updates) =>
                 set((state) => ({
                     user: { ...state.user, ...updates },
+                })),
+
+            uiPreferences: defaultUiPreferences,
+
+            updateUiPreferences: (updates) =>
+                set((state) => ({
+                    uiPreferences: { ...state.uiPreferences, ...updates },
                 })),
 
             // Projects
@@ -139,6 +166,7 @@ export const useDevJournalStore = create<DevJournalStore>()(
                     type: "global",
                     exportedAt: new Date().toISOString(),
                     user: state.user,
+                    uiPreferences: state.uiPreferences,
                     projects: state.projects,
                     entries: state.entries,
                 };
@@ -211,6 +239,15 @@ export const useDevJournalStore = create<DevJournalStore>()(
 
                         projectsToImport.push(...data.projects);
                         entriesToImport.push(...data.entries);
+
+                        if (data.uiPreferences && typeof data.uiPreferences === "object") {
+                            set({
+                                uiPreferences: {
+                                    ...defaultUiPreferences,
+                                    ...data.uiPreferences,
+                                },
+                            });
+                        }
                         // Optionally update user bio/data? Keeping merging non-destructive for user too.
                     } else if (data.type === "selective" || data.type === "project") {
                         const projs = Array.isArray(data.projects)
@@ -305,6 +342,18 @@ export const useDevJournalStore = create<DevJournalStore>()(
         }),
         {
             name: "devjournal-storage",
+            version: 2,
+            migrate: (persistedState) => {
+                const state = persistedState as Partial<DevJournalStore>;
+
+                return {
+                    ...state,
+                    uiPreferences: {
+                        ...defaultUiPreferences,
+                        ...state.uiPreferences,
+                    },
+                };
+            },
         }
     )
 );

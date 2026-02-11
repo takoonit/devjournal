@@ -8,6 +8,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { useDevJournalStore } from "@/lib/store";
 import {
   motion,
   AnimatePresence,
@@ -78,7 +79,10 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
     },
     ref
   ) => {
+    const { focusMode, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
     const [currentTextIndex, setCurrentTextIndex] = useState<number>(0);
+    const effectiveRotationInterval = motionLevel === "reduced" ? rotationInterval * 1.8 : rotationInterval;
+    const effectiveAuto = auto && !focusMode;
 
     const splitIntoCharacters = (text: string): string[] => {
       if (typeof Intl !== "undefined" && Intl.Segmenter) {
@@ -203,10 +207,10 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
     );
 
     useEffect(() => {
-      if (!auto) return;
-      const intervalId = setInterval(next, rotationInterval);
+      if (!effectiveAuto) return;
+      const intervalId = setInterval(next, effectiveRotationInterval);
       return () => clearInterval(intervalId);
-    }, [next, rotationInterval, auto]);
+    }, [next, effectiveRotationInterval, effectiveAuto]);
 
     return (
       <motion.span

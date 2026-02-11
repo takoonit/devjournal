@@ -20,6 +20,7 @@ export default function EditorLayout({
     const { addToast } = useToast();
     const pathname = usePathname();
     const isSettingsActive = pathname === "/editor/settings";
+    const uiPreferences = useDevJournalStore((state) => state.uiPreferences);
 
     const getNavItemClasses = (isActive: boolean) =>
         cn(
@@ -44,9 +45,26 @@ export default function EditorLayout({
     };
 
     return (
-        <div className="flex min-h-screen">
+        <div
+            className={cn(
+                "flex min-h-screen",
+                uiPreferences.themeMode === "calm-focus" && "bg-zinc-950",
+                uiPreferences.density === "compact" ? "text-sm" : "text-base"
+            )}
+            data-theme-mode={uiPreferences.themeMode}
+            data-focus-mode={uiPreferences.focusMode}
+            data-density={uiPreferences.density}
+            data-reward-intensity={uiPreferences.rewardIntensity}
+            data-motion-level={uiPreferences.motionLevel}
+        >
             {/* Sidebar */}
-            <aside className="w-64 border-r border-zinc-800 bg-zinc-950/50 p-6">
+            <aside
+                className={cn(
+                    "w-64 border-r border-zinc-800 bg-zinc-950/50",
+                    uiPreferences.density === "compact" ? "p-4" : "p-6",
+                    uiPreferences.focusMode && "bg-zinc-950"
+                )}
+            >
                 <div className="mb-8">
                     <Link
                         href="/portfolio"
@@ -162,7 +180,7 @@ export default function EditorLayout({
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 p-8">{children}</main>
+            <main className={cn("flex-1", uiPreferences.density === "compact" ? "p-5" : "p-8")}>{children}</main>
         </div>
     );
 }

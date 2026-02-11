@@ -27,6 +27,7 @@
 - [x] Semantic Iconography (Lucide)
 - [x] Animated Modals (Framer Motion)
 - [ ] Add loading skeletons for data transitions
+- [x] UI preferences and global behavior controls
 
 ## 🚀 T: Trigger
 - [ ] GitHub Repository initialization

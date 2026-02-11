@@ -141,3 +141,19 @@ a:hover {
     text-wrap: balance;
   }
 }
+
+
+body[data-theme-mode="calm-focus"] {
+  --background: #090b12;
+  --foreground: #d8dee9;
+}
+
+body[data-focus-mode="true"]::before {
+  opacity: 0;
+}
+
+body[data-motion-level="reduced"] *,
+body[data-motion-level="reduced"] *::before,
+body[data-motion-level="reduced"] *::after {
+  scroll-behavior: auto !important;
+}
