@@ -113,9 +113,34 @@ DevJournal uses a "Noir" aesthetic inspired by Oscar Hernandez's editorial portf
 - Monospace typography for dates and metadata
 - Resume-style timeline layout
 
+
+
+## ISR + Vercel Deployment Steps (with Supabase)
+
+1. **Set environment variables (Preview + Production)**
+   - `NEXT_PUBLIC_SUPABASE_URL=https://sgadyniobmaxlbnnltkv.supabase.co`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable key>`
+   - `SUPABASE_SERVICE_ROLE_KEY=<secret key>` (server-only)
+   - `REVALIDATE_SECRET=<strong random token>`
+   - Deploy region target: `ap-southeast-2`
+
+2. **Supabase as source of truth**
+   - Keep Zustand as editor-side cache only.
+   - Use Supabase tables (`profiles`, `projects`, `entries`) for portfolio reads and ISR output.
+   - Use single-user write/update policy with public read access for portfolio data.
+
+3. **ISR strategy in Next.js**
+   - Portfolio routes use `revalidate = 150` seconds.
+   - Use on-demand revalidation endpoint at `POST /api/revalidate?secret=...`.
+   - Trigger path/tag invalidation for entry updates and slug changes (invalidate old/new slug paths).
+
+4. **Release flow**
+   - Validate in Vercel Preview first (soak period).
+   - Confirm cross-device consistency and ISR refresh behavior.
+   - Promote to Production after verification.
+
 ## Future Enhancements
 
-- Database integration (Supabase)
 - Authentication (multi-user support)
 - AI synthesis (generate case studies from entries)
 - GitHub sync (auto-import commits)

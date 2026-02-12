@@ -1,8 +1,4 @@
-"use client";
-
-import { useMemo } from "react";
-import { useDevJournalStore } from "@/lib/store";
-import { BioSidebar } from "@/components/portfolio/bio-sidebar";
+import { BioSidebarStatic } from "@/components/portfolio/bio-sidebar-static";
 import { ProjectCard } from "@/components/portfolio/project-card";
 import BlurText from "@/components/reactbits/blur-text";
 import ShinyText from "@/components/reactbits/shiny-text";
@@ -10,32 +6,20 @@ import CountUp from "@/components/reactbits/count-up";
 import ScrollReveal from "@/components/reactbits/scroll-reveal";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { getPublicPortfolioOverview } from "@/lib/supabase/server";
 
-export default function PortfolioPage() {
-    // Get store state
-    const allProjects = useDevJournalStore((state) => state.projects);
-    const allEntries = useDevJournalStore((state) => state.entries);
+export const revalidate = 150;
 
-    // Memoize public projects
-    const projects = useMemo(
-        () => allProjects.filter((p) => {
-            const publicEntries = allEntries.filter(
-                (e) => e.projectId === p.id && e.isPublic
-            );
-            return publicEntries.length > 0;
-        }),
-        [allProjects, allEntries]
-    );
+export default async function PortfolioPage() {
+    const { projects, user } = await getPublicPortfolioOverview();
 
     return (
         <div className="min-h-screen p-6 lg:p-12">
             <div className="max-w-7xl mx-auto">
                 <Breadcrumbs items={[{ label: "Portfolio" }]} />
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-                    {/* Bio Sidebar */}
-                    <BioSidebar />
+                    <BioSidebarStatic user={user} />
 
-                    {/* Projects Grid */}
                     <div className="flex-1">
                         <div className="mb-8">
                             <BlurText
@@ -72,10 +56,7 @@ export default function PortfolioPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {projects.map((project, index) => (
                                     <ScrollReveal key={project.id} delay={index * 0.08}>
-                                        <ProjectCard
-                                            project={project}
-                                            href={`/portfolio/${project.slug}`}
-                                        />
+                                        <ProjectCard project={project} href={`/portfolio/${project.slug}`} />
                                     </ScrollReveal>
                                 ))}
                             </div>

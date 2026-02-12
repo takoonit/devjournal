@@ -77,3 +77,13 @@
 ### Phase 5 Polish + QA Pass
 - **Issue:** Wayfinding links and empty-state surfaces had minor contrast/focus inconsistencies, and motion preference tiers needed CSS-level timing alignment for shared transitions.
 - **Fix:** Improved breadcrumb/link focus affordances, raised contrast on empty states, added motion-duration variable tuning for reduced/standard/expressive modes, and aligned editor/portfolio surface treatments for consistency.
+
+
+### ISR Blocker: Client-only Portfolio Data
+- **Issue:** Portfolio pages currently depend on Zustand `persist` state in localStorage, which cannot be accessed during server rendering/revalidation.
+- **Fix:** Move published portfolio records to Supabase and use server-side queries in App Router routes so ISR can generate cacheable HTML and revalidate predictably on Vercel.
+
+
+### ISR Implementation Strategy (Supabase + On-demand Revalidation)
+- **Decision:** Use Supabase as server-readable source of truth and keep Zustand local persistence as editor UX cache only.
+- **Operational Choice:** Use `revalidate = 150` for portfolio pages, with on-demand `revalidatePath`/`revalidateTag` for entry updates and slug changes to avoid stale public pages.
