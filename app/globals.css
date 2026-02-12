@@ -4,11 +4,99 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #060010;
-  --foreground: #e4e4e7;
+:root,
+:root[data-theme-mode="noir"] {
   --font-inter: 'Inter', sans-serif;
   --font-jetbrains-mono: 'JetBrains Mono', monospace;
+
+  --color-surface-canvas: 6 0 16;
+  --color-surface-base: 10 0 24;
+  --color-surface-raised: 18 0 31;
+  --color-surface-border: 63 63 70;
+
+  --color-text-primary: 228 228 231;
+  --color-text-secondary: 161 161 170;
+  --color-text-muted: 113 113 122;
+
+  --color-accent-base: 34 211 238;
+  --color-accent-soft: 8 145 178;
+  --color-accent-contrast: 236 254 255;
+
+  --color-warning-base: 245 158 11;
+  --color-warning-soft: 180 83 9;
+  --color-warning-contrast: 255 247 237;
+
+  --color-destructive-base: 244 63 94;
+  --color-destructive-soft: 159 18 57;
+  --color-destructive-contrast: 255 228 230;
+
+  --motion-subtle: 160ms;
+  --motion-standard: 260ms;
+  --motion-expressive: 420ms;
+
+  --easing-subtle: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --easing-expressive: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --space-cozy-stack-xs: 0.5rem;
+  --space-cozy-stack-sm: 0.75rem;
+  --space-cozy-stack-md: 1rem;
+  --space-cozy-stack-lg: 1.5rem;
+  --space-cozy-section: 2.5rem;
+
+  --space-compact-stack-xs: 0.25rem;
+  --space-compact-stack-sm: 0.5rem;
+  --space-compact-stack-md: 0.75rem;
+  --space-compact-stack-lg: 1rem;
+  --space-compact-section: 1.5rem;
+
+  --space-stack-xs: var(--space-cozy-stack-xs);
+  --space-stack-sm: var(--space-cozy-stack-sm);
+  --space-stack-md: var(--space-cozy-stack-md);
+  --space-stack-lg: var(--space-cozy-stack-lg);
+  --space-section: var(--space-cozy-section);
+
+  --background: rgb(var(--color-surface-canvas));
+  --foreground: rgb(var(--color-text-primary));
+}
+
+:root[data-theme-mode="calm-focus"] {
+  --color-surface-canvas: 7 10 18;
+  --color-surface-base: 12 18 30;
+  --color-surface-raised: 17 25 39;
+  --color-surface-border: 71 85 105;
+
+  --color-text-primary: 226 232 240;
+  --color-text-secondary: 148 163 184;
+  --color-text-muted: 100 116 139;
+
+  --color-accent-base: 96 165 250;
+  --color-accent-soft: 59 130 246;
+  --color-accent-contrast: 239 246 255;
+
+  --color-warning-base: 251 191 36;
+  --color-warning-soft: 202 138 4;
+  --color-warning-contrast: 254 252 232;
+
+  --color-destructive-base: 248 113 113;
+  --color-destructive-soft: 185 28 28;
+  --color-destructive-contrast: 254 226 226;
+}
+
+:root[data-density="compact"] {
+  --space-stack-xs: var(--space-compact-stack-xs);
+  --space-stack-sm: var(--space-compact-stack-sm);
+  --space-stack-md: var(--space-compact-stack-md);
+  --space-stack-lg: var(--space-compact-stack-lg);
+  --space-section: var(--space-compact-section);
+}
+
+:root[data-density="cozy"] {
+  --space-stack-xs: var(--space-cozy-stack-xs);
+  --space-stack-sm: var(--space-cozy-stack-sm);
+  --space-stack-md: var(--space-cozy-stack-md);
+  --space-stack-lg: var(--space-cozy-stack-lg);
+  --space-section: var(--space-cozy-section);
 }
 
 * {
@@ -45,11 +133,11 @@ body::before {
 a {
   color: inherit;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: color var(--motion-subtle) var(--easing-subtle);
 }
 
 a:hover {
-  color: #06b6d4;
+  color: rgb(var(--color-accent-base));
 }
 
 /* Custom scrollbar */
@@ -58,16 +146,16 @@ a:hover {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a0029;
+  background: rgb(var(--color-surface-raised));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3f3f46;
+  background: rgb(var(--color-surface-border));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #52525b;
+  background: rgb(var(--color-text-muted));
 }
 
 @layer utilities {
@@ -75,3 +163,30 @@ a:hover {
     text-wrap: balance;
   }
 }
+
+html[data-focus-mode="true"] body::before {
+  opacity: 0;
+}
+
+html[data-motion-level="reduced"] {
+  --motion-subtle: 120ms;
+  --motion-standard: 180ms;
+  --motion-expressive: 260ms;
+}
+
+html[data-motion-level="reduced"] *,
+html[data-motion-level="reduced"] *::before,
+html[data-motion-level="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: var(--motion-subtle) !important;
+  scroll-behavior: auto !important;
+}
+
+html[data-motion-level="expressive"] {
+  --motion-subtle: 220ms;
+  --motion-standard: 340ms;
+  --motion-expressive: 520ms;
+}
+
+

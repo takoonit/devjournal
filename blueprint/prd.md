@@ -21,3 +21,13 @@ Indie Hackers and Engineers who want to document their journey with a "determini
 
 ## 🏗️ Development Philosophy
 We prioritize **User Flow over Data Schema**. The application adapts to the developer's natural thought process, offering structure only when helpful (via prompts), not as a constraint.
+
+## 🧭 Redesign Program (Execution Contract)
+The redesign is delivered in five phases with explicit artifacts and acceptance criteria:
+1. **Foundation:** tokens, theme vars, preference state, docs alignment.
+2. **Feedback:** toast refresh, supportive copy system, reward intensity controls.
+3. **Flow:** step-based entry forms, progress indicators, save-and-return.
+4. **Wayfinding + Capture:** breadcrumbs, inbox quick-capture, conversion flow.
+5. **Polish + QA:** motion tuning by preference, a11y/contrast pass, consistency sweep.
+
+Primary success criteria: reduced clicks-to-start, fewer abandonment points, durable preference persistence, and consistent shared component usage.

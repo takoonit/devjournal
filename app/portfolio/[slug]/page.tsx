@@ -8,6 +8,9 @@ import { groupEntriesByYearMonth } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import BlurText from "@/components/reactbits/blur-text";
+import ScrollReveal from "@/components/reactbits/scroll-reveal";
 
 export default function ProjectDetailPage({
     params,
@@ -48,6 +51,7 @@ export default function ProjectDetailPage({
 
                     {/* Build Log */}
                     <div className="flex-1">
+                        <Breadcrumbs items={[{ label: "Portfolio", href: "/portfolio" }, { label: project.name }]} />
                         {/* Back Button */}
                         <Link
                             href="/portfolio"
@@ -62,7 +66,11 @@ export default function ProjectDetailPage({
                             <div className="flex items-start justify-between mb-4">
                                 <div>
                                     <h1 className="text-4xl font-bold text-zinc-100 mb-2">
-                                        {project.name}
+                                        <BlurText
+                                            text={project.name}
+                                            delay={80}
+                                            animateBy="letters"
+                                        />
                                     </h1>
                                     <p className="text-zinc-400 text-lg">{project.description}</p>
                                 </div>
@@ -117,8 +125,10 @@ export default function ProjectDetailPage({
                                                         {month}
                                                     </h3>
                                                     <div className="space-y-6">
-                                                        {groupedEntries[year][month].map((entry) => (
-                                                            <TimelineEntry key={entry.id} entry={entry} />
+                                                        {groupedEntries[year][month].map((entry, index) => (
+                                                            <ScrollReveal key={entry.id} delay={Math.min(index * 0.08, 0.5)}>
+                                                                <TimelineEntry entry={entry} />
+                                                            </ScrollReveal>
                                                         ))}
                                                     </div>
                                                 </div>
