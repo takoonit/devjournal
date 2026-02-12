@@ -12,7 +12,12 @@ import {
     Trophy,
     RotateCcw,
     AlertTriangle,
-    FileText
+    ClipboardCheck,
+    Zap,
+    Wrench,
+    Compass,
+    Medal,
+    FlaskConical
 } from "lucide-react";
 
 interface TimelineEntryProps {
@@ -43,22 +48,22 @@ const categoryConfig: Record<EntryCategory, { icon: any; color: string; bgColor:
     }
 };
 
-const subcategoryConfig: Record<string, { icon: any; label: string }> = {
+const subcategoryConfig: Record<string, { icon: any; label: string; color: string; bgColor: string; borderColor: string }> = {
     // Plan
-    "idea-spark": { icon: Lightbulb, label: "Idea Spark" },
-    "decision-log": { icon: BrainCircuit, label: "Decision Log" },
-    "research-notes": { icon: BookOpen, label: "Research" },
+    "idea-spark": { icon: Zap, label: "Idea Spark", color: "text-fuchsia-300", bgColor: "bg-fuchsia-500/15", borderColor: "border-fuchsia-400/40" },
+    "decision-log": { icon: BrainCircuit, label: "Decision Log", color: "text-indigo-300", bgColor: "bg-indigo-500/15", borderColor: "border-indigo-400/40" },
+    "research-notes": { icon: BookOpen, label: "Research", color: "text-sky-300", bgColor: "bg-sky-500/15", borderColor: "border-sky-400/40" },
 
     // Build
-    "context-switch": { icon: RotateCcw, label: "Context Switch" },
-    "debugging": { icon: Bug, label: "Rubber Ducking" },
-    "til-snippet": { icon: Code2, label: "TIL / Snippet" },
-    "implementation-guide": { icon: FileText, label: "Guide" },
+    "context-switch": { icon: Compass, label: "Context Switch", color: "text-amber-300", bgColor: "bg-amber-500/15", borderColor: "border-amber-400/40" },
+    "debugging": { icon: Bug, label: "Rubber Ducking", color: "text-rose-300", bgColor: "bg-rose-500/15", borderColor: "border-rose-400/40" },
+    "til-snippet": { icon: Code2, label: "TIL / Snippet", color: "text-emerald-300", bgColor: "bg-emerald-500/15", borderColor: "border-emerald-400/40" },
+    "implementation-guide": { icon: Wrench, label: "Guide", color: "text-orange-300", bgColor: "bg-orange-500/15", borderColor: "border-orange-400/40" },
 
     // Reflect
-    "milestone": { icon: Trophy, label: "Milestone" },
-    "post-mortem": { icon: AlertTriangle, label: "Post-Mortem" },
-    "review": { icon: Search, label: "Review" }
+    "milestone": { icon: Medal, label: "Milestone", color: "text-lime-300", bgColor: "bg-lime-500/15", borderColor: "border-lime-400/40" },
+    "post-mortem": { icon: FlaskConical, label: "Post-Mortem", color: "text-red-300", bgColor: "bg-red-500/15", borderColor: "border-red-400/40" },
+    "review": { icon: ClipboardCheck, label: "Review", color: "text-cyan-300", bgColor: "bg-cyan-500/15", borderColor: "border-cyan-400/40" }
 };
 
 export function TimelineEntry({ entry }: TimelineEntryProps) {
@@ -69,7 +74,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
     const subcategoryFn = (
         entry.templateData.subcategory in subcategoryConfig
             ? subcategoryConfig[entry.templateData.subcategory as keyof typeof subcategoryConfig]
-            : { icon: config.icon, label: entry.templateData.subcategory.replace("-", " ") }
+            : { icon: config.icon, label: entry.templateData.subcategory.replace("-", " "), color: config.color, bgColor: config.bgColor, borderColor: config.borderColor }
     );
     const SubIcon = subcategoryFn.icon;
 
@@ -320,7 +325,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
                                     <span className={`text-[10px] font-bold tracking-wider ${config.color} bg-black/40 px-2 py-0.5 rounded-full border ${config.borderColor} uppercase`}>
                                         {config.label}
                                     </span>
-                                    <span className="flex items-center gap-1 text-[10px] font-medium text-zinc-500 bg-zinc-800/50 px-2 py-0.5 rounded-full border border-zinc-800 uppercase">
+                                    <span className={`flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full border uppercase ${subcategoryFn.color} ${subcategoryFn.bgColor} ${subcategoryFn.borderColor}`}>
                                         <SubIcon className="w-3 h-3" />
                                         {subcategoryFn.label}
                                     </span>
