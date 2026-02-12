@@ -86,18 +86,53 @@ create policy if not exists "public can read public entries"
 on public.entries for select
 using (is_public = true);
 
--- single authenticated owner writes (replace auth.uid with your user id if needed)
+-- single authenticated owner writes
+-- Store the single owner UUID in a table so this works on hosted Supabase
+-- without requiring ALTER DATABASE permissions.
+create table if not exists public.owner_settings (
+  id boolean primary key default true,
+  owner_user_id uuid not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint owner_settings_single_row check (id)
+);
+
+create unique index if not exists idx_owner_settings_singleton on public.owner_settings (id);
+
+revoke all on public.owner_settings from anon, authenticated;
+
+drop trigger if exists set_owner_settings_updated_at on public.owner_settings;
+create trigger set_owner_settings_updated_at
+before update on public.owner_settings
+for each row execute function public.set_updated_at();
+
+-- Configure once in SQL editor:
+--   insert into public.owner_settings (id, owner_user_id)
+--   values (true, '<your-auth-user-uuid>')
+--   on conflict (id) do update set owner_user_id = excluded.owner_user_id;
+create or replace function public.is_portfolio_owner()
+returns boolean
+language sql
+stable
+as $$
+  select exists (
+    select 1
+    from public.owner_settings s
+    where s.id = true and s.owner_user_id = auth.uid()
+  );
+$$;
+
 create policy if not exists "owner can write profiles"
 on public.profiles for all
-using (auth.uid() is not null)
-with check (auth.uid() is not null);
+using (public.is_portfolio_owner())
+with check (public.is_portfolio_owner());
 
 create policy if not exists "owner can write projects"
 on public.projects for all
-using (auth.uid() is not null)
-with check (auth.uid() is not null);
+using (public.is_portfolio_owner())
+with check (public.is_portfolio_owner());
 
 create policy if not exists "owner can write entries"
 on public.entries for all
-using (auth.uid() is not null)
-with check (auth.uid() is not null);
+using (public.is_portfolio_owner())
+with check (public.is_portfolio_owner());
