@@ -215,10 +215,10 @@ export default function ProjectDetailPage({
                     {entries.map((entry, index) => (
                         <ScrollReveal key={entry.id} delay={Math.min(index * 0.06, 0.6)}>
                         <div
-                            className="relative border border-zinc-800 rounded-lg p-6 bg-zinc-900/30 hover:border-zinc-700 transition-colors"
+                            className="relative rounded-lg border border-zinc-800 bg-zinc-900/30 p-6 transition-colors hover:border-zinc-700"
                         >
-                            {/* Entry Actions — always visible for keyboard accessibility */}
-                            <div className="absolute top-4 right-4 flex items-center gap-1">
+                            {/* Entry Actions — keep in normal flow to avoid border overlap */}
+                            <div className="mb-4 flex items-center justify-end gap-1">
                                 <button
                                     onClick={() => toggleEntryVisibility(entry.id, entry.isPublic)}
                                     className={`p-2 rounded-lg transition-colors ${entry.isPublic

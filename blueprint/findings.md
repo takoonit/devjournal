@@ -108,3 +108,7 @@
 ### Breadcrumb Ownership Cleanup (Editor Root)
 - **Issue:** Editor root rendered breadcrumbs both in layout and page, causing redundant wayfinding chrome.
 - **Fix:** Removed page-level breadcrumb from `app/editor/page.tsx`; breadcrumb ownership now stays in `app/editor/layout.tsx`.
+
+### Entry Card Action Alignment Fix
+- **Issue:** Edit/delete/visibility controls on project entry cards were absolutely positioned and could visually overlap card borders.
+- **Fix:** Moved entry actions into normal document flow (`mb-4 flex justify-end`) so controls stay inside card content bounds.
