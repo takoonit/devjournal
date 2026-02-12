@@ -166,7 +166,7 @@ export const getPublicProjectBySlug = unstable_cache(
         const project = mapProjectRowToProject(projectResult.data);
         const { data: entriesData, error: entriesError } = await client
             .from("entries")
-            .select("id,project_id,category,title,template_data,is_public,created_at,updated_at")
+            .select("id,project_id,entry_type,title,content,template_data,category,is_public,created_at,updated_at")
             .eq("project_id", project.id)
             .eq("is_public", true)
             .order("created_at", { ascending: false })

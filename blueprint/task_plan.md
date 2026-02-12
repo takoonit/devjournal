@@ -160,3 +160,6 @@ This plan operationalizes the redesign into explicit, sequential phases with mea
 - **Fewer abandonment points:** More resumable flows, less forced context switching
 - **Preference persistence:** UI settings reliably survive refreshes and migrations
 - **Consistent component usage:** Shared primitives replace one-off UI patterns
+
+- [x] Semantic entry model migration kickoff: introduced `entry_type` + `content` in app types/schema and simplified entry authoring UI around type/title/body with optional details.
+- [x] Timeline interaction refinement: semantic icon/color mapping and client-side entry-type filtering for portfolio narratives.

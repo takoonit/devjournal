@@ -36,9 +36,11 @@ create table if not exists public.projects (
 create table if not exists public.entries (
   id uuid primary key default gen_random_uuid(),
   project_id uuid not null references public.projects(id) on delete cascade,
-  category text not null check (category in ('plan-change', 'build', 'reflect')),
+  entry_type text not null default 'journal' check (entry_type in ('feature', 'fix', 'refactor', 'design', 'journal')),
   title text not null,
-  template_data jsonb not null,
+  content text not null default '',
+  template_data jsonb,
+  category text,
   is_public boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
