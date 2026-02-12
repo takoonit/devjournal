@@ -167,3 +167,5 @@ This plan operationalizes the redesign into explicit, sequential phases with mea
 - [x] Removed duplicate editor-root breadcrumb rendering from `app/editor/page.tsx` so layout-level breadcrumbs remain single-source.
 
 - [x] Fixed entry action controls layout on project detail cards to prevent overlap with card borders.
+
+- [x] Addressed async submit + state sync edge cases in entry new/edit flows and deterministic timeline sorting/content fallback hygiene.

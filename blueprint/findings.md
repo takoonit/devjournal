@@ -112,3 +112,7 @@
 ### Entry Card Action Alignment Fix
 - **Issue:** Edit/delete/visibility controls on project entry cards were absolutely positioned and could visually overlap card borders.
 - **Fix:** Moved entry actions into normal document flow (`mb-4 flex justify-end`) so controls stay inside card content bounds.
+
+### Entry Flow Robustness Follow-up
+- **Issue:** Edit submit spinner could remain active on failure, local form state could desync on async entry load, draft restore could override capture-driven content, and timeline/content derivation had deterministic/legacy leakage gaps.
+- **Fix:** Added async `onSubmit` with `try/finally`, one-time entry hydration effect in edit page, capture-aware draft restore guard in new page, deterministic sorted timeline filtering, skipped `subcategory` key in content derivation, and widened migration normalization to fix invalid non-null `entry_type` values.

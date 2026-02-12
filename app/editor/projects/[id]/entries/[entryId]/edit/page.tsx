@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ChevronDown, Loader2, Save } from "lucide-react";
@@ -27,6 +27,22 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
     const [details, setDetails] = useState("");
     const [showDetails, setShowDetails] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const syncedEntryIdRef = useRef<string | null>(null);
+
+    useEffect(() => {
+        if (!entry) return;
+        if (syncedEntryIdRef.current === entry.id) return;
+
+        const [mainContent, detailsContent = ""] = baseContent.split("\n\n---\n", 2);
+
+        setEntryType(baseType);
+        setTitle(entry.title ?? "");
+        setContent(mainContent ?? "");
+        setDetails(detailsContent);
+        setShowDetails(detailsContent.trim().length > 0);
+
+        syncedEntryIdRef.current = entry.id;
+    }, [entry, baseType, baseContent]);
 
     if (!project || !entry) {
         return <div className="p-8 text-zinc-100">Entry not found.</div>;
@@ -34,21 +50,27 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
 
     const canSubmit = title.trim().length > 0 && content.trim().length > 0;
 
-    const onSubmit = (e: React.FormEvent) => {
+    const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!canSubmit) return;
 
         setIsSubmitting(true);
-        updateEntry(entry.id, {
-            entryType,
-            title: title.trim(),
-            content: details.trim() ? `${content.trim()}\n\n---\n${details.trim()}` : content.trim(),
-            category: undefined,
-            templateData: undefined,
-        });
+        try {
+            await Promise.resolve(
+                updateEntry(entry.id, {
+                    entryType,
+                    title: title.trim(),
+                    content: details.trim() ? `${content.trim()}\n\n---\n${details.trim()}` : content.trim(),
+                    category: undefined,
+                    templateData: undefined,
+                })
+            );
 
-        addToast({ message: "Entry updated.", type: "success" });
-        router.push(`/editor/projects/${project.id}`);
+            addToast({ message: "Entry updated.", type: "success" });
+            await Promise.resolve(router.push(`/editor/projects/${project.id}`));
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (

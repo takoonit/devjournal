@@ -16,7 +16,8 @@ set entry_type = case
   when category = 'reflect' then 'journal'
   else 'journal'
 end
-where entry_type is null;
+where entry_type is null
+   or entry_type not in ('feature', 'fix', 'refactor', 'design', 'journal');
 
 update public.entries
 set content = coalesce(content, '')

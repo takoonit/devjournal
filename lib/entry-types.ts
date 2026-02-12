@@ -37,8 +37,8 @@ export function getEntryContent(entry: Entry): string {
   const data = entry.templateData as Record<string, unknown>;
   const chunks: string[] = [];
 
-  Object.values(data).forEach((value) => {
-    if (!value) return;
+  Object.entries(data).forEach(([key, value]) => {
+    if (key === "subcategory" || !value) return;
     if (typeof value === "string") chunks.push(value);
     if (typeof value === "object") {
       Object.values(value as Record<string, unknown>).forEach((nested) => {

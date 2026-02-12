@@ -18,9 +18,14 @@ const FILTERS: Array<{ label: string; value: "all" | EntryType }> = [
 export function EntryTimeline({ entries }: { entries: Entry[] }) {
     const [filter, setFilter] = useState<"all" | EntryType>("all");
 
+    const sortedEntries = useMemo(
+        () => [...entries].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
+        [entries]
+    );
+
     const filteredEntries = useMemo(
-        () => entries.filter((entry) => filter === "all" || getEntryType(entry) === filter),
-        [entries, filter]
+        () => sortedEntries.filter((entry) => filter === "all" || getEntryType(entry) === filter),
+        [sortedEntries, filter]
     );
 
     const groupedEntries = useMemo(() => groupEntriesByYearMonth(filteredEntries), [filteredEntries]);

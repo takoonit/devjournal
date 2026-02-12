@@ -49,6 +49,9 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
     }, [addToast, peekInboxCapture, searchParams]);
 
     useEffect(() => {
+        const captureId = searchParams.get("capture");
+        if (captureId) return;
+
         const raw = localStorage.getItem(draftKey);
         if (!raw) return;
         try {
@@ -61,7 +64,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
         } catch {
             localStorage.removeItem(draftKey);
         }
-    }, [draftKey]);
+    }, [draftKey, searchParams]);
 
     useEffect(() => {
         const draft: EntryDraft = { entryType, title, content, details };
