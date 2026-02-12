@@ -7,7 +7,6 @@ import { ArrowRightCircle, CheckCircle2, Plus, Sparkles, Trash2 } from "lucide-r
 import Link from "next/link";
 import RotatingText from "@/components/reactbits/rotating-text";
 import ShinyText from "@/components/reactbits/shiny-text";
-import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { useToast } from "@/components/ui/toast";
 import ScrollReveal from "@/components/reactbits/scroll-reveal";
 import BlurText from "@/components/reactbits/blur-text";
@@ -59,7 +58,6 @@ export default function EditorPage() {
 
     return (
         <div className="max-w-6xl">
-            <Breadcrumbs items={[{ label: "Editor" }]} />
 
             <div className="mb-8">
                 <BlurText

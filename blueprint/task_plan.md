@@ -163,3 +163,5 @@ This plan operationalizes the redesign into explicit, sequential phases with mea
 
 - [x] Semantic entry model migration kickoff: introduced `entry_type` + `content` in app types/schema and simplified entry authoring UI around type/title/body with optional details.
 - [x] Timeline interaction refinement: semantic icon/color mapping and client-side entry-type filtering for portfolio narratives.
+
+- [x] Removed duplicate editor-root breadcrumb rendering from `app/editor/page.tsx` so layout-level breadcrumbs remain single-source.

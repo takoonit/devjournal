@@ -104,3 +104,7 @@
 ### Timeline Semantics + Filtering
 - **Issue:** Entry visual treatment was tied to mixed category/subcategory badges and lacked straightforward type filtering.
 - **Fix:** Rebuilt timeline card/node styling around fixed entry-type icon/color semantics and added client-side filter chips in portfolio project timelines.
+
+### Breadcrumb Ownership Cleanup (Editor Root)
+- **Issue:** Editor root rendered breadcrumbs both in layout and page, causing redundant wayfinding chrome.
+- **Fix:** Removed page-level breadcrumb from `app/editor/page.tsx`; breadcrumb ownership now stays in `app/editor/layout.tsx`.
