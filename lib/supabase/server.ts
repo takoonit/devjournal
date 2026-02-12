@@ -12,20 +12,18 @@ import {
 
 const ISR_WINDOW_SECONDS = 150;
 
-function getSupabaseClient() {
+function getSupabasePublicClient() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key =
+    const publishableKey =
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
         process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-        process.env.SUPABASE_PUBLISHABLE_KEY ??
-        process.env.SUPABASE_SERVICE_ROLE_KEY ??
-        process.env.SUPABASE_SECRET_KEY;
+        process.env.SUPABASE_PUBLISHABLE_KEY;
 
-    if (!url || !key) {
+    if (!url || !publishableKey) {
         return null;
     }
 
-    return createClient(url, key, {
+    return createClient(url, publishableKey, {
         auth: {
             persistSession: false,
             autoRefreshToken: false,
@@ -33,10 +31,19 @@ function getSupabaseClient() {
     });
 }
 
+function logSupabaseConfigWarning() {
+    if (process.env.NODE_ENV === "production") {
+        console.error(
+            "Supabase public client is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or publishable key aliases)."
+        );
+    }
+}
+
 const getCachedPublicProfile = unstable_cache(
     async (): Promise<User> => {
-        const client = getSupabaseClient();
+        const client = getSupabasePublicClient();
         if (!client) {
+            logSupabaseConfigWarning();
             return mapProfileRowToUser(null);
         }
 
@@ -60,8 +67,9 @@ const getCachedPublicProfile = unstable_cache(
 
 const getCachedPublicProjects = unstable_cache(
     async (): Promise<Project[]> => {
-        const client = getSupabaseClient();
+        const client = getSupabasePublicClient();
         if (!client) {
+            logSupabaseConfigWarning();
             return [];
         }
 
@@ -96,8 +104,9 @@ export async function getPublicPortfolioOverview() {
 
 export const getPublicProjectSlugs = unstable_cache(
     async (): Promise<string[]> => {
-        const client = getSupabaseClient();
+        const client = getSupabasePublicClient();
         if (!client) {
+            logSupabaseConfigWarning();
             return [];
         }
 
@@ -119,10 +128,11 @@ export const getPublicProjectSlugs = unstable_cache(
 
 export const getPublicProjectBySlug = unstable_cache(
     async (slug: string): Promise<{ project: Project | null; entries: Entry[]; user: User }> => {
-        const client = getSupabaseClient();
+        const client = getSupabasePublicClient();
         const fallbackUser = mapProfileRowToUser(null);
 
         if (!client) {
+            logSupabaseConfigWarning();
             return {
                 project: null,
                 entries: [],

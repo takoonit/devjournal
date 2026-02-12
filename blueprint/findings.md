@@ -87,3 +87,8 @@
 ### ISR Implementation Strategy (Supabase + On-demand Revalidation)
 - **Decision:** Use Supabase as server-readable source of truth and keep Zustand local persistence as editor UX cache only.
 - **Operational Choice:** Use `revalidate = 150` for portfolio pages, with on-demand `revalidatePath`/`revalidateTag` for entry updates and slug changes to avoid stale public pages.
+
+
+### Vercel Supabase Integration Hardening
+- **Issue:** Mixed environment variable naming across Vercel/Supabase integrations can cause brittle runtime config, and shared plaintext credentials create avoidable security risk.
+- **Fix:** Standardized public-read key precedence around `NEXT_PUBLIC_SUPABASE_ANON_KEY` + publishable aliases, documented Vercel integration mapping, and added explicit key-rotation guidance for any leaked credentials.

@@ -117,16 +117,21 @@ DevJournal uses a "Noir" aesthetic inspired by Oscar Hernandez's editorial portf
 
 ## ISR + Vercel Deployment Steps (with Supabase)
 
-1. **Set environment variables (Preview + Production)**
-   - `NEXT_PUBLIC_SUPABASE_URL=https://sgadyniobmaxlbnnltkv.supabase.co`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable key>`
-   - Optional aliases also supported by server helpers: `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` or `SUPABASE_PUBLISHABLE_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY=<secret key>` (server-only)
-   - `SUPABASE_SECRET_KEY` is accepted as a final fallback alias.
-   - `REVALIDATE_SECRET=<strong random token>`
-   - Deploy region target: `ap-southeast-2`
+1. **Configure Vercel + Supabase integration envs (Preview + Production)**
+   - Connect your existing Vercel project to Supabase in the Vercel Integrations dashboard.
+   - Ensure these public read vars exist for ISR routes:
+     - `NEXT_PUBLIC_SUPABASE_URL=https://sgadyniobmaxlbnnltkv.supabase.co`
+     - `NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon JWT>`
+   - Optional compatibility aliases supported by server helpers:
+     - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+     - `SUPABASE_PUBLISHABLE_KEY`
+   - Keep privileged vars for admin/migrations only (not required for public portfolio reads):
+     - `SUPABASE_SERVICE_ROLE_KEY`
+     - `POSTGRES_URL` / `POSTGRES_PRISMA_URL`
+   - Set `REVALIDATE_SECRET=<strong random token>` for on-demand ISR invalidation.
+   - Deploy region target: `ap-southeast-2`.
 
-   > Security: never commit real Supabase/Postgres credentials to source control. Rotate keys immediately if they were shared in plaintext.
+   > Security: never commit real Supabase/Postgres credentials to source control. If credentials were pasted/shared in plaintext, rotate **anon**, **service role**, **JWT secret**, and **database password** immediately.
 
 2. **Supabase as source of truth**
    - Keep Zustand as editor-side cache only.
