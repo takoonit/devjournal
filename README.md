@@ -120,9 +120,13 @@ DevJournal uses a "Noir" aesthetic inspired by Oscar Hernandez's editorial portf
 1. **Set environment variables (Preview + Production)**
    - `NEXT_PUBLIC_SUPABASE_URL=https://sgadyniobmaxlbnnltkv.supabase.co`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY=<publishable key>`
+   - Optional aliases also supported by server helpers: `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` or `SUPABASE_PUBLISHABLE_KEY`
    - `SUPABASE_SERVICE_ROLE_KEY=<secret key>` (server-only)
+   - `SUPABASE_SECRET_KEY` is accepted as a final fallback alias.
    - `REVALIDATE_SECRET=<strong random token>`
    - Deploy region target: `ap-southeast-2`
+
+   > Security: never commit real Supabase/Postgres credentials to source control. Rotate keys immediately if they were shared in plaintext.
 
 2. **Supabase as source of truth**
    - Keep Zustand as editor-side cache only.
