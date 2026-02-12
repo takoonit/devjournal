@@ -1,12 +1,10 @@
 import { BioSidebarStatic } from "@/components/portfolio/bio-sidebar-static";
-import { TimelineEntry } from "@/components/ui/timeline-entry";
-import { groupEntriesByYearMonth } from "@/lib/utils";
+import { EntryTimeline } from "@/components/portfolio/entry-timeline";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import BlurText from "@/components/reactbits/blur-text";
-import ScrollReveal from "@/components/reactbits/scroll-reveal";
 import {
     getPublicProjectBySlug,
     getPublicProjectSlugs,
@@ -31,9 +29,6 @@ export default async function ProjectDetailPage({
         notFound();
     }
 
-    const groupedEntries = groupEntriesByYearMonth(entries);
-    const years = Object.keys(groupedEntries).sort((a, b) => parseInt(b, 10) - parseInt(a, 10));
-
     return (
         <div className="min-h-screen p-6 lg:p-12">
             <div className="max-w-7xl mx-auto">
@@ -44,7 +39,7 @@ export default async function ProjectDetailPage({
                         <Breadcrumbs items={[{ label: "Portfolio", href: "/portfolio" }, { label: project.name }]} />
                         <Link
                             href="/portfolio"
-                            className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-cyan-400 transition-colors mb-6"
+                            className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-[#ff914d] transition-colors mb-6"
                         >
                             <ArrowLeft className="w-4 h-4" />
                             Back to projects
@@ -63,7 +58,7 @@ export default async function ProjectDetailPage({
                                         href={project.repositoryLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50 text-zinc-300 hover:text-cyan-400 hover:border-cyan-400/50 transition-all text-sm"
+                                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50 text-zinc-300 hover:text-[#ff914d] hover:border-[#ff914d]/50 transition-all text-sm"
                                     >
                                         <span>Repository</span>
                                         <ExternalLink className="w-4 h-4" />
@@ -88,43 +83,7 @@ export default async function ProjectDetailPage({
                                 <p className="text-zinc-500">No public entries yet.</p>
                             </div>
                         ) : (
-                            <div className="space-y-12">
-                                {years.map((year) => (
-                                    <div key={year}>
-                                        <h2 className="text-2xl font-bold text-zinc-100 mb-8 font-mono">{year}</h2>
-                                        {Object.keys(groupedEntries[year])
-                                            .sort((a, b) => {
-                                                const monthOrder = [
-                                                    "January",
-                                                    "February",
-                                                    "March",
-                                                    "April",
-                                                    "May",
-                                                    "June",
-                                                    "July",
-                                                    "August",
-                                                    "September",
-                                                    "October",
-                                                    "November",
-                                                    "December",
-                                                ];
-                                                return monthOrder.indexOf(b) - monthOrder.indexOf(a);
-                                            })
-                                            .map((month) => (
-                                                <div key={month} className="mb-10">
-                                                    <h3 className="text-lg font-semibold text-zinc-300 mb-6">{month}</h3>
-                                                    <div className="space-y-6">
-                                                        {groupedEntries[year][month].map((entry, index) => (
-                                                            <ScrollReveal key={entry.id} delay={Math.min(index * 0.08, 0.5)}>
-                                                                <TimelineEntry entry={entry} />
-                                                            </ScrollReveal>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                    </div>
-                                ))}
-                            </div>
+                            <EntryTimeline entries={entries} />
                         )}
                     </div>
                 </div>

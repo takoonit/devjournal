@@ -160,3 +160,12 @@ This plan operationalizes the redesign into explicit, sequential phases with mea
 - **Fewer abandonment points:** More resumable flows, less forced context switching
 - **Preference persistence:** UI settings reliably survive refreshes and migrations
 - **Consistent component usage:** Shared primitives replace one-off UI patterns
+
+- [x] Semantic entry model migration kickoff: introduced `entry_type` + `content` in app types/schema and simplified entry authoring UI around type/title/body with optional details.
+- [x] Timeline interaction refinement: semantic icon/color mapping and client-side entry-type filtering for portfolio narratives.
+
+- [x] Removed duplicate editor-root breadcrumb rendering from `app/editor/page.tsx` so layout-level breadcrumbs remain single-source.
+
+- [x] Fixed entry action controls layout on project detail cards to prevent overlap with card borders.
+
+- [x] Addressed async submit + state sync edge cases in entry new/edit flows and deterministic timeline sorting/content fallback hygiene.

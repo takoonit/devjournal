@@ -32,7 +32,7 @@ export default async function PortfolioPage() {
                             <p className="text-zinc-400">
                                 Build logs documenting the development process.
                                 {projects.length > 0 && (
-                                    <span className="ml-2 text-cyan-400 font-mono">
+                                    <span className="ml-2 text-[#ff914d] font-mono">
                                         <CountUp to={projects.length} duration={1.5} /> active
                                     </span>
                                 )}
@@ -47,9 +47,9 @@ export default async function PortfolioPage() {
                                 </p>
                                 <Link
                                     href="/editor"
-                                    className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 transition-colors"
+                                    className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#ff914d]/10 border border-[#ff914d]/30 hover:bg-[#ff914d]/20 transition-colors"
                                 >
-                                    <ShinyText text="Open Editor" className="text-cyan-400 font-medium" speed={3} />
+                                    <ShinyText text="Open Editor" className="text-[#ff914d] font-medium" speed={3} />
                                 </Link>
                             </div>
                         ) : (

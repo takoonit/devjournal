@@ -25,8 +25,9 @@ export interface Project {
     updatedAt: string;
 }
 
-// Entry Categories and Subcategories
+// Legacy Categories + New semantic entry type
 export type EntryCategory = "plan-change" | "build" | "reflect";
+export type EntryType = "feature" | "fix" | "refactor" | "design" | "journal";
 
 export type PlanSubcategory = "idea-spark" | "decision-log" | "research-notes";
 export type BuildSubcategory = "context-switch" | "debugging" | "til-snippet" | "implementation-guide";
@@ -34,13 +35,8 @@ export type ReflectSubcategory = "milestone" | "post-mortem" | "review";
 
 export type EntrySubcategory = PlanSubcategory | BuildSubcategory | ReflectSubcategory;
 
-
-
-// Entry Template Data
-
 export interface PlanTemplateData {
     subcategory: PlanSubcategory;
-    // content: string; // <-- Moving away from generic content
     ideaSpark?: {
         coreValue: string;
         vibe: string;
@@ -54,7 +50,7 @@ export interface PlanTemplateData {
     researchNotes?: {
         topic: string;
         learnings: string;
-        resources: string; // Markdown links
+        resources: string;
     };
 }
 
@@ -67,13 +63,13 @@ export interface BuildTemplateData {
     debugging?: {
         symptom: string;
         hypothesis: string;
-        attempted: string; // Markdown list
+        attempted: string;
         solution: string;
     };
     tilSnippet?: {
         problem: string;
         solution: string;
-        code: string;  // Code block
+        code: string;
     };
     implementationGuide?: {
         feature: string;
@@ -101,22 +97,20 @@ export interface ReflectTemplateData {
     };
 }
 
+export type EntryTemplateData = PlanTemplateData | BuildTemplateData | ReflectTemplateData | Record<string, unknown>;
 
-
-export type EntryTemplateData = PlanTemplateData | BuildTemplateData | ReflectTemplateData;
-
-// Entry
 export interface Entry {
     id: string;
     projectId: string;
-    category: EntryCategory;
+    entryType: EntryType;
     title: string;
-    templateData: EntryTemplateData;
+    content: string;
+    templateData?: EntryTemplateData;
+    category?: EntryCategory;
     isPublic: boolean;
     createdAt: string;
     updatedAt: string;
 }
-
 
 export interface InboxCapture {
     id: string;

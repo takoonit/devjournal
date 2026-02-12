@@ -27,9 +27,11 @@ export interface ProjectRow {
 export interface EntryRow {
     id: string;
     project_id: string;
-    category: Entry["category"];
+    entry_type: Entry["entryType"] | null;
     title: string;
-    template_data: Entry["templateData"];
+    content: string | null;
+    template_data: Entry["templateData"] | null;
+    category: Entry["category"] | null;
     is_public: boolean;
     created_at: string;
     updated_at: string;
@@ -83,9 +85,11 @@ export function mapEntryRowToEntry(entry: EntryRow): Entry {
     return {
         id: entry.id,
         projectId: entry.project_id,
-        category: entry.category,
+        entryType: entry.entry_type ?? "journal",
         title: entry.title,
-        templateData: entry.template_data,
+        content: entry.content ?? "",
+        templateData: entry.template_data ?? undefined,
+        category: entry.category ?? undefined,
         isPublic: entry.is_public,
         createdAt: entry.created_at,
         updatedAt: entry.updated_at,

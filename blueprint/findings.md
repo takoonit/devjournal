@@ -92,3 +92,27 @@
 ### Vercel Supabase Integration Hardening
 - **Issue:** Mixed environment variable naming across Vercel/Supabase integrations can cause brittle runtime config, and shared plaintext credentials create avoidable security risk.
 - **Fix:** Standardized public-read key precedence around `NEXT_PUBLIC_SUPABASE_ANON_KEY` + publishable aliases, documented Vercel integration mapping, and added explicit key-rotation guidance for any leaked credentials.
+
+### Semantic Entry Type Migration (feature/fix/refactor/design/journal)
+- **Issue:** Legacy entry model coupled authoring to visual/category-specific templates, increasing cognitive load and hindering fast journaling.
+- **Fix:** Added semantic `entry_type` + `content` pipeline (types, Supabase row mapping, schema + migration SQL), with legacy fallback inference for existing records.
+
+### No-Decision Entry Form + Progressive Disclosure
+- **Issue:** Multi-step category/subcategory templating forced unnecessary decisions before writing.
+- **Fix:** Replaced new/edit forms with defaulted entry-type segmented controls plus direct title/body inputs and a collapsed “More Details” section for optional metadata.
+
+### Timeline Semantics + Filtering
+- **Issue:** Entry visual treatment was tied to mixed category/subcategory badges and lacked straightforward type filtering.
+- **Fix:** Rebuilt timeline card/node styling around fixed entry-type icon/color semantics and added client-side filter chips in portfolio project timelines.
+
+### Breadcrumb Ownership Cleanup (Editor Root)
+- **Issue:** Editor root rendered breadcrumbs both in layout and page, causing redundant wayfinding chrome.
+- **Fix:** Removed page-level breadcrumb from `app/editor/page.tsx`; breadcrumb ownership now stays in `app/editor/layout.tsx`.
+
+### Entry Card Action Alignment Fix
+- **Issue:** Edit/delete/visibility controls on project entry cards were absolutely positioned and could visually overlap card borders.
+- **Fix:** Moved entry actions into normal document flow (`mb-4 flex justify-end`) so controls stay inside card content bounds.
+
+### Entry Flow Robustness Follow-up
+- **Issue:** Edit submit spinner could remain active on failure, local form state could desync on async entry load, draft restore could override capture-driven content, and timeline/content derivation had deterministic/legacy leakage gaps.
+- **Fix:** Added async `onSubmit` with `try/finally`, one-time entry hydration effect in edit page, capture-aware draft restore guard in new page, deterministic sorted timeline filtering, skipped `subcategory` key in content derivation, and widened migration normalization to fix invalid non-null `entry_type` values.
