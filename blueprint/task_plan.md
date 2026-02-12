@@ -111,6 +111,45 @@ This plan operationalizes the redesign into explicit, sequential phases with mea
 
 ---
 
+
+## 📦 ISR + Vercel Deployment Plan (Supabase-backed)
+
+**Objective:** Enable true Next.js ISR for public portfolio routes by moving published data from client-only localStorage to Supabase, then deploy with controlled revalidation on Vercel.
+
+
+### Decision Inputs (Confirmed)
+- [x] Supabase project: `https://sgadyniobmaxlbnnltkv.supabase.co` (region: `ap-southeast-2`)
+- [x] Zustand remains editor cache only; Supabase is portfolio source of truth
+- [x] Single-user write/update model
+- [x] ISR window: `150s`
+- [x] Revalidation triggers: entry updates + slug changes
+- [x] Rollout: Preview soak period, then Production verification
+
+### Step 1 — Implement Supabase as source of truth
+- [x] Create Supabase tables for `profiles`, `projects`, and `entries` with portfolio fields (`slug`, visibility, timestamps, ordering).
+- [x] Add row-level security policies for public reads and authenticated editor writes.
+- [x] Add server-side data access helpers (e.g., `lib/supabase/server.ts`) used by portfolio pages.
+- [x] Migrate portfolio reads away from Zustand/localStorage to Supabase-backed server queries.
+
+### Step 2 — Enable ISR on portfolio routes
+- [x] Convert `app/portfolio/page.tsx` and `app/portfolio/[slug]/page.tsx` to server-first rendering paths where data is fetched on the server.
+- [x] Export route `revalidate` intervals and add `generateStaticParams` for project slugs.
+- [x] Add cache tags (`revalidateTag`) or path invalidation (`revalidatePath`) strategy for project + entry updates.
+- [x] Keep interactive client-only behavior isolated in leaf components.
+
+### Step 3 — Wire Vercel deployment + on-demand revalidation
+- [x] Add `app/api/revalidate/route.ts` protected by `REVALIDATE_SECRET`.
+- [x] Configure Vercel environment variables for Supabase (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, optional publishable aliases, server role key) and revalidation secret for Preview + Production.
+- [x] Document publish/unpublish flows that trigger path/tag invalidation.
+- [ ] Add smoke tests for deployed revalidation endpoint and portfolio cache refresh behavior.
+
+### Step 4 — Cutover + validation checklist
+- [x] `pnpm lint` and `pnpm build` clean before production promotion.
+- [ ] Verify portfolio consistency across devices (confirms data is no longer localStorage-only).
+- [ ] Confirm stale content refreshes after ISR window and immediately after on-demand revalidation.
+- [ ] Add rollback notes (disable webhook, revert deployment, revalidate critical paths).
+
+---
 ## 🚀 T: Trigger
 - [x] Final regression pass (`pnpm lint`, `pnpm build`) at completion of each completed phase (Phases 1–4)
 - [x] Deploy phased milestones to Vercel preview environments for completed phases (Phases 1–4)
