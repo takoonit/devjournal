@@ -14,7 +14,7 @@ interface SpotlightCardProps {
 export function SpotlightCard({
     children,
     className = "",
-    spotlightColor = "rgba(6, 182, 212, 0.15)",
+    spotlightColor = "rgba(148, 163, 184, 0.12)",
 }: SpotlightCardProps) {
     const divRef = useRef<HTMLDivElement>(null);
     const { focusMode, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
@@ -25,11 +25,11 @@ export function SpotlightCard({
     const spotlightOpacity = focusMode
         ? 0
         : motionLevel === "reduced"
-          ? 0.3
+          ? 0.18
           : motionLevel === "expressive"
-            ? 0.8
-            : 0.6;
-    const spotlightSize = motionLevel === "reduced" ? 450 : motionLevel === "expressive" ? 680 : 600;
+            ? 0.45
+            : 0.28;
+    const spotlightSize = motionLevel === "reduced" ? 520 : motionLevel === "expressive" ? 620 : 560;
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!divRef.current || isFocused || focusMode) return;
@@ -66,7 +66,7 @@ export function SpotlightCard({
             onBlur={handleBlur}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            className={cn("relative overflow-hidden rounded-xl border border-zinc-800 bg-gradient-to-br from-zinc-900/50 to-zinc-950/50 backdrop-blur-sm transition-all duration-300 hover:border-zinc-700", className)}
+            className={cn("relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/45 backdrop-blur-sm transition-colors duration-300 hover:bg-zinc-900/55", className)}
         >
             {!focusMode && (
                 <div
