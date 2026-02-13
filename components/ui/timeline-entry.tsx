@@ -50,8 +50,8 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
                         </span>
                     </header>
 
-                    <h3 className="mb-2 text-base font-semibold text-zinc-100">{entry.title}</h3>
-                    <p className="whitespace-pre-wrap text-[15px] leading-7 text-zinc-300">{content || "No notes captured."}</p>
+                    <h3 className="mb-2 text-sm font-medium text-zinc-200">{entry.title}</h3>
+                    <p className="whitespace-pre-wrap text-base leading-8 text-zinc-200">{content || "No notes captured."}</p>
                 </article>
             </div>
         </div>

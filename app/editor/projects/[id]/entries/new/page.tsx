@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ChevronDown, Loader2, Save } from "lucide-react";
@@ -32,6 +32,8 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
     const [showDetails, setShowDetails] = useState(false);
     const [pendingCaptureId, setPendingCaptureId] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showDraftSaved, setShowDraftSaved] = useState(false);
+    const formRef = useRef<HTMLFormElement>(null);
 
     const draftKey = `devjournal-entry-draft-${id}`;
 
@@ -71,6 +73,33 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
         localStorage.setItem(draftKey, JSON.stringify(draft));
     }, [draftKey, entryType, title, content, details]);
 
+    useEffect(() => {
+        const inactivityTimer = window.setTimeout(() => {
+            setShowDraftSaved(true);
+        }, 10000);
+
+        return () => window.clearTimeout(inactivityTimer);
+    }, [entryType, title, content, details]);
+
+    useEffect(() => {
+        if (!showDraftSaved) return;
+        const visibilityTimer = window.setTimeout(() => setShowDraftSaved(false), 2200);
+        return () => window.clearTimeout(visibilityTimer);
+    }, [showDraftSaved]);
+
+    const selectedTypeDescription = useMemo(() => {
+        const selected = ENTRY_TYPE_OPTIONS.find((option) => option.value === entryType);
+        if (!selected) return "";
+        return `${selected.label} = ${selected.description}`;
+    }, [entryType]);
+
+    const submitShortcut = (e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+            e.preventDefault();
+            formRef.current?.requestSubmit();
+        }
+    };
+
     if (!project) {
         return <div className="p-8 text-zinc-100">Project not found.</div>;
     }
@@ -105,7 +134,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
 
                 <BlurText text="New Entry" className="mb-6 text-4xl font-extrabold text-white" delay={70} animateBy="letters" />
 
-                <form onSubmit={onSubmit} className="space-y-6 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
+                <form ref={formRef} onSubmit={onSubmit} className="space-y-6 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6">
                     <div>
                         <p className="mb-3 text-xs uppercase tracking-wider text-zinc-400">Entry type</p>
                         <div className="flex flex-wrap gap-2">
@@ -120,16 +149,20 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                                 </button>
                             ))}
                         </div>
+                        <p className="mt-2 text-xs text-zinc-500">{selectedTypeDescription}</p>
                     </div>
 
                     <div className="space-y-2">
                         <label htmlFor="title" className="text-sm text-zinc-300">Title</label>
-                        <input id="title" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100" placeholder="What changed?" />
+                        <input id="title" value={title} onChange={(e) => setTitle(e.target.value)} onKeyDown={submitShortcut} className="w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100" placeholder="What changed?" />
                     </div>
 
                     <div className="space-y-2">
                         <label htmlFor="content" className="text-sm text-zinc-300">Body</label>
-                        <textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} className="h-52 w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100" placeholder="Write the story of what you built, fixed, or learned..." />
+                        <textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} onKeyDown={submitShortcut} className="h-52 w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100" placeholder="Write the story of what you built, fixed, or learned..." />
+                        <p className={`text-xs text-zinc-500 transition-opacity ${showDraftSaved ? "opacity-100" : "opacity-0"}`} aria-live="polite">
+                            Draft saved locally
+                        </p>
                     </div>
 
                     <div>
@@ -137,7 +170,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                             <ChevronDown className={`h-4 w-4 transition-transform ${showDetails ? "rotate-180" : ""}`} /> More Details
                         </button>
                         {showDetails ? (
-                            <textarea value={details} onChange={(e) => setDetails(e.target.value)} className="mt-3 h-28 w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100" placeholder="Optional tags, links, context, or attachment notes..." />
+                            <textarea value={details} onChange={(e) => setDetails(e.target.value)} onKeyDown={submitShortcut} className="mt-3 h-28 w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100" placeholder="Optional tags, links, context, or attachment notes..." />
                         ) : null}
                     </div>
 
