@@ -1,9 +1,8 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, ReactNode, useRef } from "react";
+import { createContext, useContext, useState, useCallback, ReactNode, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, XCircle, Info, Sparkles, X } from "lucide-react";
-import { useDevJournalStore } from "@/lib/store";
 import {
   resolveSupportiveToastCopy,
   type ToastType,
@@ -35,7 +34,7 @@ const ToastContext = createContext<ToastContextType | null>(null);
 export function useToast() {
   const context = useContext(ToastContext);
   if (!context) {
-    throw new Error("useToast must be used within a ToastProvider");
+    return { addToast: () => {} };
   }
   return context;
 }
@@ -55,7 +54,6 @@ const toneClasses: Record<ToastTone, string> = {
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const timeoutRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
-  const { rewardIntensity, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
 
   const addToast = useCallback(
     (input: string | ToastInput, legacyType: ToastType = "info") => {
@@ -66,7 +64,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
       const resolved = resolveSupportiveToastCopy({
         type: normalized.type,
-        rewardIntensity,
+        rewardIntensity: "subtle",
         fallbackMessage: normalized.message,
         copyKey: normalized.copyKey,
       });
@@ -83,14 +81,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         },
       ].slice(-5));
 
-      const timeoutMs = rewardIntensity === "full" ? 4800 : rewardIntensity === "off" ? 2600 : 3600;
+      const timeoutMs = 3600;
       const timeoutId = setTimeout(() => {
         timeoutRef.current.delete(id);
         setToasts((prev) => prev.filter((t) => t.id !== id));
       }, timeoutMs);
       timeoutRef.current.set(id, timeoutId);
     },
-    [rewardIntensity]
+    []
   );
 
   const removeToast = useCallback((id: string) => {
@@ -103,7 +101,18 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const motionDuration = motionLevel === "reduced" ? 0.12 : motionLevel === "expressive" ? 0.32 : 0.2;
+  useEffect(() => {
+    const timeouts = timeoutRef.current;
+
+    return () => {
+      timeouts.forEach((timeoutId) => {
+        clearTimeout(timeoutId);
+      });
+      timeouts.clear();
+    };
+  }, []);
+
+  const motionDuration = 0.2;
 
   return (
     <ToastContext.Provider value={{ addToast }}>
@@ -113,7 +122,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           {toasts.map((toast) => (
             <motion.div
               key={toast.id}
-              initial={{ opacity: 0, y: 18, scale: motionLevel === "expressive" ? 0.92 : 0.96 }}
+              initial={{ opacity: 0, y: 18, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.96 }}
               transition={{ duration: motionDuration }}
@@ -125,7 +134,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-semibold text-zinc-100">{toast.title}</p>
-                    {rewardIntensity === "full" && toast.type === "success" ? (
+                    {toast.type === "success" ? (
                       <Sparkles className="h-3.5 w-3.5 text-emerald-300" aria-hidden="true" />
                     ) : null}
                   </div>

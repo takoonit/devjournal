@@ -2,6 +2,7 @@
 -- Region: ap-southeast-2
 
 create extension if not exists "pgcrypto";
+create schema if not exists private;
 
 create table if not exists public.owner_settings (
   owner_id uuid primary key,
@@ -16,6 +17,12 @@ create table if not exists public.profiles (
   github_url text,
   twitter_url text,
   linkedin_url text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists private.profiles_private (
+  profile_id uuid primary key references public.profiles(id) on delete cascade,
   email text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -46,7 +53,6 @@ create table if not exists public.entries (
   updated_at timestamptz not null default now()
 );
 
-create index if not exists idx_projects_slug on public.projects(slug);
 create index if not exists idx_entries_project_public_created on public.entries(project_id, is_public, created_at desc);
 
 -- timestamp maintenance
@@ -95,15 +101,25 @@ alter table public.owner_settings enable row level security;
 alter table public.profiles enable row level security;
 alter table public.projects enable row level security;
 alter table public.entries enable row level security;
+alter table private.profiles_private enable row level security;
 
 -- lock down owner settings table direct reads/writes to service role context
 revoke all on table public.owner_settings from anon;
 revoke all on table public.owner_settings from authenticated;
+revoke all on table private.profiles_private from anon;
+revoke all on table private.profiles_private from authenticated;
 
 -- public portfolio reads
 create policy if not exists "public can read profiles"
 on public.profiles for select
-using (true);
+using (auth.role() = 'authenticated' or auth.role() = 'service_role');
+
+create or replace view public.public_profiles as
+select id, name, role, bio, github_url, twitter_url, linkedin_url, created_at, updated_at
+from public.profiles;
+
+grant select on public.public_profiles to anon;
+grant select on public.public_profiles to authenticated;
 
 create policy if not exists "public can read projects"
 on public.projects for select
@@ -126,5 +142,10 @@ with check (public.is_portfolio_owner());
 
 create policy if not exists "owner can write entries"
 on public.entries for all
+using (public.is_portfolio_owner())
+with check (public.is_portfolio_owner());
+
+create policy if not exists "owner can manage private profiles"
+on private.profiles_private for all
 using (public.is_portfolio_owner())
 with check (public.is_portfolio_owner());

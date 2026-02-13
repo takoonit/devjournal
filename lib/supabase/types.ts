@@ -11,7 +11,6 @@ export interface ProfileRow {
     github_url: string | null;
     twitter_url: string | null;
     linkedin_url: string | null;
-    email: string | null;
     updated_at: string;
 }
 
@@ -73,7 +72,7 @@ export function mapProfileRowToUser(profile: ProfileRow | null): User {
             github: profile.github_url ?? "",
             twitter: profile.twitter_url ?? "",
             linkedin: profile.linkedin_url ?? "",
-            email: profile.email ?? "",
+            email: "",
         },
     };
 }

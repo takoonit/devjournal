@@ -178,7 +178,7 @@
         "tilSnippet": {
           "problem": "`next lint` no longer works in Next.js 16 CLI for this setup.",
           "solution": "Use `eslint .` via `package.json` and provide `eslint.config.mjs` that loads Next/React rules with core-web-vitals.",
-          "code": "// package.json\\n\"lint\": \"eslint .\"\\n\\n// eslint.config.mjs\\n...nextPlugin.configs[\"core-web-vitals\"].rules"
+          "code": "// package.json\n\"lint\": \"eslint .\"\n\n// eslint.config.mjs\n...nextPlugin.configs[\"core-web-vitals\"].rules"
         }
       },
       "isPublic": true,
@@ -194,8 +194,8 @@
         "subcategory": "review",
         "review": {
           "period": "Feb 10 - Feb 11, 2026",
-          "wentWell": "- Import flow is now resilient to malformed payloads\\n- Lint and build are both green after flat-config migration\\n- Security hardening added for external links",
-          "couldBeBetter": "- Automate schema validation tests for sample import fixtures\\n- Keep eslint-config-next and next majors aligned to reduce future friction"
+          "wentWell": "- Import flow is now resilient to malformed payloads\n- Lint and build are both green after flat-config migration\n- Security hardening added for external links",
+          "couldBeBetter": "- Automate schema validation tests for sample import fixtures\n- Keep eslint-config-next and next majors aligned to reduce future friction"
         }
       },
       "isPublic": true,

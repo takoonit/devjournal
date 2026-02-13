@@ -31,6 +31,10 @@ export function BioSidebarStatic({ user }: BioSidebarStaticProps) {
                         }
 
                         const Icon = socialIcons[platform as keyof typeof socialIcons];
+                        if (!Icon) {
+                            return null;
+                        }
+
                         const href = platform === "email" ? `mailto:${link}` : link;
 
                         return (

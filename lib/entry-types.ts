@@ -29,12 +29,16 @@ function extractTextChunks(value: unknown, chunks: string[]): void {
   }
 
   if (Array.isArray(value)) {
-    value.forEach((item) => extractTextChunks(item, chunks));
+    value.forEach((item) => {
+      extractTextChunks(item, chunks);
+    });
     return;
   }
 
   if (value && typeof value === "object") {
-    Object.values(value).forEach((item) => extractTextChunks(item, chunks));
+    Object.values(value).forEach((item) => {
+      extractTextChunks(item, chunks);
+    });
   }
 }
 

@@ -120,7 +120,7 @@ DevJournal uses a "Noir" aesthetic inspired by Oscar Hernandez's editorial portf
 1. **Configure Vercel + Supabase integration envs (Preview + Production)**
    - Connect your existing Vercel project to Supabase in the Vercel Integrations dashboard.
    - Ensure these public read vars exist for ISR routes:
-     - `NEXT_PUBLIC_SUPABASE_URL=https://sgadyniobmaxlbnnltkv.supabase.co`
+     - `NEXT_PUBLIC_SUPABASE_URL=https://<your-project-ref>.supabase.co`
      - `NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon JWT>`
    - Optional compatibility aliases supported by server helpers:
      - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`

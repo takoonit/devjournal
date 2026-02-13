@@ -112,7 +112,8 @@ export default function GradientText({
       : direction === "vertical"
         ? "to bottom"
         : "to bottom right";
-  const gradientColors = [...colors, colors[0]].join(", ");
+  const normalizedColors = colors.length > 0 ? colors : ["currentColor"];
+  const gradientColors = [...normalizedColors, normalizedColors[0]].join(", ");
 
   const gradientStyle = {
     backgroundImage: `linear-gradient(${gradientAngle}, ${gradientColors})`,

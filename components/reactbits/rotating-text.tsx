@@ -98,7 +98,8 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
     };
 
     const elements = useMemo(() => {
-      const currentText: string = texts[currentTextIndex];
+      if (!texts?.length) return [];
+      const currentText: string = texts[currentTextIndex] ?? "";
       if (splitBy === "characters") {
         const words = currentText.split(" ");
         return words.map((word, i) => ({
@@ -226,6 +227,10 @@ const RotatingText = forwardRef<RotatingTextRef, RotatingTextProps>(
       const intervalId = setInterval(next, effectiveRotationInterval);
       return () => clearInterval(intervalId);
     }, [next, effectiveRotationInterval, effectiveAuto]);
+
+    if (!texts?.length) {
+      return null;
+    }
 
     return (
       <motion.span

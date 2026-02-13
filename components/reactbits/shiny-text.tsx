@@ -98,7 +98,7 @@ export default function ShinyText({
   useEffect(() => {
     directionRef.current = direction === "left" ? 1 : -1;
     elapsedRef.current = 0;
-    progress.set(0);
+    progress.set(direction === "left" ? 0 : 100);
   }, [direction, progress]);
 
   const backgroundPosition = useTransform(

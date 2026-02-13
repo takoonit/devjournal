@@ -193,7 +193,7 @@ export default function ProjectDetailPage({
                     </span>
                     <span>•</span>
                     <span className="font-mono">
-                        <CountUp to={entries.length} duration={1} /> {Math.max(entries.length, 1) === 1 ? "entry" : "entries"}
+                        <CountUp to={entries.length} duration={1} /> {entries.length === 1 ? "entry" : "entries"}
                     </span>
                 </div>
             </div>

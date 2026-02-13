@@ -16,6 +16,8 @@ type EditEntryDraft = {
     details: string;
 };
 
+const DETAILS_MARKER = "\n\n<!-- details -->\n";
+
 export default function EditEntryPage({ params }: { params: Promise<{ id: string; entryId: string }> }) {
     const { id, entryId } = use(params);
     const router = useRouter();
@@ -67,11 +69,9 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
         if (!entry) return;
         if (syncedEntryIdRef.current === entry.id) return;
 
-        const dividerMatch = baseContent.match(/\n\n---\n|\n---\n/);
-        const dividerIndex = dividerMatch?.index ?? -1;
-        const dividerToken = dividerMatch?.[0] ?? "";
-        const mainContent = dividerIndex >= 0 ? baseContent.slice(0, dividerIndex) : baseContent;
-        const detailsContent = dividerIndex >= 0 ? baseContent.slice(dividerIndex + dividerToken.length) : "";
+        const markerIndex = baseContent.indexOf(DETAILS_MARKER);
+        const mainContent = markerIndex >= 0 ? baseContent.slice(0, markerIndex) : baseContent;
+        const detailsContent = markerIndex >= 0 ? baseContent.slice(markerIndex + DETAILS_MARKER.length) : "";
 
         if (hydratedEntryIdRef.current !== entry.id) {
             setEntryType(baseType);
@@ -85,9 +85,10 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
     }, [entry, baseType, baseContent]);
 
     useEffect(() => {
+        const draft: EditEntryDraft = { entryType, title, content, details };
+        localStorage.setItem(draftKey, JSON.stringify(draft));
+
         const inactivityTimer = window.setTimeout(() => {
-            const draft: EditEntryDraft = { entryType, title, content, details };
-            localStorage.setItem(draftKey, JSON.stringify(draft));
             setShowDraftSaved(true);
         }, 10000);
 
@@ -129,7 +130,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                 updateEntry(entry.id, {
                     entryType,
                     title: title.trim(),
-                    content: details.trim() ? `${content.trim()}\n\n---\n${details.trim()}` : content.trim(),
+                    content: details.trim() ? `${content.trim()}${DETAILS_MARKER}${details.trim()}` : content.trim(),
                     templateData: undefined,
                 })
             );
