@@ -3,7 +3,7 @@
 import { useState, use, useMemo, useEffect, useRef, useCallback } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, Trash2, Eye, EyeOff, Pencil } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Eye, EyeOff, Pencil, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { TimelineEntry } from "@/components/ui/timeline-entry";
 import { formatDate } from "@/lib/utils";
@@ -43,6 +43,7 @@ export default function ProjectDetailPage({
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [entryToDelete, setEntryToDelete] = useState<string | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [hasDraft, setHasDraft] = useState(false);
 
     // Focus trap for modals
     const deleteModalRef = useRef<HTMLDivElement>(null);
@@ -80,6 +81,24 @@ export default function ProjectDetailPage({
         return () => modal.removeEventListener("keydown", handleKeyDown);
     }, []);
 
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        const draftKey = `devjournal-entry-draft-${id}`;
+        const rawDraft = localStorage.getItem(draftKey);
+        if (!rawDraft) {
+            setHasDraft(false);
+            return;
+        }
+
+        try {
+            const parsed = JSON.parse(rawDraft) as { title?: string; content?: string; details?: string };
+            const hasMeaningfulDraft = [parsed.title, parsed.content, parsed.details].some((value) => Boolean(value?.trim()));
+            setHasDraft(hasMeaningfulDraft);
+        } catch {
+            setHasDraft(false);
+        }
+    }, [id]);
     useEffect(() => {
         if (showDeleteConfirm) return trapFocus(deleteModalRef, () => setShowDeleteConfirm(false));
     }, [showDeleteConfirm, trapFocus]);
@@ -188,7 +207,7 @@ export default function ProjectDetailPage({
             </div>
 
             {/* New Entry Button */}
-            <div className="mb-8">
+            <div className="mb-8 flex flex-wrap items-center gap-3">
                 <Link
                     href={`/editor/projects/${project.id}/entries/new`}
                     className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/20 transition-colors font-medium"
@@ -196,6 +215,15 @@ export default function ProjectDetailPage({
                     <Plus className="w-5 h-5" />
                     <ShinyText text="New Entry" className="text-cyan-400" speed={3} />
                 </Link>
+                {hasDraft ? (
+                    <Link
+                        href={`/editor/projects/${project.id}/entries/new`}
+                        className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900/80 px-4 py-2 text-xs font-medium text-zinc-300 hover:border-zinc-500 hover:text-zinc-100"
+                    >
+                        <RotateCcw className="h-3.5 w-3.5" />
+                        Resume draft
+                    </Link>
+                ) : null}
             </div>
 
             {/* Entries List */}
