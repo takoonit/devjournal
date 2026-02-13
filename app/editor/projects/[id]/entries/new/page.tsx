@@ -175,7 +175,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                     </div>
 
                     <div className="flex justify-end">
-                        <button type="submit" disabled={!canSubmit || isSubmitting} className="inline-flex items-center gap-2 rounded-lg border border-[#ff914d]/30 bg-[#ff914d]/10 px-4 py-2 text-[#ff914d] disabled:opacity-60">
+                        <button type="submit" disabled={!canSubmit || isSubmitting} className="btn-primary px-4 py-2 text-accent">
                             {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Save Entry
                         </button>
                     </div>

@@ -185,10 +185,7 @@ export default function NewProjectPage() {
                 </div>
 
                 <div className="flex gap-4 pt-4">
-                    <button
-                        type="submit"
-                        className="px-6 py-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/20 transition-colors font-medium"
-                    >
+                    <button type="submit" className="btn-primary px-6 py-3">
                         <ShinyText text="Create Project" className="text-cyan-400" speed={3} />
                     </button>
                     <Link

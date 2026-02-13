@@ -315,9 +315,9 @@ The PRD defines 5 phases. This plan maps onto them:
 4. Update blueprint docs (this file, constitution if needed)
 
 ### Phase 2 — Feedback (visual confirmation)
-5. Build `RadiantPulse` component for action confirmation
-6. Integrate pulse with toast/confirmation flows
-7. Update primary CTA button styling (bold borders)
+5. [x] Build `RadiantPulse` component for action confirmation
+6. [x] Integrate pulse with toast/confirmation flows
+7. [x] Update primary CTA button styling (bold borders)
 
 ### Phase 3 — Flow (entry creation improvements)
 8. Create `components/icons/entry-shapes.tsx` (5 geometric shapes)

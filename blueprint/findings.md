@@ -52,3 +52,20 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 - Readability and focus stability take precedence over expressive styling.
 - Accent elements must be repeatable via tokens/wrappers, not ad hoc one-offs.
 - Motion + color must support momentum, not overwhelm ADHD users.
+
+---
+
+## 2026-02 Phase 2 Complete: Feedback Signals
+
+### Observations
+1. Confirmation feedback existed in copy and iconography but lacked a reusable motion primitive.
+2. Primary CTAs relied on soft translucent borders, reducing action salience on dark surfaces.
+
+### Decisions
+- Added a reusable `RadiantPulse` wrapper and integrated it with success toasts to provide lightweight completion feedback.
+- Introduced a shared `.btn-primary` class with solid 2px accent borders, hover lift, and press states.
+- Applied the new CTA treatment across editor primary actions (capture, project creation, settings save, entry save/update, and project-level entry creation).
+
+### Guardrails
+- Feedback remains brief and optional; reduced-motion users inherit globally reduced animation durations.
+- Dark surfaces remain unchanged; accents are additive and semantic.

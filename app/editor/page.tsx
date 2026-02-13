@@ -108,7 +108,7 @@ export default function EditorPage() {
                     <button
                         type="button"
                         onClick={handleQuickCapture}
-                        className="inline-flex items-center justify-center gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-2.5 text-sm font-medium text-cyan-300 transition-colors hover:bg-cyan-500/20"
+                        className="btn-primary"
                     >
                         <CheckCircle2 className="h-4 w-4" />
                         Capture
@@ -185,7 +185,7 @@ export default function EditorPage() {
                     <p className="mb-6 text-sm text-zinc-600">Create a project to begin your build journal.</p>
                     <Link
                         href="/editor/projects/new"
-                        className="inline-flex items-center gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-6 py-3 transition-colors hover:bg-cyan-500/20"
+                        className="btn-primary px-6 py-3"
                     >
                         <Plus className="h-5 w-5 text-cyan-400" />
                         <ShinyText text="Create your first project" className="font-medium text-cyan-400" speed={3} />

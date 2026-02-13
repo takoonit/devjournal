@@ -210,7 +210,7 @@ export default function ProjectDetailPage({
             <div className="mb-8 flex flex-wrap items-center gap-3">
                 <Link
                     href={`/editor/projects/${project.id}/entries/new`}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/20 transition-colors font-medium"
+                    className="btn-primary px-6 py-3 text-cyan-400"
                 >
                     <Plus className="w-5 h-5" />
                     <ShinyText text="New Entry" className="text-cyan-400" speed={3} />
