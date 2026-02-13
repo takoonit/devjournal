@@ -21,6 +21,7 @@ export interface EntryTypeConfig {
   dotBorder: string;
   badgeBg: string;
   badgeBorder: string;
+  stripBg: string;
 }
 
 export const ENTRY_TYPE_CONFIG: Record<EntryType, EntryTypeConfig> = {
@@ -34,6 +35,7 @@ export const ENTRY_TYPE_CONFIG: Record<EntryType, EntryTypeConfig> = {
     dotBorder: "border-entry-feature/40",
     badgeBg: "bg-entry-feature/10",
     badgeBorder: "border-entry-feature/35",
+    stripBg: "bg-entry-feature/45",
   },
   fix: {
     value: "fix",
@@ -45,6 +47,7 @@ export const ENTRY_TYPE_CONFIG: Record<EntryType, EntryTypeConfig> = {
     dotBorder: "border-entry-fix/40",
     badgeBg: "bg-entry-fix/10",
     badgeBorder: "border-entry-fix/35",
+    stripBg: "bg-entry-fix/45",
   },
   refactor: {
     value: "refactor",
@@ -56,6 +59,7 @@ export const ENTRY_TYPE_CONFIG: Record<EntryType, EntryTypeConfig> = {
     dotBorder: "border-entry-refactor/40",
     badgeBg: "bg-entry-refactor/15",
     badgeBorder: "border-entry-refactor/35",
+    stripBg: "bg-entry-refactor/45",
   },
   design: {
     value: "design",
@@ -67,6 +71,7 @@ export const ENTRY_TYPE_CONFIG: Record<EntryType, EntryTypeConfig> = {
     dotBorder: "border-entry-design/40",
     badgeBg: "bg-entry-design/10",
     badgeBorder: "border-entry-design/35",
+    stripBg: "bg-entry-design/45",
   },
   journal: {
     value: "journal",
@@ -78,6 +83,7 @@ export const ENTRY_TYPE_CONFIG: Record<EntryType, EntryTypeConfig> = {
     dotBorder: "border-entry-journal/40",
     badgeBg: "bg-entry-journal/10",
     badgeBorder: "border-entry-journal/35",
+    stripBg: "bg-entry-journal/45",
   },
 };
 

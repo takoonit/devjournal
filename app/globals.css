@@ -251,6 +251,42 @@ html[data-motion-level="expressive"] {
     transform: none;
     box-shadow: none;
   }
+
+  .semantic-accent-surface {
+    @apply relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40;
+  }
+
+  .semantic-accent-surface::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: rgb(var(--color-accent-base) / 60%);
+    pointer-events: none;
+  }
+
+  .semantic-accent-surface[data-accent="status-in-progress"]::before {
+    background: rgb(var(--color-status-in-progress) / 70%);
+  }
+
+  .semantic-accent-surface[data-accent="status-shipped"]::before {
+    background: rgb(var(--color-status-shipped) / 70%);
+  }
+
+  .semantic-section-heading {
+    @apply mb-4 inline-flex items-center gap-2 border-l-2 pl-3 text-sm font-semibold text-zinc-200;
+    border-color: rgb(var(--color-accent-base) / 70%);
+  }
+
+  .semantic-section-heading[data-accent="status-in-progress"] {
+    border-color: rgb(var(--color-status-in-progress) / 80%);
+  }
+
+  .semantic-section-heading[data-accent="status-shipped"] {
+    border-color: rgb(var(--color-status-shipped) / 80%);
+  }
 }
 
 .radiant-pulse {

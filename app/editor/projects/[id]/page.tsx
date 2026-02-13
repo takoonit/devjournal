@@ -153,8 +153,8 @@ export default function ProjectDetailPage({
             </Link>
 
             {/* Project Header */}
-            <div className="mb-8 pb-8 border-b border-zinc-800">
-                <div className="flex items-start justify-between mb-4">
+            <div className="semantic-accent-surface mb-8 border-b border-zinc-800 p-6" data-accent={project.status === "shipped" ? "status-shipped" : "status-in-progress"}>
+                <div className="mb-4 flex items-start justify-between">
                     <div>
                         <BlurText
                             text={project.name}
@@ -167,7 +167,7 @@ export default function ProjectDetailPage({
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setIsEditModalOpen(true)}
-                            className="p-2 rounded-lg text-zinc-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors"
+                            className="p-2 rounded-lg text-zinc-500 hover:text-accent hover:bg-accent/10 transition-colors"
                             aria-label="Edit project"
                         >
                             <Pencil className="w-5 h-5" />
@@ -240,7 +240,7 @@ export default function ProjectDetailPage({
                 </div>
             ) : (
                 <div className="space-y-6">
-                    <h2 className="text-xl font-semibold text-zinc-300">Build Log Entries</h2>
+                    <h2 className="semantic-section-heading text-xl font-semibold text-zinc-300">Build Log Entries</h2>
                     {entries.map((entry, index) => {
                         const entryConfig = getEntryTypeConfig(getEntryType(entry));
 
@@ -249,7 +249,7 @@ export default function ProjectDetailPage({
                         <div
                             className="relative overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/30 p-6 transition-all hover:border-accent/55"
                         >
-                            <div className={`absolute inset-x-0 top-0 h-1 ${entryConfig.badgeBg}`} aria-hidden="true" />
+                            <div className={`absolute inset-x-0 top-0 h-1.5 ${entryConfig.stripBg}`} aria-hidden="true" />
                             {/* Entry Actions — keep in normal flow to avoid border overlap */}
                             <div className="mb-4 flex items-center justify-end gap-1">
                                 <button
@@ -264,7 +264,7 @@ export default function ProjectDetailPage({
                                 </button>
                                 <Link
                                     href={`/editor/projects/${project.id}/entries/${entry.id}/edit`}
-                                    className="p-2 rounded-lg text-zinc-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors"
+                                    className="p-2 rounded-lg text-zinc-500 hover:text-accent hover:bg-accent/10 transition-colors"
                                     aria-label={`Edit entry: ${entry.title}`}
                                 >
                                     <Pencil className="w-4 h-4" />
