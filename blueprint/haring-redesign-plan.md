@@ -362,6 +362,31 @@ The PRD defines 5 phases. This plan maps onto them:
 
 ---
 
+## Haring Identity Pass Checklist (Conflict-Safe)
+
+> Guidance only: this mapping is for implementation planning and prioritization, not an architectural rewrite. Keep all updates within existing interfaces and the Compatibility Contract.
+
+### Primary implementation targets
+
+- **Semantic colors**
+  - `app/globals.css`
+  - `lib/design-tokens.ts`
+  - `tailwind.config.ts`
+  - `lib/entry-types.ts`
+- **Shape prominence**
+  - `components/icons/entry-shapes.tsx`
+  - `components/ui/timeline-entry.tsx`
+  - Entry create/edit pages (existing route files only)
+- **Wayfinding lines**
+  - `app/editor/layout.tsx`
+  - `components/ui/interactive-surface.tsx`
+  - `components/reactbits/spotlight-card.tsx`
+- **Momentum signals**
+  - `components/reactbits/radiant-pulse.tsx`
+  - `components/ui/toast.tsx`
+
+Implementation note: prefer shared wrappers/utilities and tokenized primitives over per-page class overrides.
+
 ## BLAST Checklist for This Plan
 
 ### B — Blueprint
