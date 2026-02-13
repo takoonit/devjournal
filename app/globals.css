@@ -209,11 +209,11 @@ html[data-motion-level="expressive"] {
     @apply inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium text-accent transition-all duration-standard ease-standard;
     border-width: var(--border-standard);
     border-color: rgb(var(--color-accent-base));
-    background-color: rgb(var(--color-accent-base) / 0.15);
+    background-color: rgb(var(--color-accent-base) / 15%);
   }
 
   .btn-primary:hover {
-    background-color: rgb(var(--color-accent-base) / 0.22);
+    background-color: rgb(var(--color-accent-base) / 22%);
     transform: translateY(-1px);
     box-shadow: 0 2px 0 0 rgb(var(--color-accent-base));
   }
@@ -224,7 +224,7 @@ html[data-motion-level="expressive"] {
   }
 
   .btn-primary:focus-visible {
-    outline: 2px solid rgb(var(--color-accent-base) / 0.45);
+    outline: 2px solid rgb(var(--color-accent-base) / 45%);
     outline-offset: 2px;
   }
 
@@ -260,4 +260,3 @@ html[data-motion-level="expressive"] {
   animation-iteration-count: 2;
   animation-duration: calc(var(--motion-expressive) * 0.8);
 }
-

@@ -9,6 +9,7 @@ interface RadiantPulseProps {
   className?: string;
   active?: boolean;
   rewardIntensity?: UiPreferences["rewardIntensity"];
+  decorative?: boolean;
 }
 
 export default function RadiantPulse({
@@ -16,13 +17,14 @@ export default function RadiantPulse({
   className,
   active = false,
   rewardIntensity = "subtle",
+  decorative = false,
 }: RadiantPulseProps) {
   return (
     <span
       className={cn("radiant-pulse", className)}
       data-active={active ? "true" : "false"}
       data-intensity={rewardIntensity}
-      aria-hidden="true"
+      aria-hidden={decorative ? true : undefined}
     >
       {children}
     </span>

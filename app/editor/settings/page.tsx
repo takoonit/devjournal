@@ -244,7 +244,7 @@ export default function SettingsPage() {
                         type="submit"
                         className="btn-primary px-6 py-3"
                     >
-                        <ShinyText text="Save Changes" className="text-cyan-400" speed={3} />
+                        <ShinyText text="Save Changes" speed={3} />
                     </button>
                 </div>
             </form>
