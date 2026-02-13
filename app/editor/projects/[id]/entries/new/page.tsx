@@ -75,13 +75,11 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
 
     useEffect(() => {
         const inactivityTimer = window.setTimeout(() => {
-            const draft: EntryDraft = { entryType, title, content, details };
-            localStorage.setItem(draftKey, JSON.stringify(draft));
             setShowDraftSaved(true);
         }, 10000);
 
         return () => window.clearTimeout(inactivityTimer);
-    }, [draftKey, entryType, title, content, details]);
+    }, [entryType, title, content, details]);
 
     useEffect(() => {
         if (!showDraftSaved) return;

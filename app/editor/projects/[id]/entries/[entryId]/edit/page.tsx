@@ -9,6 +9,13 @@ import type { EntryType } from "@/lib/types";
 import { ENTRY_TYPE_OPTIONS, getEntryContent, getEntryType } from "@/lib/entry-types";
 import { useToast } from "@/components/ui/toast";
 
+type EditEntryDraft = {
+    entryType: EntryType;
+    title: string;
+    content: string;
+    details: string;
+};
+
 export default function EditEntryPage({ params }: { params: Promise<{ id: string; entryId: string }> }) {
     const { id, entryId } = use(params);
     const router = useRouter();
@@ -29,7 +36,32 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showDraftSaved, setShowDraftSaved] = useState(false);
     const syncedEntryIdRef = useRef<string | null>(null);
+    const hydratedEntryIdRef = useRef<string | null>(null);
     const formRef = useRef<HTMLFormElement>(null);
+
+    const draftKey = `entry-draft-${entryId}`;
+
+    useEffect(() => {
+        if (!entry) return;
+        if (hydratedEntryIdRef.current === entryId) return;
+
+        const raw = localStorage.getItem(draftKey);
+        if (!raw) return;
+
+        try {
+            const parsed = JSON.parse(raw) as EditEntryDraft;
+            setEntryType(parsed.entryType ?? baseType);
+            setTitle(parsed.title ?? entry.title ?? "");
+            setContent(parsed.content ?? baseContent);
+            setDetails(parsed.details ?? "");
+            setShowDetails(Boolean(parsed.details?.trim()));
+        } catch {
+            localStorage.removeItem(draftKey);
+            return;
+        }
+
+        hydratedEntryIdRef.current = entryId;
+    }, [draftKey, entry, entryId, baseType, baseContent]);
 
     useEffect(() => {
         if (!entry) return;
@@ -41,22 +73,26 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
         const mainContent = dividerIndex >= 0 ? baseContent.slice(0, dividerIndex) : baseContent;
         const detailsContent = dividerIndex >= 0 ? baseContent.slice(dividerIndex + dividerToken.length) : "";
 
-        setEntryType(baseType);
-        setTitle(entry.title ?? "");
-        setContent(mainContent ?? "");
-        setDetails(detailsContent);
-        setShowDetails(detailsContent.trim().length > 0);
+        if (hydratedEntryIdRef.current !== entry.id) {
+            setEntryType(baseType);
+            setTitle(entry.title ?? "");
+            setContent(mainContent ?? "");
+            setDetails(detailsContent);
+            setShowDetails(detailsContent.trim().length > 0);
+        }
 
         syncedEntryIdRef.current = entry.id;
     }, [entry, baseType, baseContent]);
 
     useEffect(() => {
         const inactivityTimer = window.setTimeout(() => {
+            const draft: EditEntryDraft = { entryType, title, content, details };
+            localStorage.setItem(draftKey, JSON.stringify(draft));
             setShowDraftSaved(true);
         }, 10000);
 
         return () => window.clearTimeout(inactivityTimer);
-    }, [entryType, title, content, details]);
+    }, [draftKey, entryType, title, content, details]);
 
     useEffect(() => {
         if (!showDraftSaved) return;
@@ -99,6 +135,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                 })
             );
 
+            localStorage.removeItem(draftKey);
             addToast({ message: "Entry updated.", type: "success" });
             await Promise.resolve(router.push(`/editor/projects/${project.id}`));
         } finally {

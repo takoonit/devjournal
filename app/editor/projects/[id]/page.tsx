@@ -215,7 +215,7 @@ export default function ProjectDetailPage({
                     <Plus className="w-5 h-5" />
                     <ShinyText text="New Entry" className="text-cyan-400" speed={3} />
                 </Link>
-                {hasDraft ? (
+                {hasDraft && (
                     <Link
                         href={`/editor/projects/${project.id}/entries/new`}
                         className="inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900/80 px-4 py-2 text-xs font-medium text-zinc-300 hover:border-zinc-500 hover:text-zinc-100"
@@ -223,7 +223,7 @@ export default function ProjectDetailPage({
                         <RotateCcw className="h-3.5 w-3.5" />
                         Resume draft
                     </Link>
-                ) : null}
+                )}
             </div>
 
             {/* Entries List */}
