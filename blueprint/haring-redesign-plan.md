@@ -330,10 +330,35 @@ The PRD defines 5 phases. This plan maps onto them:
 13. Apply selective bold borders to interactive card hover states
 
 ### Phase 5 — Polish + QA
-14. Audit all accent colors for WCAG AA contrast on dark surfaces
-15. Test all changes across motion levels (reduced/standard/expressive)
-16. Verify no regression in focus mode (animations disabled)
-17. Consistency sweep — ensure no ad hoc Haring-style one-offs leaked in
+5.1 **Accessibility contrast audit (WCAG thresholds)**
+- Verify all accent usage against dark surfaces with these minimums:
+  - Normal text: **>= 4.5:1**
+  - Large text and icons: **>= 3:1**
+  - Focus indicators on dark surfaces: must remain clearly visible with an explicit target of **>= 3:1** against adjacent colors.
+- Evidence required: contrast report/output + before/after checklist for any adjusted tokens.
+
+5.2 **Motion behavior validation by mode**
+- Validate expected behavior for each interaction primitive per mode:
+  - `reduced`:
+    - `RadiantPulse`: disabled (no pulse animation).
+    - Halo hover: static border/halo state only (no animated transition).
+    - Focus mode: all non-essential animations off.
+  - `standard`:
+    - `RadiantPulse`: single 400ms pulse cycle.
+    - Halo hover: one smooth enter/exit transition only.
+    - Focus mode: disables pulse/halo animations when focus mode is active.
+  - `expressive`:
+    - `RadiantPulse`: two staggered pulse cycles.
+    - Halo hover: enhanced but brief transition, still non-looping.
+    - Focus mode: still overrides and disables decorative animation.
+- Evidence required: mode-by-mode verification checklist + build/lint output.
+
+5.3 **Design-system consistency sweep**
+- Completion criteria:
+  - **Zero hardcoded palette classes** where a semantic token exists.
+  - **Zero duplicate border-motion variants** outside shared wrappers/utilities.
+  - No ad hoc Haring-style one-offs leaked into feature code.
+- Evidence required: grep/search audit log + checklist of migrated call sites.
 
 ---
 
