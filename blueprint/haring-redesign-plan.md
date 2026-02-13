@@ -360,6 +360,26 @@ The PRD defines 5 phases. This plan maps onto them:
   - No ad hoc Haring-style one-offs leaked into feature code.
 - Evidence required: grep/search audit log + checklist of migrated call sites.
 
+## Phase Status Snapshot
+
+- ✅ Phase 1 — Foundation
+- ✅ Phase 2 — Feedback
+- ✅ Phase 3 — Flow
+- ✅ Phase 4 — Wayfinding
+- 🟡 Phase 5 — Polish + QA
+
+Phase 5 may include scoped consistency retrofits to outputs from Phases 1–4 without reopening architecture.
+
+## Delivery Notes
+
+- Identity-strengthening refinements are allowed when they satisfy compatibility gates and remain token/wrapper-first.
+
+### Out of scope
+
+- New feature flows
+- Model changes
+- Extra decision points
+
 ---
 
 ## Haring Identity Pass Checklist (Conflict-Safe)
