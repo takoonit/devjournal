@@ -161,3 +161,22 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 - Continue using `decorative` only where children are non-semantic.
 - Preserve completion-only pulse activation and motion preference gating (`rewardIntensity`, `motionLevel`).
 - Stop after this checkpoint and move to Phase 3 only after explicit confirmation.
+
+---
+
+## 2026-02 Restart Pass: Phase 3 Flow Review Checkpoint
+
+### Observations
+1. Entry-shape language existed across timeline and entry type chips, but shape size/contrast remained too subtle at normal scanning distance.
+2. Entry type chips still used a hardcoded selected accent (`#ff914d`) instead of entry semantic token classes.
+3. Timeline markers and badges could carry a stronger pictographic hierarchy while remaining compact.
+
+### Decisions
+- Mark Phase 3 restart review complete.
+- Increase shape prominence in timeline markers and badges (slightly larger marker + icon sizes and stronger border weight).
+- Tokenize selected entry-type chip state by using `ENTRY_TYPE_CONFIG` classes (`badgeBorder`, `badgeBg`, `color`) instead of hardcoded accent values.
+
+### Guardrails
+- Keep labels present and readable; shape remains assistive, not exclusive.
+- Keep changes scoped to flow recognition cues (no architecture/model semantics changes).
+- Continue restart protocol and stop after this checkpoint before Phase 4.

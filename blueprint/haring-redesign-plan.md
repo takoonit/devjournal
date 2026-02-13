@@ -54,7 +54,7 @@ Execution cadence for this run:
 - Re-validate `RadiantPulse` semantics + accessibility behavior.
 - Re-validate success feedback timing (completion-only) and CTA emphasis consistency.
 
-### Phase 3 — Flow ⏳ (pending; next checkpoint)
+### Phase 3 — Flow ✅ (reviewed in restart)
 - Re-validate shape language consistency in timeline + new/edit entry flows.
 - Re-validate entry-type metadata centralization stays deterministic.
 

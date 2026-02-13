@@ -164,9 +164,9 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                                         key={option.value}
                                         type="button"
                                         onClick={() => setEntryType(option.value)}
-                                        className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors ${entryType === option.value ? "border-[#ff914d]/40 bg-[#ff914d]/15 text-[#ff914d]" : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"}`}
+                                        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm transition-colors ${entryType === option.value ? `${config.badgeBorder} ${config.badgeBg} ${config.color}` : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"}`}
                                     >
-                                        <Shape className="h-3.5 w-3.5" />
+                                        <Shape className="h-4 w-4" />
                                         {option.label}
                                     </button>
                                 );
