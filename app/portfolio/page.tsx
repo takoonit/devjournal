@@ -1,10 +1,8 @@
 import { BioSidebarStatic } from "@/components/portfolio/bio-sidebar-static";
 import { ProjectCard } from "@/components/portfolio/project-card";
 import BlurText from "@/components/reactbits/blur-text";
-import ShinyText from "@/components/reactbits/shiny-text";
 import CountUp from "@/components/reactbits/count-up";
 import ScrollReveal from "@/components/reactbits/scroll-reveal";
-import Link from "next/link";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { getPublicPortfolioOverview } from "@/lib/supabase/server";
 
@@ -42,15 +40,9 @@ export default async function PortfolioPage() {
                         {projects.length === 0 ? (
                             <div className="rounded-2xl border border-dashed border-zinc-700/80 bg-zinc-900/30 py-20 text-center">
                                 <p className="text-zinc-500 mb-4">No public projects yet.</p>
-                                <p className="text-sm text-zinc-600 mb-6">
+                                <p className="text-sm text-zinc-600">
                                     Start documenting your journey in the editor.
                                 </p>
-                                <Link
-                                    href="/editor"
-                                    className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#ff914d]/10 border border-[#ff914d]/30 hover:bg-[#ff914d]/20 transition-colors"
-                                >
-                                    <ShinyText text="Open Editor" className="text-[#ff914d] font-medium" speed={3} />
-                                </Link>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
