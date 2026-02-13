@@ -69,3 +69,20 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 ### Guardrails
 - Feedback remains brief and optional; reduced-motion users inherit globally reduced animation durations.
 - Dark surfaces remain unchanged; accents are additive and semantic.
+
+---
+
+## 2026-02 Phase 3 Complete: Entry Shape Language in Flow
+
+### Observations
+1. Entry-type recognition relied on generic Lucide icons in timeline contexts and text-only labels in form selectors.
+2. Type selection and timeline scanning could become label-dependent instead of shape-recognition dependent.
+
+### Decisions
+- Added a dedicated shape set (`Feature`, `Fix`, `Refactor`, `Design`, `Journal`) in `components/icons/entry-shapes.tsx`.
+- Centralized entry visual metadata in `lib/entry-types.ts` so forms and timeline share one entry-type system.
+- Updated new/edit entry forms and timeline markers/badges to use the same shape components.
+
+### Guardrails
+- Shapes remain compact and semantic to avoid decorative noise.
+- Existing writing-first layout and interaction density remain unchanged.

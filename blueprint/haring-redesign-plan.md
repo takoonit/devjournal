@@ -320,9 +320,9 @@ The PRD defines 5 phases. This plan maps onto them:
 7. [x] Update primary CTA button styling (bold borders)
 
 ### Phase 3 — Flow (entry creation improvements)
-8. Create `components/icons/entry-shapes.tsx` (5 geometric shapes)
-9. Replace Lucide icons in entry type system with entry shapes
-10. Update timeline markers to use entry shapes
+8. [x] Create `components/icons/entry-shapes.tsx` (5 geometric shapes)
+9. [x] Replace Lucide icons in entry type system with entry shapes
+10. [x] Update timeline markers to use entry shapes
 
 ### Phase 4 — Wayfinding
 11. Add accent bar to active nav items
