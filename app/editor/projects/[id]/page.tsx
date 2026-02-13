@@ -3,7 +3,7 @@
 import { useState, use, useMemo, useEffect, useRef, useCallback } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, Trash2, Eye, EyeOff, Pencil, RotateCcw } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff, Pencil, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { TimelineEntry } from "@/components/ui/timeline-entry";
 import { formatDate } from "@/lib/utils";
@@ -143,14 +143,6 @@ export default function ProjectDetailPage({
 
     return (
         <div className="max-w-5xl">
-            <Link
-                href="/editor"
-                className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-cyan-400 transition-colors mb-6"
-            >
-                <ArrowLeft className="w-4 h-4" />
-                Back to editor
-            </Link>
-
             {/* Project Header */}
             <div className="mb-8 pb-8 border-b border-zinc-800">
                 <div className="flex items-start justify-between mb-4">

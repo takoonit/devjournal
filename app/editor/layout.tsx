@@ -21,6 +21,7 @@ export default function EditorLayout({
     const { addToast } = useToast();
     const pathname = usePathname();
     const isSettingsActive = pathname === "/editor/settings";
+    const isEntryFormRoute = /^\/editor\/projects\/[^/]+\/entries\/(new|[^/]+\/edit)$/.test(pathname);
     const uiPreferences = useDevJournalStore((state) => state.uiPreferences);
 
     const breadcrumbItems = useMemo<BreadcrumbItem[]>(() => {
@@ -217,7 +218,7 @@ export default function EditorLayout({
 
             {/* Main Content */}
             <main className={cn("flex-1", uiPreferences.density === "compact" ? "p-5" : "p-8")}>
-                <Breadcrumbs items={breadcrumbItems} />
+                {!isEntryFormRoute && <Breadcrumbs items={breadcrumbItems} />}
                 {children}
             </main>
         </div>

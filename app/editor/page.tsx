@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type KeyboardEvent } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { ProjectCard } from "@/components/portfolio/project-card";
 import { ArrowRightCircle, CheckCircle2, Plus, Sparkles, Trash2 } from "lucide-react";
@@ -11,6 +11,31 @@ import { useToast } from "@/components/ui/toast";
 import ScrollReveal from "@/components/reactbits/scroll-reveal";
 import BlurText from "@/components/reactbits/blur-text";
 import CountUp from "@/components/reactbits/count-up";
+
+
+function CaptureProjectSelect({ captureId }: { captureId: string }) {
+    const projects = useDevJournalStore((state) => state.projects);
+    const inboxCaptures = useDevJournalStore((state) => state.inboxCaptures);
+    const assignInboxCaptureProject = useDevJournalStore((state) => state.assignInboxCaptureProject);
+
+    const capture = inboxCaptures.find((item) => item.id === captureId);
+
+    return (
+        <select
+            id={`assign-project-${captureId}`}
+            value={capture?.projectId ?? ""}
+            onChange={(e) => assignInboxCaptureProject(captureId, e.target.value || undefined)}
+            className="rounded-md border border-amber-500/30 bg-zinc-950/70 px-2 py-1 text-xs text-amber-300 focus:border-amber-400/60 focus:outline-none"
+        >
+            <option value="">Pick project</option>
+            {projects.map((project) => (
+                <option key={project.id} value={project.id}>
+                    {project.name}
+                </option>
+            ))}
+        </select>
+    );
+}
 
 export default function EditorPage() {
     const projects = useDevJournalStore((state) => state.projects);
@@ -43,6 +68,13 @@ export default function EditorPage() {
         [projects]
     );
 
+    const captureAssignmentOptions = useMemo(
+        () => [{ id: "", name: "No project yet" }, ...projects.map((project) => ({ id: project.id, name: project.name }))],
+        [projects]
+    );
+
+    const visibleCaptures = inboxCaptures.slice(0, 8);
+
     const handleQuickCapture = () => {
         const trimmed = captureText.trim();
         if (!trimmed) return;
@@ -54,6 +86,12 @@ export default function EditorPage() {
             message: "Captured in your inbox. Convert it when you are ready.",
             type: "success",
         });
+    };
+
+    const handleCaptureFromInput = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key !== "Enter") return;
+        event.preventDefault();
+        handleQuickCapture();
     };
 
     return (
@@ -88,6 +126,7 @@ export default function EditorPage() {
                         id="capture-input"
                         value={captureText}
                         onChange={(e) => setCaptureText(e.target.value)}
+                        onKeyDown={handleCaptureFromInput}
                         placeholder="Capture an idea, blocker, or context note in one line..."
                         className="w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-500 focus:border-cyan-500/60 focus:outline-none"
                     />
@@ -99,9 +138,9 @@ export default function EditorPage() {
                         className="rounded-lg border border-zinc-700 bg-zinc-950/60 px-3 py-2.5 text-sm text-zinc-200 focus:border-cyan-500/60 focus:outline-none"
                     >
                         <option value="">No project yet</option>
-                        {projects.map((project) => (
-                            <option key={project.id} value={project.id}>
-                                {project.name}
+                        {captureAssignmentOptions.map((projectOption) => (
+                            <option key={projectOption.id || "unassigned"} value={projectOption.id}>
+                                {projectOption.name}
                             </option>
                         ))}
                     </select>
@@ -120,7 +159,7 @@ export default function EditorPage() {
                         <p className="text-xs text-zinc-500">Inbox is clear. Capture something fast to convert it later.</p>
                     ) : (
                         <>
-                            {inboxCaptures.slice(0, 8).map((capture) => {
+                            {visibleCaptures.map((capture) => {
                                 const projectName = capture.projectId
                                     ? captureProjectMap.get(capture.projectId)
                                     : undefined;
@@ -146,7 +185,11 @@ export default function EditorPage() {
                                                     <ArrowRightCircle className="h-3.5 w-3.5" />
                                                 </Link>
                                             ) : (
-                                                <span className="text-xs text-amber-400">Assign a project to convert</span>
+                                                <div className="flex items-center gap-2">
+                                                    <label htmlFor={`assign-project-${capture.id}`} className="sr-only">Assign project</label>
+                                                    <CaptureProjectSelect captureId={capture.id} />
+                                                    <span className="text-xs text-zinc-500">Assign to enable convert</span>
+                                                </div>
                                             )}
                                             <button
                                                 type="button"

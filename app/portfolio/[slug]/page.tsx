@@ -1,7 +1,7 @@
 import { BioSidebarStatic } from "@/components/portfolio/bio-sidebar-static";
 import { EntryTimeline } from "@/components/portfolio/entry-timeline";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import BlurText from "@/components/reactbits/blur-text";
@@ -37,14 +37,6 @@ export default async function ProjectDetailPage({
 
                     <div className="flex-1">
                         <Breadcrumbs items={[{ label: "Portfolio", href: "/portfolio" }, { label: project.name }]} />
-                        <Link
-                            href="/portfolio"
-                            className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-[#ff914d] transition-colors mb-6"
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            Back to projects
-                        </Link>
-
                         <div className="mb-12">
                             <div className="flex items-start justify-between mb-4">
                                 <div>
