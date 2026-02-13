@@ -14,6 +14,7 @@ import CountUp from "@/components/reactbits/count-up";
 import BlurText from "@/components/reactbits/blur-text";
 import ShinyText from "@/components/reactbits/shiny-text";
 import ScrollReveal from "@/components/reactbits/scroll-reveal";
+import { getEntryType, getEntryTypeConfig } from "@/lib/entry-types";
 
 export default function ProjectDetailPage({
     params,
@@ -152,8 +153,8 @@ export default function ProjectDetailPage({
             </Link>
 
             {/* Project Header */}
-            <div className="mb-8 pb-8 border-b border-zinc-800">
-                <div className="flex items-start justify-between mb-4">
+            <div className="semantic-accent-surface mb-8 border-b border-zinc-800 p-6" data-accent={project.status === "shipped" ? "status-shipped" : "status-in-progress"}>
+                <div className="mb-4 flex items-start justify-between">
                     <div>
                         <BlurText
                             text={project.name}
@@ -166,7 +167,7 @@ export default function ProjectDetailPage({
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setIsEditModalOpen(true)}
-                            className="p-2 rounded-lg text-zinc-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors"
+                            className="p-2 rounded-lg text-zinc-500 hover:text-accent hover:bg-accent/10 transition-colors"
                             aria-label="Edit project"
                         >
                             <Pencil className="w-5 h-5" />
@@ -196,7 +197,7 @@ export default function ProjectDetailPage({
                 <div className="flex items-center gap-4 text-sm text-zinc-500">
                     <span>Created {formatDate(project.createdAt)}</span>
                     <span>•</span>
-                    <span className={project.status === "shipped" ? "text-emerald-400" : "text-cyan-400"}>
+                    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${project.status === "shipped" ? "border-status-shipped/40 bg-status-shipped/15 text-status-shipped" : "border-status-in-progress/40 bg-status-in-progress/15 text-status-in-progress"}`}>
                         {project.status === "shipped" ? "Shipped" : "In Progress"}
                     </span>
                     <span>•</span>
@@ -210,10 +211,10 @@ export default function ProjectDetailPage({
             <div className="mb-8 flex flex-wrap items-center gap-3">
                 <Link
                     href={`/editor/projects/${project.id}/entries/new`}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/20 transition-colors font-medium"
+                    className="btn-primary px-6 py-3"
                 >
                     <Plus className="w-5 h-5" />
-                    <ShinyText text="New Entry" className="text-cyan-400" speed={3} />
+                    <ShinyText text="New Entry" speed={3} />
                 </Link>
                 {hasDraft && (
                     <Link
@@ -239,12 +240,16 @@ export default function ProjectDetailPage({
                 </div>
             ) : (
                 <div className="space-y-6">
-                    <h2 className="text-xl font-semibold text-zinc-300">Build Log Entries</h2>
-                    {entries.map((entry, index) => (
+                    <h2 className="semantic-section-heading text-xl font-semibold text-zinc-300">Build Log Entries</h2>
+                    {entries.map((entry, index) => {
+                        const entryConfig = getEntryTypeConfig(getEntryType(entry));
+
+                        return (
                         <ScrollReveal key={entry.id} delay={Math.min(index * 0.06, 0.6)}>
                         <div
-                            className="relative rounded-lg border border-zinc-800 bg-zinc-900/30 p-6 transition-colors hover:border-zinc-700"
+                            className="relative overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/30 p-6 transition-all hover:border-accent/55"
                         >
+                            <div className={`absolute inset-x-0 top-0 h-1.5 ${entryConfig.stripBg}`} aria-hidden="true" />
                             {/* Entry Actions — keep in normal flow to avoid border overlap */}
                             <div className="mb-4 flex items-center justify-end gap-1">
                                 <button
@@ -259,7 +264,7 @@ export default function ProjectDetailPage({
                                 </button>
                                 <Link
                                     href={`/editor/projects/${project.id}/entries/${entry.id}/edit`}
-                                    className="p-2 rounded-lg text-zinc-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors"
+                                    className="p-2 rounded-lg text-zinc-500 hover:text-accent hover:bg-accent/10 transition-colors"
                                     aria-label={`Edit entry: ${entry.title}`}
                                 >
                                     <Pencil className="w-4 h-4" />
@@ -277,7 +282,8 @@ export default function ProjectDetailPage({
                             <TimelineEntry entry={entry} />
                         </div>
                         </ScrollReveal>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
 

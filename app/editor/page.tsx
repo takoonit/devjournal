@@ -69,16 +69,16 @@ export default function EditorPage() {
                 <p className="text-zinc-400">
                     Manage your projects and build logs.
                     {projects.length > 0 && (
-                        <span className="ml-2 font-mono text-cyan-400">
+                        <span className="ml-2 font-mono text-accent">
                             <CountUp to={projects.length} duration={1.5} /> {projects.length === 1 ? "project" : "projects"}
                         </span>
                     )}
                 </p>
             </div>
 
-            <section className="mb-8 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5">
-                <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-zinc-200">
-                    <Sparkles className="h-4 w-4 text-cyan-400" />
+            <section className="semantic-accent-surface mb-8 p-5">
+                <div className="semantic-section-heading">
+                    <Sparkles className="h-4 w-4 text-accent" />
                     Inbox Quick Capture
                 </div>
 
@@ -89,14 +89,14 @@ export default function EditorPage() {
                         value={captureText}
                         onChange={(e) => setCaptureText(e.target.value)}
                         placeholder="Capture an idea, blocker, or context note in one line..."
-                        className="w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-500 focus:border-cyan-500/60 focus:outline-none"
+                        className="w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-2.5 text-sm text-zinc-100 placeholder-zinc-500 focus:border-accent/60 focus:outline-none"
                     />
                     <label htmlFor="capture-project" className="sr-only">Assign project for capture</label>
                     <select
                         id="capture-project"
                         value={captureProjectId}
                         onChange={(e) => setCaptureProjectId(e.target.value)}
-                        className="rounded-lg border border-zinc-700 bg-zinc-950/60 px-3 py-2.5 text-sm text-zinc-200 focus:border-cyan-500/60 focus:outline-none"
+                        className="rounded-lg border border-zinc-700 bg-zinc-950/60 px-3 py-2.5 text-sm text-zinc-200 focus:border-accent/60 focus:outline-none"
                     >
                         <option value="">No project yet</option>
                         {projects.map((project) => (
@@ -108,7 +108,7 @@ export default function EditorPage() {
                     <button
                         type="button"
                         onClick={handleQuickCapture}
-                        className="inline-flex items-center justify-center gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-4 py-2.5 text-sm font-medium text-cyan-300 transition-colors hover:bg-cyan-500/20"
+                        className="btn-primary"
                     >
                         <CheckCircle2 className="h-4 w-4" />
                         Capture
@@ -185,14 +185,19 @@ export default function EditorPage() {
                     <p className="mb-6 text-sm text-zinc-600">Create a project to begin your build journal.</p>
                     <Link
                         href="/editor/projects/new"
-                        className="inline-flex items-center gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-6 py-3 transition-colors hover:bg-cyan-500/20"
+                        className="btn-primary px-6 py-3"
                     >
                         <Plus className="h-5 w-5 text-cyan-400" />
                         <ShinyText text="Create your first project" className="font-medium text-cyan-400" speed={3} />
                     </Link>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <section className="semantic-accent-surface p-5">
+                    <div className="semantic-section-heading">
+                        <Sparkles className="h-4 w-4 text-accent" />
+                        Project Log Boards
+                    </div>
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     {projects.map((project, index) => (
                         <ScrollReveal key={project.id} delay={Math.min(index * 0.08, 0.8)}>
                             <ProjectCard
@@ -201,7 +206,8 @@ export default function EditorPage() {
                             />
                         </ScrollReveal>
                     ))}
-                </div>
+                    </div>
+                </section>
             )}
         </div>
     );

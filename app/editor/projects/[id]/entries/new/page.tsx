@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, ChevronDown, Loader2, Save } from "lucide-react";
 import { useDevJournalStore } from "@/lib/store";
 import type { EntryType } from "@/lib/types";
-import { ENTRY_TYPE_OPTIONS } from "@/lib/entry-types";
+import { ENTRY_TYPE_OPTIONS, getEntryTypeConfig } from "@/lib/entry-types";
 import BlurText from "@/components/reactbits/blur-text";
 import { useToast } from "@/components/ui/toast";
 
@@ -138,16 +138,22 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                     <div>
                         <p className="mb-3 text-xs uppercase tracking-wider text-zinc-400">Entry type</p>
                         <div className="flex flex-wrap gap-2">
-                            {ENTRY_TYPE_OPTIONS.map((option) => (
-                                <button
-                                    key={option.value}
-                                    type="button"
-                                    onClick={() => setEntryType(option.value)}
-                                    className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${entryType === option.value ? "border-[#ff914d]/40 bg-[#ff914d]/15 text-[#ff914d]" : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"}`}
-                                >
-                                    {option.label}
-                                </button>
-                            ))}
+                            {ENTRY_TYPE_OPTIONS.map((option) => {
+                                const config = getEntryTypeConfig(option.value);
+                                const Shape = config.shape;
+
+                                return (
+                                    <button
+                                        key={option.value}
+                                        type="button"
+                                        onClick={() => setEntryType(option.value)}
+                                        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm transition-colors ${entryType === option.value ? `${config.badgeBorder} ${config.badgeBg} ${config.color}` : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"}`}
+                                    >
+                                        <Shape className="h-4 w-4" />
+                                        {option.label}
+                                    </button>
+                                );
+                            })}
                         </div>
                         <p className="mt-2 text-xs text-zinc-500">{selectedTypeDescription}</p>
                     </div>
@@ -175,7 +181,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                     </div>
 
                     <div className="flex justify-end">
-                        <button type="submit" disabled={!canSubmit || isSubmitting} className="inline-flex items-center gap-2 rounded-lg border border-[#ff914d]/30 bg-[#ff914d]/10 px-4 py-2 text-[#ff914d] disabled:opacity-60">
+                        <button type="submit" disabled={!canSubmit || isSubmitting} className="btn-primary px-4 py-2">
                             {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Save Entry
                         </button>
                     </div>

@@ -242,9 +242,9 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-4 pt-4">
                     <button
                         type="submit"
-                        className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-6 py-3 font-medium transition-colors hover:bg-cyan-500/20"
+                        className="btn-primary px-6 py-3"
                     >
-                        <ShinyText text="Save Changes" className="text-cyan-400" speed={3} />
+                        <ShinyText text="Save Changes" speed={3} />
                     </button>
                 </div>
             </form>

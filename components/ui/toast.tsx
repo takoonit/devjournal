@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useCallback, ReactNode, useRef } f
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, XCircle, Info, Sparkles, X } from "lucide-react";
 import { useDevJournalStore } from "@/lib/store";
+import RadiantPulse from "@/components/reactbits/radiant-pulse";
 import {
   resolveSupportiveToastCopy,
   type ToastType,
@@ -121,7 +122,14 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               role={toast.type === "error" ? "alert" : "status"}
             >
               <div className="flex items-start gap-3">
-                <div className={`mt-0.5 rounded-md border px-1.5 py-1 ${toneClasses[toast.type]}`}>{icons[toast.type]}</div>
+                <RadiantPulse
+                  className={`mt-0.5 rounded-md border px-1.5 py-1 ${toneClasses[toast.type]}`}
+                  active={toast.type === "success" && rewardIntensity !== "off"}
+                  rewardIntensity={rewardIntensity}
+                  decorative
+                >
+                  {icons[toast.type]}
+                </RadiantPulse>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-semibold text-zinc-100">{toast.title}</p>

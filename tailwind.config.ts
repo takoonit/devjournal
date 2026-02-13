@@ -37,6 +37,17 @@ const config: Config = {
                     soft: "rgb(var(--color-destructive-soft) / <alpha-value>)",
                     contrast: "rgb(var(--color-destructive-contrast) / <alpha-value>)",
                 },
+                entry: {
+                    feature: "rgb(var(--color-entry-feature) / <alpha-value>)",
+                    fix: "rgb(var(--color-entry-fix) / <alpha-value>)",
+                    refactor: "rgb(var(--color-entry-refactor) / <alpha-value>)",
+                    design: "rgb(var(--color-entry-design) / <alpha-value>)",
+                    journal: "rgb(var(--color-entry-journal) / <alpha-value>)",
+                },
+                status: {
+                    shipped: "rgb(var(--color-status-shipped) / <alpha-value>)",
+                    "in-progress": "rgb(var(--color-status-in-progress) / <alpha-value>)",
+                },
             },
             fontFamily: {
                 sans: ["var(--font-inter)", "system-ui", "sans-serif"],
