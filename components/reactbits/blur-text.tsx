@@ -33,7 +33,16 @@ const buildKeyframes = (
 
   const keyframes: Record<string, Array<string | number>> = {};
   keys.forEach((k) => {
-    keyframes[k] = [from[k], ...steps.map((s) => s[k])];
+    const fallback = from[k] ?? "";
+    let lastDefined = fallback;
+
+    keyframes[k] = [from[k] ?? fallback, ...steps.map((s) => {
+      const nextValue = s[k];
+      if (nextValue !== undefined) {
+        lastDefined = nextValue;
+      }
+      return nextValue ?? lastDefined;
+    })];
   });
   return keyframes;
 };

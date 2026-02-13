@@ -61,15 +61,13 @@ Core entry interface:
 interface Entry {
   id: string;
   projectId: string;
-  category: "plan-change" | "build" | "reflect";
+  entryType: EntryType; // "feature" | "fix" | "refactor" | "design" | "journal"
   title: string;
-  templateData: {
-    subcategory: string;
-    content: string;       // Markdown
-  };
+  content: string;
+  templateData?: EntryTemplateData;
   isPublic: boolean;
-  createdAt: string;       // ISO
-  updatedAt: string;       // ISO
+  createdAt: string; // ISO
+  updatedAt: string; // ISO
 }
 ```
 

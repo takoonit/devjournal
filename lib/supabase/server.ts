@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import { Entry, Project, User } from "@/lib/types";
 import {
@@ -48,56 +48,58 @@ function logSupabaseConfigWarning() {
     }
 }
 
-const getCachedPublicProfile = unstable_cache(
-    async (): Promise<User> => {
-        const client = getSupabasePublicClient();
-        if (!client) {
-            logSupabaseConfigWarning();
-            return mapProfileRowToUser(null);
-        }
+async function getCachedPublicProfile(): Promise<User> {
+    "use cache";
+    cacheTag("portfolio");
+    cacheTag("portfolio-profile");
+    cacheLife({ revalidate: ISR_WINDOW_SECONDS });
 
-        const { data, error } = await client
-            .from("profiles")
-            .select("id,name,role,bio,github_url,twitter_url,linkedin_url,email,updated_at")
-            .order("updated_at", { ascending: false })
-            .limit(1)
-            .maybeSingle<ProfileRow>();
+    const client = getSupabasePublicClient();
+    if (!client) {
+        logSupabaseConfigWarning();
+        return mapProfileRowToUser(null);
+    }
 
-        if (error) {
-            console.error("Failed to fetch profile", error.message);
-            return mapProfileRowToUser(null);
-        }
+    const { data, error } = await client
+        .from("public_profiles")
+        .select("id,name,role,bio,github_url,twitter_url,linkedin_url,updated_at")
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle<ProfileRow>();
 
-        return mapProfileRowToUser(data);
-    },
-    ["portfolio-profile"],
-    { revalidate: ISR_WINDOW_SECONDS, tags: ["portfolio", "portfolio-profile"] }
-);
+    if (error) {
+        console.error("Failed to fetch profile", error.message);
+        return mapProfileRowToUser(null);
+    }
 
-const getCachedPublicProjects = unstable_cache(
-    async (): Promise<Project[]> => {
-        const client = getSupabasePublicClient();
-        if (!client) {
-            logSupabaseConfigWarning();
-            return [];
-        }
+    return mapProfileRowToUser(data);
+}
 
-        const { data, error } = await client
-            .from("projects")
-            .select("id,name,slug,description,tech_stack,repository_link,status,created_at,updated_at")
-            .order("updated_at", { ascending: false })
-            .returns<ProjectRow[]>();
+async function getCachedPublicProjects(): Promise<Project[]> {
+    "use cache";
+    cacheTag("portfolio");
+    cacheTag("portfolio-projects");
+    cacheLife({ revalidate: ISR_WINDOW_SECONDS });
 
-        if (error) {
-            console.error("Failed to fetch projects", error.message);
-            return [];
-        }
+    const client = getSupabasePublicClient();
+    if (!client) {
+        logSupabaseConfigWarning();
+        return [];
+    }
 
-        return data.map(mapProjectRowToProject);
-    },
-    ["portfolio-projects"],
-    { revalidate: ISR_WINDOW_SECONDS, tags: ["portfolio", "portfolio-projects"] }
-);
+    const { data, error } = await client
+        .from("projects")
+        .select("id,name,slug,description,tech_stack,repository_link,status,created_at,updated_at")
+        .order("updated_at", { ascending: false })
+        .returns<ProjectRow[]>();
+
+    if (error) {
+        console.error("Failed to fetch projects", error.message);
+        return [];
+    }
+
+    return data.map(mapProjectRowToProject);
+}
 
 /**
  * Fetches profile + projects for the public portfolio landing pages.
@@ -117,92 +119,96 @@ export async function getPublicPortfolioOverview() {
 /**
  * Returns project slugs for static path generation and portfolio navigation.
  */
-export const getPublicProjectSlugs = unstable_cache(
-    async (): Promise<string[]> => {
-        const client = getSupabasePublicClient();
-        if (!client) {
-            logSupabaseConfigWarning();
-            return [];
-        }
+export async function getPublicProjectSlugs(): Promise<string[]> {
+    "use cache";
+    cacheTag("portfolio");
+    cacheTag("portfolio-projects");
+    cacheLife({ revalidate: ISR_WINDOW_SECONDS });
 
-        const { data, error } = await client
-            .from("projects")
-            .select("slug")
-            .returns<Array<{ slug: string }>>();
+    const client = getSupabasePublicClient();
+    if (!client) {
+        logSupabaseConfigWarning();
+        return [];
+    }
 
-        if (error) {
-            console.error("Failed to fetch project slugs", error.message);
-            return [];
-        }
+    const { data, error } = await client
+        .from("projects")
+        .select("slug")
+        .returns<Array<{ slug: string }>>();
 
-        return data.map((row) => row.slug);
-    },
-    ["portfolio-project-slugs"],
-    { revalidate: ISR_WINDOW_SECONDS, tags: ["portfolio", "portfolio-projects"] }
-);
+    if (error) {
+        console.error("Failed to fetch project slugs", error.message);
+        return [];
+    }
+
+    return data.map((row) => row.slug);
+}
 
 /**
  * Fetches a single public project with its published entries and profile context.
  */
-export const getPublicProjectBySlug = unstable_cache(
-    async (slug: string): Promise<{ project: Project | null; entries: Entry[]; user: User }> => {
-        const client = getSupabasePublicClient();
-        const fallbackUser = mapProfileRowToUser(null);
+export async function getPublicProjectBySlug(slug: string): Promise<{ project: Project | null; entries: Entry[]; user: User }> {
+    "use cache";
+    cacheTag("portfolio");
+    cacheTag("portfolio-projects");
+    cacheTag("portfolio-entries");
+    cacheTag("portfolio-profile");
+    cacheLife({ revalidate: ISR_WINDOW_SECONDS });
 
-        if (!client) {
-            logSupabaseConfigWarning();
-            return {
-                project: null,
-                entries: [],
-                user: fallbackUser,
-            };
-        }
+    const client = getSupabasePublicClient();
+    const fallbackUser = mapProfileRowToUser(null);
 
-        const [profileResult, projectResult] = await Promise.all([
-            client
-                .from("profiles")
-                .select("id,name,role,bio,github_url,twitter_url,linkedin_url,email,updated_at")
-                .order("updated_at", { ascending: false })
-                .limit(1)
-                .maybeSingle<ProfileRow>(),
-            client
-                .from("projects")
-                .select("id,name,slug,description,tech_stack,repository_link,status,created_at,updated_at")
-                .eq("slug", slug)
-                .maybeSingle<ProjectRow>(),
-        ]);
-
-        const user = profileResult.error ? fallbackUser : mapProfileRowToUser(profileResult.data);
-
-        if (projectResult.error || !projectResult.data) {
-            if (projectResult.error) {
-                console.error("Failed to fetch project by slug", projectResult.error.message);
-            }
-            return { project: null, entries: [], user };
-        }
-
-        const project = mapProjectRowToProject(projectResult.data);
-        const { data: entriesData, error: entriesError } = await client
-            .from("entries")
-            .select("id,project_id,entry_type,title,content,template_data,is_public,created_at,updated_at")
-            .eq("project_id", project.id)
-            .eq("is_public", true)
-            .order("created_at", { ascending: false })
-            .returns<EntryRow[]>();
-
-        if (entriesError) {
-            console.error("Failed to fetch public entries", entriesError.message);
-            return { project, entries: [], user };
-        }
-
+    if (!client) {
+        logSupabaseConfigWarning();
         return {
-            project,
-            entries: entriesData.map(mapEntryRowToEntry),
-            user,
+            project: null,
+            entries: [],
+            user: fallbackUser,
         };
-    },
-    ["portfolio-project-by-slug"],
-    { revalidate: ISR_WINDOW_SECONDS, tags: ["portfolio", "portfolio-projects", "portfolio-entries", "portfolio-profile"] }
-);
+    }
+
+    const [profileResult, projectResult] = await Promise.all([
+        client
+            .from("public_profiles")
+            .select("id,name,role,bio,github_url,twitter_url,linkedin_url,updated_at")
+            .order("updated_at", { ascending: false })
+            .limit(1)
+            .maybeSingle<ProfileRow>(),
+        client
+            .from("projects")
+            .select("id,name,slug,description,tech_stack,repository_link,status,created_at,updated_at")
+            .eq("slug", slug)
+            .maybeSingle<ProjectRow>(),
+    ]);
+
+    const user = profileResult.error ? fallbackUser : mapProfileRowToUser(profileResult.data);
+
+    if (projectResult.error || !projectResult.data) {
+        if (projectResult.error) {
+            console.error("Failed to fetch project by slug", projectResult.error.message);
+        }
+        return { project: null, entries: [], user };
+    }
+
+    const project = mapProjectRowToProject(projectResult.data);
+    const { data: entriesData, error: entriesError } = await client
+        .from("entries")
+        .select("id,project_id,entry_type,title,content,template_data,is_public,created_at,updated_at")
+        .eq("project_id", project.id)
+        .eq("is_public", true)
+        .order("created_at", { ascending: false })
+        .returns<EntryRow[]>();
+
+    if (entriesError) {
+        console.error("Failed to fetch public entries", entriesError.message);
+        return { project, entries: [], user };
+    }
+
+    return {
+        project,
+        entries: entriesData.map(mapEntryRowToEntry),
+        user,
+    };
+}
 
 export { ISR_WINDOW_SECONDS };

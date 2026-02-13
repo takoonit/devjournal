@@ -29,8 +29,8 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
 
             <div className="md:grid md:grid-cols-[1fr_24px_2fr] md:gap-8">
                 <div className="hidden md:flex flex-col items-end pt-1">
-                    <time className="text-sm text-zinc-500">{date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}</time>
-                    <span className="text-xs text-zinc-600">{date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}</span>
+                    <time className="text-sm text-zinc-500">{date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</time>
+                    <span className="text-xs text-zinc-600">{date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}</span>
                 </div>
 
                 <div className="absolute left-0 top-1 z-10 flex justify-center md:relative md:left-auto">
@@ -46,7 +46,7 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
                             {config.label}
                         </span>
                         <span className="text-xs text-zinc-500 md:hidden">
-                            {date.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                            {date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                         </span>
                     </header>
 

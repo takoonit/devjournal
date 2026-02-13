@@ -8,8 +8,6 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { getPublicPortfolioOverview } from "@/lib/supabase/server";
 
-export const revalidate = 150;
-
 export default async function PortfolioPage() {
     const { projects, user } = await getPublicPortfolioOverview();
 

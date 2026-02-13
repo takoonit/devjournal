@@ -8,9 +8,9 @@ import { Folder, FolderInput, Plus, Settings } from "lucide-react";
 import { Breadcrumbs, type BreadcrumbItem } from "@/components/ui/breadcrumbs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo, useRef } from "react";
+import { Suspense, useMemo, useRef } from "react";
 
-export default function EditorLayout({
+function EditorLayoutContent({
     children,
 }: {
     children: React.ReactNode;
@@ -222,5 +222,18 @@ export default function EditorLayout({
                 {children}
             </main>
         </div>
+    );
+}
+
+
+export default function EditorLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-zinc-950 text-zinc-100" />}>
+            <EditorLayoutContent>{children}</EditorLayoutContent>
+        </Suspense>
     );
 }

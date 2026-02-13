@@ -16,18 +16,18 @@ const tonePreset: Record<
   { color: string; shineColor: string; className: string }
 > = {
   neutral: {
-    color: "var(--color-text-secondary)",
-    shineColor: "var(--color-text-primary)",
+    color: "rgb(var(--color-text-secondary))",
+    shineColor: "rgb(var(--color-text-primary))",
     className: "text-sm font-medium tracking-wide",
   },
   accent: {
-    color: "var(--color-accent-base)",
-    shineColor: "var(--color-accent-contrast)",
+    color: "rgb(var(--color-accent-base))",
+    shineColor: "rgb(var(--color-accent-contrast))",
     className: "text-sm font-semibold uppercase tracking-[0.14em]",
   },
   warning: {
-    color: "var(--color-warning-base)",
-    shineColor: "var(--color-warning-contrast)",
+    color: "rgb(var(--color-warning-base))",
+    shineColor: "rgb(var(--color-warning-contrast))",
     className: "text-xs font-semibold uppercase tracking-[0.16em]",
   },
 };

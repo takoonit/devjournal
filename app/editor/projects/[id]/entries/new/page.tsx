@@ -17,6 +17,8 @@ type EntryDraft = {
     details: string;
 };
 
+const DETAILS_MARKER = "\n\n<!-- details -->\n";
+
 export default function NewEntryPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
@@ -106,23 +108,36 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
 
     const canSubmit = title.trim().length > 0 && content.trim().length > 0;
 
-    const onSubmit = (e: React.FormEvent) => {
+    const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!canSubmit) return;
 
         setIsSubmitting(true);
-        addEntry({
-            projectId: project.id,
-            entryType,
-            title: title.trim(),
-            content: details.trim() ? `${content.trim()}\n\n---\n${details.trim()}` : content.trim(),
-            isPublic: true,
-        });
 
-        if (pendingCaptureId) consumeInboxCapture(pendingCaptureId);
-        localStorage.removeItem(draftKey);
-        addToast({ message: "Entry saved.", type: "success" });
-        router.push(`/editor/projects/${project.id}`);
+        try {
+            await Promise.resolve(
+                addEntry({
+                    projectId: project.id,
+                    entryType,
+                    title: title.trim(),
+                    content: details.trim() ? `${content.trim()}${DETAILS_MARKER}${details.trim()}` : content.trim(),
+                    isPublic: true,
+                })
+            );
+
+            if (pendingCaptureId) {
+                await Promise.resolve(consumeInboxCapture(pendingCaptureId));
+            }
+
+            localStorage.removeItem(draftKey);
+            addToast({ message: "Entry saved.", type: "success" });
+            await Promise.resolve(router.push(`/editor/projects/${project.id}`));
+        } catch {
+            addToast({ message: "Failed to save entry. Please try again.", type: "error" });
+            return;
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (

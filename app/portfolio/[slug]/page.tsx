@@ -5,17 +5,7 @@ import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import BlurText from "@/components/reactbits/blur-text";
-import {
-    getPublicProjectBySlug,
-    getPublicProjectSlugs,
-} from "@/lib/supabase/server";
-
-export const revalidate = 150;
-
-export async function generateStaticParams() {
-    const slugs = await getPublicProjectSlugs();
-    return slugs.map((slug) => ({ slug }));
-}
+import { getPublicProjectBySlug } from "@/lib/supabase/server";
 
 export default async function ProjectDetailPage({
     params,
