@@ -61,7 +61,7 @@ Execution cadence for this run:
 ### Phase 4 — Wayfinding ✅ (reviewed in restart)
 - Re-validate active nav accent grammar, halo behavior, and selective bold interactive borders.
 
-### Phase 5 — Polish + QA ⏳ (pending)
+### Phase 5 — Polish + QA ✅ (reviewed in restart)
 - Execute contrast/motion/focus safety checks and consistency sweep closure.
 
 ---

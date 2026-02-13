@@ -14,6 +14,7 @@ import CountUp from "@/components/reactbits/count-up";
 import BlurText from "@/components/reactbits/blur-text";
 import ShinyText from "@/components/reactbits/shiny-text";
 import ScrollReveal from "@/components/reactbits/scroll-reveal";
+import { getEntryType, getEntryTypeConfig } from "@/lib/entry-types";
 
 export default function ProjectDetailPage({
     params,
@@ -196,7 +197,7 @@ export default function ProjectDetailPage({
                 <div className="flex items-center gap-4 text-sm text-zinc-500">
                     <span>Created {formatDate(project.createdAt)}</span>
                     <span>•</span>
-                    <span className={project.status === "shipped" ? "text-emerald-400" : "text-cyan-400"}>
+                    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${project.status === "shipped" ? "border-status-shipped/40 bg-status-shipped/15 text-status-shipped" : "border-status-in-progress/40 bg-status-in-progress/15 text-status-in-progress"}`}>
                         {project.status === "shipped" ? "Shipped" : "In Progress"}
                     </span>
                     <span>•</span>
@@ -240,11 +241,15 @@ export default function ProjectDetailPage({
             ) : (
                 <div className="space-y-6">
                     <h2 className="text-xl font-semibold text-zinc-300">Build Log Entries</h2>
-                    {entries.map((entry, index) => (
+                    {entries.map((entry, index) => {
+                        const entryConfig = getEntryTypeConfig(getEntryType(entry));
+
+                        return (
                         <ScrollReveal key={entry.id} delay={Math.min(index * 0.06, 0.6)}>
                         <div
-                            className="relative rounded-lg border border-zinc-800 bg-zinc-900/30 p-6 transition-all hover:border-2 hover:border-accent/55"
+                            className="relative overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/30 p-6 transition-all hover:border-accent/55"
                         >
+                            <div className={`absolute inset-x-0 top-0 h-1 ${entryConfig.badgeBg}`} aria-hidden="true" />
                             {/* Entry Actions — keep in normal flow to avoid border overlap */}
                             <div className="mb-4 flex items-center justify-end gap-1">
                                 <button
@@ -277,7 +282,8 @@ export default function ProjectDetailPage({
                             <TimelineEntry entry={entry} />
                         </div>
                         </ScrollReveal>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
 

@@ -199,3 +199,23 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 - Preserve focus-mode suppression behavior for halo effects.
 - Keep wayfinding emphasis semantic and restrained to interactive states.
 - Stop after this checkpoint and move to Phase 5 only after explicit confirmation.
+
+---
+
+## 2026-02 Restart Pass: Phase 5 Polish + QA Review Checkpoint
+
+### Observations
+1. Keith-Haring readability remained weak in project detail contexts because semantic status and entry-type colors stayed mostly tiny (text/icons only).
+2. Entry cards still relied on neutral surfaces and lacked medium-salience semantic accents.
+3. Wayfinding consistency improved in Phase 4, but Phase 5 still needed a hardcoded-style sweep in high-traffic project detail surfaces.
+
+### Decisions
+- Mark Phase 5 restart review complete.
+- Promote semantic status styling in project headers using `status.*` token classes (pill treatment).
+- Add medium-salience entry-type accent strips to project detail entry cards via shared `ENTRY_TYPE_CONFIG` mapping.
+- Keep card hover emphasis stable (no border-width jumps), preserving calm motion/contrast behavior.
+
+### Guardrails
+- Keep Noir base dominant; semantic accents remain additive and tied to model semantics.
+- Avoid hardcoded palette values where semantic token classes exist.
+- Preserve writing-first flow and avoid introducing extra decision points.
