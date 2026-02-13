@@ -1,5 +1,8 @@
-import type { Entry, EntryCategory, EntryType } from "@/lib/types";
+import type { Entry, EntryType } from "@/lib/types";
 
+/**
+ * Selectable entry-type presets used by editor forms and filters.
+ */
 export const ENTRY_TYPE_OPTIONS: Array<{ value: EntryType; label: string; description: string }> = [
   { value: "feature", label: "Feature", description: "New capabilities" },
   { value: "fix", label: "Fix", description: "Bug repairs" },
@@ -8,44 +11,42 @@ export const ENTRY_TYPE_OPTIONS: Array<{ value: EntryType; label: string; descri
   { value: "journal", label: "Journal", description: "Learnings + notes" },
 ];
 
-export function inferEntryTypeFromLegacy(category?: EntryCategory, subcategory?: string): EntryType {
-  if (subcategory === "debugging" || subcategory === "post-mortem") return "fix";
-  if (subcategory === "implementation-guide" || subcategory === "decision-log") return "feature";
-  if (subcategory === "idea-spark" || subcategory === "milestone") return "design";
-  if (subcategory === "context-switch" || subcategory === "review") return "refactor";
-  if (subcategory === "til-snippet" || subcategory === "research-notes") return "journal";
-
-  if (category === "build") return "feature";
-  if (category === "reflect") return "journal";
-  return "journal";
-}
-
-export function extractLegacySubcategory(templateData: Entry["templateData"]): string | undefined {
-  if (!templateData || typeof templateData !== "object") return undefined;
-  const subcategory = (templateData as Record<string, unknown>).subcategory;
-  return typeof subcategory === "string" ? subcategory : undefined;
-}
-
+/**
+ * Returns the canonical entry type, defaulting safely to `journal`.
+ */
 export function getEntryType(entry: Entry): EntryType {
-  return entry.entryType ?? inferEntryTypeFromLegacy(entry.category, extractLegacySubcategory(entry.templateData));
+  return entry.entryType ?? "journal";
 }
 
+/**
+ * Recursively traverses nested template values and collects non-empty string chunks.
+ */
+function extractTextChunks(value: unknown, chunks: string[]): void {
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (trimmed) chunks.push(trimmed);
+    return;
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((item) => extractTextChunks(item, chunks));
+    return;
+  }
+
+  if (value && typeof value === "object") {
+    Object.values(value).forEach((item) => extractTextChunks(item, chunks));
+  }
+}
+
+/**
+ * Returns authored content when present; otherwise derives a readable fallback from template data.
+ */
 export function getEntryContent(entry: Entry): string {
-  if (entry.content?.trim()) return entry.content;
+  const entryContent = entry.content?.trim();
+  if (entryContent) return entryContent;
 
-  if (!entry.templateData || typeof entry.templateData !== "object") return "";
-  const data = entry.templateData as Record<string, unknown>;
   const chunks: string[] = [];
-
-  Object.entries(data).forEach(([key, value]) => {
-    if (key === "subcategory" || !value) return;
-    if (typeof value === "string") chunks.push(value);
-    if (typeof value === "object") {
-      Object.values(value as Record<string, unknown>).forEach((nested) => {
-        if (typeof nested === "string" && nested.trim()) chunks.push(nested);
-      });
-    }
-  });
+  extractTextChunks(entry.templateData, chunks);
 
   return chunks.join("\n\n");
 }

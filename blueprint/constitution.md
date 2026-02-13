@@ -1,49 +1,65 @@
-# 🟦 Project Constitution: constitution.md
+# 🟦 Project Constitution: DevJournal
 
-## 🌟 North Star
-**Mission:** Empower developers to "Build in Public" with zero friction.
-**Outcome:** A deterministic, read-only portfolio generated automatically from daily build logs—Plan, Build, Reflect.
+## 1) North Star
+- **Mission:** DevJournal is a thinking system that improves critical thinking, guides reflection, and turns lived experience into measurable progress.
+- **Primary User Problem:** Reduce task paralysis (especially ADHD-related) by lowering activation energy for capturing, processing, and acting on thoughts.
+- **Product Promise:** Capture fast, think deeper, and leave every session with clearer next actions.
 
-### Entry
-```typescript
+## 2) Core Experience Pillars
+1. **Capture Thoughts Without Friction**
+   - Fast free-form editor with minimal setup.
+   - Users should be able to start typing immediately.
+   - The system must prioritize speed, clarity, and low cognitive overhead.
+
+2. **Think Deeper With Guided Prompts**
+   - Prompts and reflection templates should help when users feel stuck.
+   - Prompting should uncover blind spots, patterns, assumptions, and missed learnings.
+   - Guidance should support thinking, not replace it.
+
+3. **Light AI Assistance (Non-dominant)**
+   - AI can rephrase, clarify, and offer exploratory angles.
+   - AI must remain assistive and optional.
+   - User agency and original thinking are always the source of truth.
+
+## 3) Canonical Domain Model
+
+> Single source of truth for contributors. If implementation changes this model, update this file in the same PR.
+
+```ts
 interface Entry {
   id: string;
   projectId: string;
-  category: "plan-change" | "build" | "reflect";
+  entryType: "feature" | "fix" | "refactor" | "design" | "journal";
   title: string;
-  templateData: {
-    subcategory: string; // e.g., "decision-log", "debugging", "milestone"
-    content: string;     // Markdown content
-  };
+  content: string;
+  templateData?: Record<string, unknown>;
   isPublic: boolean;
-  createdAt: string; // ISO
-  updatedAt: string; // ISO
+  createdAt: string;
+  updatedAt: string;
 }
 ```
 
-## 📜 System Rules
-- **Narrative First:** Prioritize free-form writing over strict forms. The journal is a story, not a database.
-- **Noir Aesthetic:** Pure dark mode $(\text{zinc-950/900})$. Cyan/Emerald accents. Spotlight effects.
-- **Data First:** Define JSON schemas before any feature implementation.
-- **Deterministic:** Local-first state (Zustand) with exportable portability.
-- **Semantic UI:** Icons must map to actions (e.g., `FolderInput` for Project Import).
+## 4) UX & Interaction Rules
+- **Activation First:** First interaction should be typing, not configuring.
+- **Progressive Disclosure:** Advanced options appear only when needed.
+- **Cognitive Safety:** Keep interfaces calm, predictable, and low-noise.
+- **Noir × Haring Visual Language:** Preserve dark, high-contrast base surfaces, then layer bold shape-driven accents inspired by Keith Haring (energetic outlines, simple geometry, high-contrast color cues).
+- **Deterministic UI:** Use shared tokens/components before page-specific custom styling.
 
-## 📂 Data Portability (.devjournal)
+## 5) Data & Portability Rules
+- `.devjournal` is JSON-based and additive on import.
+- Import conflicts use deterministic rename + ID regeneration.
+- Public portfolio rendering must remain server-readable.
 
-DevJournal uses a unified, JSON-based `.devjournal` format for all data transfers.
+## 6) BLAST Decision Order (Conflict Resolver)
+1. **Blueprint correctness** (mission, pillars, domain model)
+2. **Link requirements** (runtime/data integration constraints)
+3. **Architect stability** (data/model correctness before style)
+4. **Style consistency** (tokenized visual system)
+5. **Trigger/deployment concerns** (automation + release behavior)
 
-### 1. File Extension
-- **Format:** `.devjournal` (Pure JSON internally)
-- **Scope:** Can contain a full system backup or a selective project bundle.
-
-### 2. Smart Import Logic
-The system automatically detects the content type based on the `type` field:
-- `global`: Full backup (User + Projects + Entries).
-- `selective`: Multiple chosen projects.
-- `project`: Legacy single project export.
-
-### 3. Non-Destructive Merging
-All imports are **additive**.
-- **Conflict Resolution:** If a project name exists, the system appends a counter (e.g., `My Project (1)`) Windows-style.
-- **ID Management:** New IDs are generated for all imported items to prevent collisions while preserving relationships.
-
+## 7) Non-Goals
+- AI taking over author intent or replacing user judgment.
+- Complex setup flows before first thought capture.
+- UI patterns that increase decision fatigue or paralysis.
+- Decorative color/shape usage that reduces readability, contrast, or focus clarity.
