@@ -26,6 +26,22 @@ export const designTokens = {
       soft: "var(--color-destructive-soft)",
       contrast: "var(--color-destructive-contrast)",
     },
+    entry: {
+      feature: "var(--color-entry-feature)",
+      fix: "var(--color-entry-fix)",
+      refactor: "var(--color-entry-refactor)",
+      design: "var(--color-entry-design)",
+      journal: "var(--color-entry-journal)",
+    },
+    status: {
+      shipped: "var(--color-status-shipped)",
+      inProgress: "var(--color-status-in-progress)",
+    },
+  },
+  border: {
+    subtle: "var(--border-subtle)",
+    standard: "var(--border-standard)",
+    bold: "var(--border-bold)",
   },
   motion: {
     subtle: "var(--motion-subtle)",

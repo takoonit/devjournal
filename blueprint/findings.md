@@ -86,3 +86,22 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 ### Guardrails
 - Shapes remain compact and semantic to avoid decorative noise.
 - Existing writing-first layout and interaction density remain unchanged.
+
+---
+
+## 2026-02 Reconciliation: Phases 1–3 Token Baseline
+
+### Observations
+1. Phase 2/3 UI behaviors were delivered before all Phase 1 token plumbing was fully finished.
+2. Entry-type visuals were centralized, but still used hardcoded palette utilities instead of semantic `entry.*` tokens.
+
+### Decisions
+- Added semantic entry/status color variables to `app/globals.css` for both theme modes.
+- Extended `lib/design-tokens.ts` with `color.entry`, `color.status`, and `border` groups.
+- Extended `tailwind.config.ts` with `entry.*` and `status.*` color namespaces.
+- Migrated `lib/entry-types.ts` visual classes to tokenized `entry.*` utilities.
+- Marked Phase 1 checklist items complete after reconciliation with shipped Phase 2/3 work.
+
+### Guardrails
+- Keep future visual variants token-first (`entry.*`, `status.*`) and avoid direct palette utility regressions.
+- Preserve deterministic behavior by sourcing entry visual semantics from one config surface.

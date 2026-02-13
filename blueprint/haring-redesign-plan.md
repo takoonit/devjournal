@@ -309,10 +309,10 @@ This replaces background-based active indicators with a cleaner geometric marker
 The PRD defines 5 phases. This plan maps onto them:
 
 ### Phase 1 — Foundation (tokens, vars, docs)
-1. Add Haring semantic color tokens to `globals.css`, `design-tokens.ts`, `tailwind.config.ts`
-2. Add border-weight tokens (`--border-subtle/standard/bold`)
-3. Update `lib/entry-types.ts` to use new token-based color classes
-4. Update blueprint docs (this file, constitution if needed)
+1. [x] Add Haring semantic color tokens to `globals.css`, `design-tokens.ts`, `tailwind.config.ts`
+2. [x] Add border-weight tokens (`--border-subtle/standard/bold`)
+3. [x] Update `lib/entry-types.ts` to use new token-based color classes
+4. [x] Update blueprint docs (this file, constitution if needed)
 
 ### Phase 2 — Feedback (visual confirmation)
 5. [x] Build `RadiantPulse` component for action confirmation
