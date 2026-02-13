@@ -138,6 +138,9 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
             localStorage.removeItem(draftKey);
             addToast({ message: "Entry updated.", type: "success" });
             await Promise.resolve(router.push(`/editor/projects/${project.id}`));
+        } catch (err) {
+            console.error("Failed to update entry:", err);
+            addToast({ message: "Failed to update entry. Please try again.", type: "error" });
         } finally {
             setIsSubmitting(false);
         }

@@ -24,7 +24,8 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
     const router = useRouter();
     const searchParams = useSearchParams();
     const { addToast } = useToast();
-    const { projects, addEntry, peekInboxCapture, consumeInboxCapture } = useDevJournalStore();
+    const { projects, addEntry, consumeInboxCapture } = useDevJournalStore();
+    const peekInboxCapture = useDevJournalStore((state) => state.peekInboxCapture);
     const project = projects.find((p) => p.id === id);
 
     const [entryType, setEntryType] = useState<EntryType>("journal");

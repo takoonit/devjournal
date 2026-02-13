@@ -96,6 +96,35 @@ create trigger set_entries_updated_at
 before update on public.entries
 for each row execute function public.set_updated_at();
 
+-- Seed the owner_settings table for the initial authenticated user.
+-- After signing in to Supabase Auth for the first time, run the following
+-- from the Supabase SQL Editor (or a post-deploy migration) replacing
+-- <YOUR_AUTH_USER_UUID> with the uid from auth.users:
+--
+--   INSERT INTO public.owner_settings (owner_id)
+--   VALUES ('<YOUR_AUTH_USER_UUID>')
+--   ON CONFLICT (owner_id) DO NOTHING;
+--
+-- Alternatively, auto-register the first authenticated user as the owner:
+create or replace function public.auto_seed_owner()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (select 1 from public.owner_settings) then
+    insert into public.owner_settings (owner_id) values (new.id);
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists seed_owner_on_first_signup on auth.users;
+create trigger seed_owner_on_first_signup
+after insert on auth.users
+for each row execute function public.auto_seed_owner();
+
 -- RLS: single-user write/update, public read for portfolio tables
 alter table public.owner_settings enable row level security;
 alter table public.profiles enable row level security;
