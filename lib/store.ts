@@ -1,7 +1,24 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { User, Project, Entry } from "./types";
-import { generateId, generateSlug } from "./utils";
+import { User, Project, Entry, InboxCapture } from "@/lib/types";
+import type { ThemeMode } from "@/lib/design-tokens";
+import { generateId, generateSlug } from "@/lib/utils";
+
+export interface UiPreferences {
+    themeMode: ThemeMode;
+    focusMode: boolean;
+    density: "cozy" | "compact";
+    rewardIntensity: "off" | "subtle" | "full";
+    motionLevel: "reduced" | "standard" | "expressive";
+}
+
+export const defaultUiPreferences: UiPreferences = {
+    themeMode: "noir",
+    focusMode: false,
+    density: "cozy",
+    rewardIntensity: "subtle",
+    motionLevel: "standard",
+};
 
 interface DevJournalStore {
     // User
@@ -24,6 +41,18 @@ interface DevJournalStore {
     getEntriesByProjectId: (projectId: string) => Entry[];
     getPublicEntriesByProjectId: (projectId: string) => Entry[];
     getPublicProjects: () => Project[];
+
+    // Inbox capture
+    inboxCaptures: InboxCapture[];
+    addInboxCapture: (content: string, projectId?: string) => void;
+    assignInboxCaptureProject: (id: string, projectId?: string) => void;
+    deleteInboxCapture: (id: string) => void;
+    peekInboxCapture: (id: string) => InboxCapture | undefined;
+    consumeInboxCapture: (id: string) => InboxCapture | undefined;
+
+    // UI preferences
+    uiPreferences: UiPreferences;
+    updateUiPreferences: (updates: Partial<UiPreferences>) => void;
 
     // Unified Portability (.devjournal)
     exportJournal: () => void;
@@ -51,6 +80,13 @@ export const useDevJournalStore = create<DevJournalStore>()(
             updateUser: (updates) =>
                 set((state) => ({
                     user: { ...state.user, ...updates },
+                })),
+
+            uiPreferences: defaultUiPreferences,
+
+            updateUiPreferences: (updates) =>
+                set((state) => ({
+                    uiPreferences: { ...state.uiPreferences, ...updates },
                 })),
 
             // Projects
@@ -131,6 +167,47 @@ export const useDevJournalStore = create<DevJournalStore>()(
                     return publicEntries.length > 0;
                 }),
 
+            // Inbox capture
+            inboxCaptures: [],
+
+            addInboxCapture: (content, projectId) =>
+                set((state) => ({
+                    inboxCaptures: [
+                        {
+                            id: generateId(),
+                            content: content.trim(),
+                            projectId,
+                            createdAt: new Date().toISOString(),
+                        },
+                        ...state.inboxCaptures,
+                    ],
+                })),
+
+            assignInboxCaptureProject: (id, projectId) =>
+                set((state) => ({
+                    inboxCaptures: state.inboxCaptures.map((capture) =>
+                        capture.id === id ? { ...capture, projectId } : capture
+                    ),
+                })),
+
+            deleteInboxCapture: (id) =>
+                set((state) => ({
+                    inboxCaptures: state.inboxCaptures.filter((item) => item.id !== id),
+                })),
+
+            peekInboxCapture: (id) => get().inboxCaptures.find((capture) => capture.id === id),
+
+            consumeInboxCapture: (id) => {
+                const item = get().inboxCaptures.find((capture) => capture.id === id);
+                if (!item) return undefined;
+
+                set((state) => ({
+                    inboxCaptures: state.inboxCaptures.filter((capture) => capture.id !== id),
+                }));
+
+                return item;
+            },
+
             // Unified Export (.devjournal)
             exportJournal: () => {
                 const state = get();
@@ -139,6 +216,7 @@ export const useDevJournalStore = create<DevJournalStore>()(
                     type: "global",
                     exportedAt: new Date().toISOString(),
                     user: state.user,
+                    uiPreferences: state.uiPreferences,
                     projects: state.projects,
                     entries: state.entries,
                 };
@@ -192,35 +270,70 @@ export const useDevJournalStore = create<DevJournalStore>()(
                     const text = await file.text();
                     const data = JSON.parse(text);
 
-                    if (!data.version) {
-                        return { success: false, message: "Invalid file format." };
+                    if (data.version !== "1.0") {
+                        return { success: false, message: "Unsupported or invalid DevJournal file version." };
                     }
 
                     const state = get();
                     const projectsToImport: Project[] = [];
                     const entriesToImport: Entry[] = [];
 
+                    let importedUiPreferences: UiPreferences | undefined;
+
                     // 1. Resolve what to import
                     if (data.type === "global") {
+                        if (!Array.isArray(data.projects) || !Array.isArray(data.entries)) {
+                            return {
+                                success: false,
+                                message: "Invalid global DevJournal payload.",
+                            };
+                        }
+
                         projectsToImport.push(...data.projects);
                         entriesToImport.push(...data.entries);
+
+                        if (data.uiPreferences && typeof data.uiPreferences === "object") {
+                            importedUiPreferences = {
+                                ...defaultUiPreferences,
+                                ...data.uiPreferences,
+                            };
+                        }
                         // Optionally update user bio/data? Keeping merging non-destructive for user too.
                     } else if (data.type === "selective" || data.type === "project") {
-                        const projs = data.projects || (data.project ? [data.project] : []);
+                        const projs = Array.isArray(data.projects)
+                            ? data.projects
+                            : data.project
+                                ? [data.project]
+                                : [];
+                        const safeEntries = Array.isArray(data.entries) ? data.entries : [];
+
                         projectsToImport.push(...projs);
-                        entriesToImport.push(...data.entries);
+                        entriesToImport.push(...safeEntries);
                     } else {
                         return { success: false, message: "Unknown DevJournal content type." };
                     }
 
+                    if (projectsToImport.length === 0) {
+                        return { success: false, message: "No projects found to import." };
+                    }
+
+                    const existingProjects = [...state.projects];
+                    const existingEntries = [...state.entries];
+
                     // 2. Process each project with Windows-style renaming
                     const projectMappings: Record<string, string> = {}; // Old ID -> New ID
 
+                    let importedProjectsCount = 0;
+
                     projectsToImport.forEach(incomingProj => {
+                        if (!incomingProj?.id || !incomingProj?.name) {
+                            return;
+                        }
+
                         let finalName = incomingProj.name;
                         let counter = 1;
 
-                        while (state.projects.some(p => p.name === finalName)) {
+                        while (existingProjects.some(p => p.name === finalName)) {
                             finalName = `${incomingProj.name} (${counter})`;
                             counter++;
                         }
@@ -228,7 +341,7 @@ export const useDevJournalStore = create<DevJournalStore>()(
                         const newProjectId = generateId();
                         projectMappings[incomingProj.id] = newProjectId;
 
-                        state.projects.push({
+                        existingProjects.push({
                             ...incomingProj,
                             id: newProjectId,
                             name: finalName,
@@ -236,13 +349,19 @@ export const useDevJournalStore = create<DevJournalStore>()(
                             createdAt: incomingProj.createdAt || new Date().toISOString(),
                             updatedAt: new Date().toISOString(),
                         });
+
+                        importedProjectsCount++;
                     });
+
+                    if (importedProjectsCount === 0) {
+                        return { success: false, message: "No valid projects found to import." };
+                    }
 
                     // 3. Process entries linked to these projects
                     entriesToImport.forEach(incomingEntry => {
                         const newProjectId = projectMappings[incomingEntry.projectId];
                         if (newProjectId) {
-                            state.entries.push({
+                            existingEntries.push({
                                 ...incomingEntry,
                                 id: generateId(),
                                 projectId: newProjectId,
@@ -253,13 +372,14 @@ export const useDevJournalStore = create<DevJournalStore>()(
 
                     // Update state
                     set({
-                        projects: [...state.projects],
-                        entries: [...state.entries]
+                        projects: existingProjects,
+                        entries: existingEntries,
+                        ...(importedUiPreferences ? { uiPreferences: importedUiPreferences } : {}),
                     });
 
                     return {
                         success: true,
-                        message: `Successfully imported ${projectsToImport.length} projects.`
+                        message: `Successfully imported ${importedProjectsCount} projects.`
                     };
 
                 } catch (error) {
@@ -273,6 +393,19 @@ export const useDevJournalStore = create<DevJournalStore>()(
         }),
         {
             name: "devjournal-storage",
+            version: 3,
+            migrate: (persistedState) => {
+                const state = persistedState as Partial<DevJournalStore>;
+
+                return {
+                    ...state,
+                    uiPreferences: {
+                        ...defaultUiPreferences,
+                        ...state.uiPreferences,
+                    },
+                    inboxCaptures: state.inboxCaptures ?? [],
+                };
+            },
         }
     )
 );

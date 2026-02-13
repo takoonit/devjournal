@@ -1,44 +1,42 @@
-"use client";
-
-import { useMemo } from "react";
-import { useDevJournalStore } from "@/lib/store";
-import { BioSidebar } from "@/components/portfolio/bio-sidebar";
+import { BioSidebarStatic } from "@/components/portfolio/bio-sidebar-static";
 import { ProjectCard } from "@/components/portfolio/project-card";
+import BlurText from "@/components/reactbits/blur-text";
+import CountUp from "@/components/reactbits/count-up";
+import ScrollReveal from "@/components/reactbits/scroll-reveal";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { getPublicPortfolioOverview } from "@/lib/supabase/server";
 
-export default function PortfolioPage() {
-    // Get store state
-    const allProjects = useDevJournalStore((state) => state.projects);
-    const allEntries = useDevJournalStore((state) => state.entries);
-
-    // Memoize public projects
-    const projects = useMemo(
-        () => allProjects.filter((p) => {
-            const publicEntries = allEntries.filter(
-                (e) => e.projectId === p.id && e.isPublic
-            );
-            return publicEntries.length > 0;
-        }),
-        [allProjects, allEntries]
-    );
+export default async function PortfolioPage() {
+    const { projects, user } = await getPublicPortfolioOverview();
 
     return (
         <div className="min-h-screen p-6 lg:p-12">
             <div className="max-w-7xl mx-auto">
+                <Breadcrumbs items={[{ label: "Portfolio" }]} />
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-                    {/* Bio Sidebar */}
-                    <BioSidebar />
+                    <BioSidebarStatic user={user} />
 
-                    {/* Projects Grid */}
                     <div className="flex-1">
                         <div className="mb-8">
-                            <h2 className="text-3xl font-bold text-zinc-100 mb-2">Projects</h2>
+                            <BlurText
+                                as="h2"
+                                text="Projects"
+                                className="text-3xl font-bold text-zinc-100 mb-2"
+                                delay={100}
+                                animateBy="letters"
+                            />
                             <p className="text-zinc-400">
                                 Build logs documenting the development process.
+                                {projects.length > 0 && (
+                                    <span className="ml-2 text-[#ff914d] font-mono">
+                                        <CountUp to={projects.length} duration={1.5} /> active
+                                    </span>
+                                )}
                             </p>
                         </div>
 
                         {projects.length === 0 ? (
-                            <div className="text-center py-20">
+                            <div className="rounded-2xl border border-dashed border-zinc-700/80 bg-zinc-900/30 py-20 text-center">
                                 <p className="text-zinc-500 mb-4">No public projects yet.</p>
                                 <p className="text-sm text-zinc-600">
                                     Start documenting your journey in the editor.
@@ -46,12 +44,10 @@ export default function PortfolioPage() {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {projects.map((project) => (
-                                    <ProjectCard
-                                        key={project.id}
-                                        project={project}
-                                        href={`/portfolio/${project.slug}`}
-                                    />
+                                {projects.map((project, index) => (
+                                    <ScrollReveal key={project.id} delay={index * 0.08}>
+                                        <ProjectCard project={project} href={`/portfolio/${project.slug}`} />
+                                    </ScrollReveal>
                                 ))}
                             </div>
                         )}

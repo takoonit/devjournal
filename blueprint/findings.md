@@ -1,28 +1,90 @@
-# 🔍 Technical Findings: findings.md
+# 🔎 Findings Log
 
-## 🧱 Architecture & State
-### Zustand Infinite Re-renders
-- **Issue:** Returning new objects/arrays from selectors inside components (e.g., `.filter()`) triggers re-renders on every state change.
-- **Fix:** Use `useMemo` in components or move transformation logic to specialized stable getters in the store.
+## Purpose
+This file captures architecture/UX findings that shape DevJournal as a thinking system.
+Entries should be concise, decision-oriented, and tied to user outcomes.
 
-### Next.js 16 Async Params
-- **Issue:** `params` and `searchParams` are now Promises.
-- **Fix:** Unwrap using `React.use(params)` in client components or `await params` in server components.
+---
 
-## 🎨 Styling & UX
-### Semantic Iconography
-- **Insight:** Generic arrow icons (Upload/Download) don't clearly represent "Project Portability".
-- **Action:** Switched to `FolderInput` and `FolderOutput` for clearer intent.
+## 2026-02 Blueprint Reframe: Critical Thinking + ADHD Support
 
-### Unique React Keys
-- **Issue:** Using string values as keys in arrays with potential duplicates (e.g., Tech Stack) causes React errors.
-- **Fix:** Use `${value}-${index}` for keys and deduplicate arrays using `new Set()` at the input level.
+### Observations
+1. Previous blueprint language emphasized technical clarity but underrepresented the core cognitive mission.
+2. Task-paralysis prevention needed to be explicit in planning and quality criteria.
+3. Guided reflection and light AI assistance needed clearer boundaries (assistive, not dominant).
 
-## 🧠 Product & Philosophy
-### Narrative Pivot
-- **Insight:** Strict forms (e.g., "Reasoning", "Impact") create friction and feel like "filling out tax forms," discouraging daily use.
-- **Action:** Shifted to a **Narrative First** approach. The core unit is now a free-form Markdown story. Subcategories (e.g., "Decision Log") act as **Prompts** to unblock writing, not mandatory fields.
+### Decisions
+- Reframed constitution around three experience pillars:
+  - Frictionless thought capture
+  - Guided reflection depth
+  - Optional light AI support
+- Updated task plan to track capture speed, reflection quality, and actionable progress.
+- Added execution criteria that tie PR quality to thinking outcomes, not only implementation correctness.
 
-### Reddit Wisdom (r/ExperiencedDevs)
-- **Insight:** Experienced developers use journals for widely different things: "Rubber Ducking" (debugging), "Context Switching" (saving state), and "Brag Docs" (milestones).
-- **Action:** Formalized these behaviors into the new subcategory prompts (`debugging`, `context-switch`, `milestone`).
+### Guardrails
+- First interaction should always favor writing momentum.
+- Prompt/template systems must reduce “stuckness,” not increase complexity.
+- AI features must preserve user agency and original reasoning.
+
+---
+
+## Ongoing Review Questions
+- Does this change reduce or increase activation energy?
+- Does it help users think deeper when they feel blocked?
+- Does it convert reflection into next-step clarity?
+- Does it keep the system calm and cognitively manageable?
+
+
+---
+
+## 2026-02 Visual Direction Update: Keith Haring-Inspired Energy
+
+### Observations
+1. Current guidance captured calm-focus well but lacked explicit expressive art direction.
+2. The product needs energizing visual cues for motivation without increasing cognitive load.
+
+### Decisions
+- Adopt a **Noir × Haring** direction: dark stable base + bold shape/color accents.
+- Treat shape and color as semantic guides (focus/progress/state), not decoration.
+- Keep visual rhythm lightweight so writing/reflection remains primary.
+
+### Guardrails
+- Readability and focus stability take precedence over expressive styling.
+- Accent elements must be repeatable via tokens/wrappers, not ad hoc one-offs.
+- Motion + color must support momentum, not overwhelm ADHD users.
+
+---
+
+## 2026-02 UX Audit Pass: Capture-to-Convert Flow
+
+### Observations
+1. Inbox captures without a project forced users into a dead-end "Assign a project to convert" state with no direct recovery in-row.
+2. Quick capture required pointer movement to click "Capture" even for single-line thoughts, increasing interruption cost.
+3. Project assignment controls were inconsistent between capture input and unassigned inbox cards.
+
+### Decisions
+- Added inline project assignment for each unassigned inbox capture so users can convert in the same context.
+- Added Enter-to-capture behavior on quick capture input to reduce interaction steps for habit-forming fast logging.
+- Reused consistent project option lists in the quick capture form to reduce navigation ambiguity.
+
+### Guardrails
+- Keep capture-to-convert a single-screen flow whenever possible.
+- Prefer reversible, low-risk inline actions over page hops for routine organization tasks.
+- Preserve calm-focus hierarchy: write first, organize second.
+
+
+---
+
+## 2026-02 UX Audit Follow-up: Navigation Pattern Consolidation
+
+### Observations
+1. Some hierarchical pages showed both breadcrumbs and a local back link, duplicating orientation controls.
+2. Entry forms inherited breadcrumbs from layout while also presenting a local contextual back link, creating stacked navigation cues during focused writing tasks.
+
+### Decisions
+- Standardized hierarchical browsing surfaces to breadcrumbs-first by removing redundant local back links where breadcrumbs already provide path context.
+- Standardized entry forms to back-link-first by suppressing layout breadcrumbs on entry creation/edit routes.
+
+### Guardrails
+- Keep one dominant top-level navigation cue per screen.
+- Preserve focus-visible styles and ARIA semantics on whichever cue remains.
