@@ -1,11 +1,11 @@
 "use client";
 
 import DecryptedText from "@/components/reactbits/decrypted-text";
+import { Breadcrumbs, type BreadcrumbItem } from "@/components/ui/breadcrumbs";
 import { useToast } from "@/components/ui/toast";
 import { useDevJournalStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { Folder, FolderInput, Plus, Settings } from "lucide-react";
-import { Breadcrumbs, type BreadcrumbItem } from "@/components/ui/breadcrumbs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, useRef } from "react";
@@ -66,6 +66,12 @@ export default function EditorLayout({
                 : "border-l-transparent border-r-transparent border-y-transparent text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100"
         );
 
+    const getSidebarControlClasses = () =>
+        "rounded border border-transparent p-1 text-zinc-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45 hover:border-accent/30 hover:bg-accent/10 hover:text-accent";
+
+    const getNavIconClasses = (isActive: boolean) =>
+        cn("h-4 w-4 transition-colors", isActive ? "text-accent" : "text-zinc-500 group-hover:text-zinc-200");
+
     const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -104,7 +110,7 @@ export default function EditorLayout({
                 <div className="mb-8">
                     <Link
                         href="/portfolio"
-                        className="text-xl font-bold text-zinc-100 transition-colors hover:text-cyan-400"
+                        className="inline-flex rounded-sm text-xl font-bold text-zinc-100 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/45"
                     >
                         <DecryptedText
                             text="DevJournal"
@@ -113,7 +119,7 @@ export default function EditorLayout({
                             maxIterations={8}
                             characters="01"
                             className="text-zinc-100"
-                            encryptedClassName="text-cyan-400/60"
+                            encryptedClassName="text-accent/60"
                         />
                     </Link>
                     <p className="mt-1 text-xs text-zinc-500">Editor Mode</p>
@@ -128,7 +134,7 @@ export default function EditorLayout({
                             <div className="flex items-center gap-1">
                                 <button
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-cyan-400"
+                                    className={getSidebarControlClasses()}
                                     title="Import Project"
                                     aria-label="Import project from file"
                                 >
@@ -136,7 +142,7 @@ export default function EditorLayout({
                                 </button>
                                 <Link
                                     href="/editor/projects/new"
-                                    className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-cyan-400"
+                                    className={getSidebarControlClasses()}
                                     title="New Project"
                                     aria-label="Create new project"
                                 >
@@ -164,14 +170,7 @@ export default function EditorLayout({
                                         href={projectPath}
                                         className={getNavItemClasses(isProjectActive)}
                                     >
-                                        <Folder
-                                            className={cn(
-                                                "h-4 w-4 transition-colors",
-                                                isProjectActive
-                                                    ? "text-cyan-300"
-                                                    : "text-zinc-500 group-hover:text-zinc-200"
-                                            )}
-                                        />
+                                        <Folder className={getNavIconClasses(isProjectActive)} />
                                         <span
                                             className={cn(
                                                 "truncate transition-colors",
@@ -190,18 +189,8 @@ export default function EditorLayout({
                     </div>
 
                     <div className="border-t border-zinc-800 pt-6">
-                        <Link
-                            href="/editor/settings"
-                            className={getNavItemClasses(isSettingsActive)}
-                        >
-                            <Settings
-                                className={cn(
-                                    "h-4 w-4 transition-colors",
-                                    isSettingsActive
-                                        ? "text-cyan-300"
-                                        : "text-zinc-500 group-hover:text-zinc-200"
-                                )}
-                            />
+                        <Link href="/editor/settings" className={getNavItemClasses(isSettingsActive)}>
+                            <Settings className={getNavIconClasses(isSettingsActive)} />
                             <span
                                 className={cn(
                                     "transition-colors",
