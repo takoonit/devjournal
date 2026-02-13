@@ -34,28 +34,35 @@ This is identity-through-structure, not decorative art layering.
 
 ---
 
-## Phase Status Snapshot
+## Phase Restart Protocol (Phase 1 → 5, Review Stop After Each)
 
-### Phase 1 — Foundation ✅
-- Semantic entry/status tokens in `globals.css`, `design-tokens.ts`, `tailwind.config.ts`
-- Border weight token hierarchy introduced
-- `lib/entry-types.ts` migrated to token-backed color classes
-- Blueprint docs reconciled
+Execution cadence for this run:
+1. Implement one phase only.
+2. Stop immediately after that phase.
+3. Publish a phase review checkpoint (what changed, validation, risk notes).
+4. Continue to the next phase only after explicit confirmation.
 
-### Phase 2 — Feedback ✅
-- `RadiantPulse` primitive added
-- Success feedback integrated (toast flow)
-- Primary CTA border treatment standardized
+### Current Restart Status
 
-### Phase 3 — Flow ✅
-- Entry shape icon set created
-- Entry visual semantics centralized in `ENTRY_TYPE_CONFIG`
-- Timeline and entry-form selectors use shared shape language
+### Phase 1 — Foundation 🔄 (in progress: re-validation pass)
+- Re-verify semantic token coverage (`entry.*`, `status.*`) across CSS + token config + Tailwind mapping.
+- Re-verify border hierarchy token usage (`subtle`, `standard`, `bold`) in shared styling paths.
+- Re-verify `ENTRY_TYPE_CONFIG` color mapping stays token-backed (no palette regressions).
+- Publish Phase 1 checkpoint summary before moving to Phase 2.
 
-### Phase 4 — Wayfinding ✅
-- Active nav accent bar implemented
-- Spotlight interaction shifted to geometric halo behavior
-- Selective bold hover borders applied to key interactive cards
+### Phase 2 — Feedback ⏳ (pending)
+- Re-validate `RadiantPulse` semantics + accessibility behavior.
+- Re-validate success feedback timing (completion-only) and CTA emphasis consistency.
+
+### Phase 3 — Flow ⏳ (pending)
+- Re-validate shape language consistency in timeline + new/edit entry flows.
+- Re-validate entry-type metadata centralization stays deterministic.
+
+### Phase 4 — Wayfinding ⏳ (pending)
+- Re-validate active nav accent grammar, halo behavior, and selective bold interactive borders.
+
+### Phase 5 — Polish + QA ⏳ (pending)
+- Execute contrast/motion/focus safety checks and consistency sweep closure.
 
 ---
 
@@ -135,5 +142,6 @@ This is identity-through-structure, not decorative art layering.
 
 ## Delivery Notes
 
-- This rewrite is a **plan-only update** to align implementation intent with blueprint constraints.
-- Execution priority from this point: **Phase 5 QA + identity consistency pass**, not net-new visual feature scope.
+- This rewrite remains a **blueprint-safe plan surface**; implementation stays token/wrapper-first.
+- During restart execution, phase reviews are mandatory artifacts in `blueprint/findings.md`.
+- Out of scope during restart: new feature flows, architecture/model changes, and extra user decision points.

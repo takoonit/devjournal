@@ -123,3 +123,22 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 ### Guardrails
 - Wayfinding accents are semantic and restrained to active/hover states.
 - Focus mode continues suppressing non-essential halo effects.
+
+---
+
+## 2026-02 Restart Pass: Phase 1 Foundation Review Checkpoint
+
+### Observations
+1. Phase restart was requested with mandatory stop-and-review checkpoints after each phase.
+2. Phase 1 tokenization surfaces are present and aligned: CSS variables, design token definitions, Tailwind semantic namespaces, and entry-type semantic mappings.
+3. No palette-class regression was found in Phase 1 source-of-truth files during the review scan.
+
+### Decisions
+- Keep Phase 1 implementation as-is (no corrective code patch required in this checkpoint).
+- Update the redesign plan to enforce phase-by-phase restart sequencing with explicit review gates.
+- Treat this checkpoint as the required stop before moving to Phase 2.
+
+### Guardrails
+- Continue restart in strict order (Phase 2 next) only after explicit confirmation.
+- Preserve token-first semantics (`entry.*`, `status.*`) and border hierarchy tokens.
+- Continue documenting each phase checkpoint in findings before progression.
