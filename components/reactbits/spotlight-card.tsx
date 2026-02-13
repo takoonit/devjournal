@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,7 @@ export function SpotlightCard({
     const divRef = useRef<HTMLDivElement>(null);
     const { focusMode, motionLevel } = useDevJournalStore((state) => state.uiPreferences);
     const [isFocused, setIsFocused] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [opacity, setOpacity] = useState(0);
 
@@ -30,6 +31,12 @@ export function SpotlightCard({
             ? 0.45
             : 0.28;
     const spotlightSize = motionLevel === "reduced" ? 520 : motionLevel === "expressive" ? 620 : 560;
+
+    useEffect(() => {
+        if (isHovered || isFocused) {
+            setOpacity(spotlightOpacity);
+        }
+    }, [focusMode, motionLevel, spotlightOpacity, isHovered, isFocused]);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!divRef.current || isFocused || focusMode) return;
@@ -51,10 +58,12 @@ export function SpotlightCard({
     };
 
     const handleMouseEnter = () => {
+        setIsHovered(true);
         setOpacity(spotlightOpacity);
     };
 
     const handleMouseLeave = () => {
+        setIsHovered(false);
         setOpacity(0);
     };
 

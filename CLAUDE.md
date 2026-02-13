@@ -28,7 +28,7 @@ DevJournal is a "Build in Public" platform that transforms daily developer logs 
 - **File naming:** kebab-case for files, PascalCase for components
 - **State management:** All persistent state lives in `lib/store.ts` using Zustand
 - **Keys:** Use `${value}-${index}` for React keys in arrays with potential duplicates
-- **Next.js 16 params:** `params` and `searchParams` are Promises — use `React.use(params)` in client components or `await params` in server components
+- **Next.js 16 params:** `params` and `searchParams` are Promises — import `use` from `'react'` and call `use(params)` in client components or `await params` in server components
 - **Zustand selectors:** Avoid returning new objects/arrays from selectors; use `useMemo` or stable store getters to prevent infinite re-renders
 
 ## Project Structure
