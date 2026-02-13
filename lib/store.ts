@@ -45,6 +45,7 @@ interface DevJournalStore {
     // Inbox capture
     inboxCaptures: InboxCapture[];
     addInboxCapture: (content: string, projectId?: string) => void;
+    assignInboxCaptureProject: (id: string, projectId?: string) => void;
     deleteInboxCapture: (id: string) => void;
     peekInboxCapture: (id: string) => InboxCapture | undefined;
     consumeInboxCapture: (id: string) => InboxCapture | undefined;
@@ -180,6 +181,13 @@ export const useDevJournalStore = create<DevJournalStore>()(
                         },
                         ...state.inboxCaptures,
                     ],
+                })),
+
+            assignInboxCaptureProject: (id, projectId) =>
+                set((state) => ({
+                    inboxCaptures: state.inboxCaptures.map((capture) =>
+                        capture.id === id ? { ...capture, projectId } : capture
+                    ),
                 })),
 
             deleteInboxCapture: (id) =>

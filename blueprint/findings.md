@@ -52,3 +52,39 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 - Readability and focus stability take precedence over expressive styling.
 - Accent elements must be repeatable via tokens/wrappers, not ad hoc one-offs.
 - Motion + color must support momentum, not overwhelm ADHD users.
+
+---
+
+## 2026-02 UX Audit Pass: Capture-to-Convert Flow
+
+### Observations
+1. Inbox captures without a project forced users into a dead-end "Assign a project to convert" state with no direct recovery in-row.
+2. Quick capture required pointer movement to click "Capture" even for single-line thoughts, increasing interruption cost.
+3. Project assignment controls were inconsistent between capture input and unassigned inbox cards.
+
+### Decisions
+- Added inline project assignment for each unassigned inbox capture so users can convert in the same context.
+- Added Enter-to-capture behavior on quick capture input to reduce interaction steps for habit-forming fast logging.
+- Reused consistent project option lists in the quick capture form to reduce navigation ambiguity.
+
+### Guardrails
+- Keep capture-to-convert a single-screen flow whenever possible.
+- Prefer reversible, low-risk inline actions over page hops for routine organization tasks.
+- Preserve calm-focus hierarchy: write first, organize second.
+
+
+---
+
+## 2026-02 UX Audit Follow-up: Navigation Pattern Consolidation
+
+### Observations
+1. Some hierarchical pages showed both breadcrumbs and a local back link, duplicating orientation controls.
+2. Entry forms inherited breadcrumbs from layout while also presenting a local contextual back link, creating stacked navigation cues during focused writing tasks.
+
+### Decisions
+- Standardized hierarchical browsing surfaces to breadcrumbs-first by removing redundant local back links where breadcrumbs already provide path context.
+- Standardized entry forms to back-link-first by suppressing layout breadcrumbs on entry creation/edit routes.
+
+### Guardrails
+- Keep one dominant top-level navigation cue per screen.
+- Preserve focus-visible styles and ARIA semantics on whichever cue remains.
