@@ -117,6 +117,85 @@ Execution cadence for this run:
 ---
 
 ## BLAST Reconciliation Checklist (for closing Phase 5)
+### Phase 5 — Polish + QA
+5.1 **Accessibility contrast audit (WCAG thresholds)**
+- Verify all accent usage against dark surfaces with these minimums:
+  - Normal text: **>= 4.5:1**
+  - Large text and icons: **>= 3:1**
+  - Focus indicators on dark surfaces: must remain clearly visible with an explicit target of **>= 3:1** against adjacent colors.
+- Evidence required: contrast report/output + before/after checklist for any adjusted tokens.
+
+5.2 **Motion behavior validation by mode**
+- Validate expected behavior for each interaction primitive per mode:
+  - `reduced`:
+    - `RadiantPulse`: disabled (no pulse animation).
+    - Halo hover: static border/halo state only (no animated transition).
+    - Focus mode: all non-essential animations off.
+  - `standard`:
+    - `RadiantPulse`: single 400ms pulse cycle.
+    - Halo hover: one smooth enter/exit transition only.
+    - Focus mode: disables pulse/halo animations when focus mode is active.
+  - `expressive`:
+    - `RadiantPulse`: two staggered pulse cycles.
+    - Halo hover: enhanced but brief transition, still non-looping.
+    - Focus mode: still overrides and disables decorative animation.
+- Evidence required: mode-by-mode verification checklist + build/lint output.
+
+5.3 **Design-system consistency sweep**
+- Completion criteria:
+  - **Zero hardcoded palette classes** where a semantic token exists.
+  - **Zero duplicate border-motion variants** outside shared wrappers/utilities.
+  - No ad hoc Haring-style one-offs leaked into feature code.
+- Evidence required: grep/search audit log + checklist of migrated call sites.
+
+## Phase Status Snapshot
+
+- ✅ Phase 1 — Foundation
+- ✅ Phase 2 — Feedback
+- ✅ Phase 3 — Flow
+- ✅ Phase 4 — Wayfinding
+- 🟡 Phase 5 — Polish + QA
+
+Phase 5 may include scoped consistency retrofits to outputs from Phases 1–4 without reopening architecture.
+
+## Delivery Notes
+
+- Identity-strengthening refinements are allowed when they satisfy compatibility gates and remain token/wrapper-first.
+
+### Out of scope
+
+- New feature flows
+- Model changes
+- Extra decision points
+
+---
+
+## Haring Identity Pass Checklist (Conflict-Safe)
+
+> Guidance only: this mapping is for implementation planning and prioritization, not an architectural rewrite. Keep all updates within existing interfaces and the Compatibility Contract.
+
+### Primary implementation targets
+
+- **Semantic colors**
+  - `app/globals.css`
+  - `lib/design-tokens.ts`
+  - `tailwind.config.ts`
+  - `lib/entry-types.ts`
+- **Shape prominence**
+  - `components/icons/entry-shapes.tsx`
+  - `components/ui/timeline-entry.tsx`
+  - Entry create/edit pages (existing route files only)
+- **Wayfinding lines**
+  - `app/editor/layout.tsx`
+  - `components/ui/interactive-surface.tsx`
+  - `components/reactbits/spotlight-card.tsx`
+- **Momentum signals**
+  - `components/reactbits/radiant-pulse.tsx`
+  - `components/ui/toast.tsx`
+
+Implementation note: prefer shared wrappers/utilities and tokenized primitives over per-page class overrides.
+
+## BLAST Checklist for This Plan
 
 ### B — Blueprint
 - [ ] Changes support at least one constitution pillar.
