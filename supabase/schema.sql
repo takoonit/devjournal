@@ -96,6 +96,11 @@ create trigger set_entries_updated_at
 before update on public.entries
 for each row execute function public.set_updated_at();
 
+drop trigger if exists set_profiles_private_updated_at on private.profiles_private;
+create trigger set_profiles_private_updated_at
+before update on private.profiles_private
+for each row execute function public.set_updated_at();
+
 -- Seed the owner_settings table for the initial authenticated user.
 -- After signing in to Supabase Auth for the first time, run the following
 -- from the Supabase SQL Editor (or a post-deploy migration) replacing
@@ -113,6 +118,7 @@ security definer
 set search_path = public
 as $$
 begin
+  lock table public.owner_settings in exclusive mode;
   if not exists (select 1 from public.owner_settings) then
     insert into public.owner_settings (owner_id) values (new.id);
   end if;

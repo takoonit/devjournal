@@ -186,7 +186,10 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                             <ChevronDown className={`h-4 w-4 transition-transform ${showDetails ? "rotate-180" : ""}`} /> More Details
                         </button>
                         {showDetails ? (
-                            <textarea value={details} onChange={(e) => setDetails(e.target.value)} onKeyDown={submitShortcut} className="mt-3 h-28 w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100" placeholder="Optional tags, links, context, or attachment notes..." />
+                            <>
+                                <label htmlFor="details" className="sr-only">Details</label>
+                                <textarea id="details" value={details} onChange={(e) => setDetails(e.target.value)} onKeyDown={submitShortcut} className="mt-3 h-28 w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100" placeholder="Optional tags, links, context, or attachment notes..." />
+                            </>
                         ) : null}
                     </div>
 
