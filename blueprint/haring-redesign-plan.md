@@ -58,7 +58,7 @@ Execution cadence for this run:
 - Re-validate shape language consistency in timeline + new/edit entry flows.
 - Re-validate entry-type metadata centralization stays deterministic.
 
-### Phase 4 — Wayfinding ⏳ (pending)
+### Phase 4 — Wayfinding ✅ (reviewed in restart)
 - Re-validate active nav accent grammar, halo behavior, and selective bold interactive borders.
 
 ### Phase 5 — Polish + QA ⏳ (pending)

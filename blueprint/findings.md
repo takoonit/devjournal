@@ -180,3 +180,22 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 - Keep labels present and readable; shape remains assistive, not exclusive.
 - Keep changes scoped to flow recognition cues (no architecture/model semantics changes).
 - Continue restart protocol and stop after this checkpoint before Phase 4.
+
+---
+
+## 2026-02 Restart Pass: Phase 4 Wayfinding Review Checkpoint
+
+### Observations
+1. Active nav accent bar and halo behavior were present, but hover states still relied on `hover:border-2` in shared surface wrappers.
+2. Border-width shifts on hover can introduce subtle layout jitter and inconsistent contour grammar.
+3. Halo thickness should align with border hierarchy tokens to reinforce wayfinding consistency.
+
+### Decisions
+- Mark Phase 4 restart review complete.
+- Remove hover border-width escalation from shared wayfinding wrappers and keep emphasis through color + halo, not layout-shifting border size changes.
+- Align spotlight halo ring thickness with `--border-bold` token.
+
+### Guardrails
+- Preserve focus-mode suppression behavior for halo effects.
+- Keep wayfinding emphasis semantic and restrained to interactive states.
+- Stop after this checkpoint and move to Phase 5 only after explicit confirmation.

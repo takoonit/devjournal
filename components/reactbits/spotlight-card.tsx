@@ -33,14 +33,14 @@ export function SpotlightCard({
       onFocus={activateHalo}
       onBlur={deactivateHalo}
       className={cn(
-        "relative overflow-hidden rounded-xl border border-zinc-800 bg-gradient-to-br from-zinc-900/50 to-zinc-950/50 backdrop-blur-sm transition-all duration-300 hover:border-2 hover:border-accent/55",
+        "relative overflow-hidden rounded-xl border border-zinc-800 bg-gradient-to-br from-zinc-900/50 to-zinc-950/50 backdrop-blur-sm transition-all duration-standard ease-standard hover:border-accent/55",
         className
       )}
     >
       {!focusMode && isHaloActive ? (
         <div
           className="pointer-events-none absolute inset-0 rounded-xl"
-          style={{ boxShadow: `0 0 0 2px ${spotlightColor}` }}
+          style={{ boxShadow: `0 0 0 var(--border-bold) ${spotlightColor}` }}
           aria-hidden="true"
         />
       ) : null}
