@@ -130,7 +130,6 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                     entryType,
                     title: title.trim(),
                     content: details.trim() ? `${content.trim()}\n\n---\n${details.trim()}` : content.trim(),
-                    category: undefined,
                     templateData: undefined,
                 })
             );

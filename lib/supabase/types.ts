@@ -1,5 +1,8 @@
 import type { Entry, Project, User } from "@/lib/types";
 
+/**
+ * Database row shape for the public profile projection.
+ */
 export interface ProfileRow {
     id: string;
     name: string;
@@ -12,6 +15,9 @@ export interface ProfileRow {
     updated_at: string;
 }
 
+/**
+ * Database row shape for projects used on editor + portfolio screens.
+ */
 export interface ProjectRow {
     id: string;
     name: string;
@@ -24,6 +30,9 @@ export interface ProjectRow {
     updated_at: string;
 }
 
+/**
+ * Database row shape for entries.
+ */
 export interface EntryRow {
     id: string;
     project_id: string;
@@ -31,12 +40,14 @@ export interface EntryRow {
     title: string;
     content: string | null;
     template_data: Entry["templateData"] | null;
-    category: Entry["category"] | null;
     is_public: boolean;
     created_at: string;
     updated_at: string;
 }
 
+/**
+ * Maps a nullable profile row into UI-safe user state with sensible defaults.
+ */
 export function mapProfileRowToUser(profile: ProfileRow | null): User {
     if (!profile) {
         return {
@@ -67,6 +78,9 @@ export function mapProfileRowToUser(profile: ProfileRow | null): User {
     };
 }
 
+/**
+ * Converts a project row from snake_case database fields to app-level camelCase fields.
+ */
 export function mapProjectRowToProject(project: ProjectRow): Project {
     return {
         id: project.id,
@@ -81,6 +95,9 @@ export function mapProjectRowToProject(project: ProjectRow): Project {
     };
 }
 
+/**
+ * Converts an entry row from snake_case database fields to app-level camelCase fields.
+ */
 export function mapEntryRowToEntry(entry: EntryRow): Entry {
     return {
         id: entry.id,
@@ -89,7 +106,6 @@ export function mapEntryRowToEntry(entry: EntryRow): Entry {
         title: entry.title,
         content: entry.content ?? "",
         templateData: entry.template_data ?? undefined,
-        category: entry.category ?? undefined,
         isPublic: entry.is_public,
         createdAt: entry.created_at,
         updatedAt: entry.updated_at,

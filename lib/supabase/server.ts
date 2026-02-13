@@ -10,8 +10,14 @@ import {
     ProjectRow,
 } from "@/lib/supabase/types";
 
+/**
+ * Cache revalidation window for portfolio-facing Supabase reads.
+ */
 const ISR_WINDOW_SECONDS = 150;
 
+/**
+ * Builds a public Supabase client from environment variables, or returns null when unavailable.
+ */
 function getSupabasePublicClient() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const publishableKey =
@@ -31,6 +37,9 @@ function getSupabasePublicClient() {
     });
 }
 
+/**
+ * Emits a production-only warning when public Supabase credentials are missing.
+ */
 function logSupabaseConfigWarning() {
     if (process.env.NODE_ENV === "production") {
         console.error(
@@ -90,6 +99,9 @@ const getCachedPublicProjects = unstable_cache(
     { revalidate: ISR_WINDOW_SECONDS, tags: ["portfolio", "portfolio-projects"] }
 );
 
+/**
+ * Fetches profile + projects for the public portfolio landing pages.
+ */
 export async function getPublicPortfolioOverview() {
     const [user, projects] = await Promise.all([
         getCachedPublicProfile(),
@@ -102,6 +114,9 @@ export async function getPublicPortfolioOverview() {
     };
 }
 
+/**
+ * Returns project slugs for static path generation and portfolio navigation.
+ */
 export const getPublicProjectSlugs = unstable_cache(
     async (): Promise<string[]> => {
         const client = getSupabasePublicClient();
@@ -126,6 +141,9 @@ export const getPublicProjectSlugs = unstable_cache(
     { revalidate: ISR_WINDOW_SECONDS, tags: ["portfolio", "portfolio-projects"] }
 );
 
+/**
+ * Fetches a single public project with its published entries and profile context.
+ */
 export const getPublicProjectBySlug = unstable_cache(
     async (slug: string): Promise<{ project: Project | null; entries: Entry[]; user: User }> => {
         const client = getSupabasePublicClient();
@@ -166,7 +184,7 @@ export const getPublicProjectBySlug = unstable_cache(
         const project = mapProjectRowToProject(projectResult.data);
         const { data: entriesData, error: entriesError } = await client
             .from("entries")
-            .select("id,project_id,entry_type,title,content,template_data,category,is_public,created_at,updated_at")
+            .select("id,project_id,entry_type,title,content,template_data,is_public,created_at,updated_at")
             .eq("project_id", project.id)
             .eq("is_public", true)
             .order("created_at", { ascending: false })
