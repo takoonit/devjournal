@@ -44,17 +44,17 @@ Execution cadence for this run:
 
 ### Current Restart Status
 
-### Phase 1 — Foundation 🔄 (in progress: re-validation pass)
+### Phase 1 — Foundation ✅ (reviewed in restart)
 - Re-verify semantic token coverage (`entry.*`, `status.*`) across CSS + token config + Tailwind mapping.
 - Re-verify border hierarchy token usage (`subtle`, `standard`, `bold`) in shared styling paths.
 - Re-verify `ENTRY_TYPE_CONFIG` color mapping stays token-backed (no palette regressions).
 - Publish Phase 1 checkpoint summary before moving to Phase 2.
 
-### Phase 2 — Feedback ⏳ (pending)
+### Phase 2 — Feedback ✅ (reviewed in restart)
 - Re-validate `RadiantPulse` semantics + accessibility behavior.
 - Re-validate success feedback timing (completion-only) and CTA emphasis consistency.
 
-### Phase 3 — Flow ⏳ (pending)
+### Phase 3 — Flow ⏳ (pending; next checkpoint)
 - Re-validate shape language consistency in timeline + new/edit entry flows.
 - Re-validate entry-type metadata centralization stays deterministic.
 

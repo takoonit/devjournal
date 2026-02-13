@@ -126,6 +126,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   className={`mt-0.5 rounded-md border px-1.5 py-1 ${toneClasses[toast.type]}`}
                   active={toast.type === "success" && rewardIntensity !== "off"}
                   rewardIntensity={rewardIntensity}
+                  decorative
                 >
                   {icons[toast.type]}
                 </RadiantPulse>

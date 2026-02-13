@@ -142,3 +142,22 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 - Continue restart in strict order (Phase 2 next) only after explicit confirmation.
 - Preserve token-first semantics (`entry.*`, `status.*`) and border hierarchy tokens.
 - Continue documenting each phase checkpoint in findings before progression.
+
+---
+
+## 2026-02 Restart Pass: Phase 2 Feedback Review Checkpoint
+
+### Observations
+1. `RadiantPulse` already supports conditional accessibility behavior via the `decorative` prop and no longer blanket-hides semantic children.
+2. Toast success feedback remains completion-scoped (`active` only for success and when reward intensity is not off).
+3. In toast usage, pulse-wrapped status icons are decorative because toast title/message already carries semantic meaning.
+
+### Decisions
+- Mark Phase 2 restart review complete.
+- Set toast `RadiantPulse` usage to `decorative` so assistive technology is not burdened with redundant icon announcements.
+- Keep CTA emphasis and pulse timing behavior unchanged for this checkpoint.
+
+### Guardrails
+- Continue using `decorative` only where children are non-semantic.
+- Preserve completion-only pulse activation and motion preference gating (`rewardIntensity`, `motionLevel`).
+- Stop after this checkpoint and move to Phase 3 only after explicit confirmation.
