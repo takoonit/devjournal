@@ -105,3 +105,21 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 ### Guardrails
 - Keep future visual variants token-first (`entry.*`, `status.*`) and avoid direct palette utility regressions.
 - Preserve deterministic behavior by sourcing entry visual semantics from one config surface.
+
+---
+
+## 2026-02 Phase 4 Complete: Wayfinding + Halo Signals
+
+### Observations
+1. Active navigation state still leaned on background tinting and lacked a clear directional line marker.
+2. Spotlight cards still used diffuse radial glow instead of a geometric halo signal.
+3. Several high-importance card surfaces used subtle hover borders that under-signaled interactivity.
+
+### Decisions
+- Added a 3px accent-bar active style for editor sidebar navigation items.
+- Reworked `SpotlightCard` hover/focus feedback to a geometric halo ring + bold accent hover border.
+- Applied selective 2px accent hover borders to key interactive cards (editor project entry cards and interactive surfaces).
+
+### Guardrails
+- Wayfinding accents are semantic and restrained to active/hover states.
+- Focus mode continues suppressing non-essential halo effects.

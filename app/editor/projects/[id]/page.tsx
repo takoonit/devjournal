@@ -243,7 +243,7 @@ export default function ProjectDetailPage({
                     {entries.map((entry, index) => (
                         <ScrollReveal key={entry.id} delay={Math.min(index * 0.06, 0.6)}>
                         <div
-                            className="relative rounded-lg border border-zinc-800 bg-zinc-900/30 p-6 transition-colors hover:border-zinc-700"
+                            className="relative rounded-lg border border-zinc-800 bg-zinc-900/30 p-6 transition-all hover:border-2 hover:border-accent/55"
                         >
                             {/* Entry Actions — keep in normal flow to avoid border overlap */}
                             <div className="mb-4 flex items-center justify-end gap-1">

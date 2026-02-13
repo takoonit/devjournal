@@ -325,9 +325,9 @@ The PRD defines 5 phases. This plan maps onto them:
 10. [x] Update timeline markers to use entry shapes
 
 ### Phase 4 — Wayfinding
-11. Add accent bar to active nav items
-12. Update `SpotlightCard` with halo hover effect
-13. Apply selective bold borders to interactive card hover states
+11. [x] Add accent bar to active nav items
+12. [x] Update `SpotlightCard` with halo hover effect
+13. [x] Apply selective bold borders to interactive card hover states
 
 ### Phase 5 — Polish + QA
 14. Audit all accent colors for WCAG AA contrast on dark surfaces

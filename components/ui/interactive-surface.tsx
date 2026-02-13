@@ -42,7 +42,7 @@ export function InteractiveSurface({
       spotlightColor={preset.spotlightColor}
       className={cn(
         "rounded-2xl border shadow-[0_12px_32px_-16px_rgba(0,0,0,0.6)]",
-        "transition duration-standard ease-standard",
+        "transition duration-standard ease-standard hover:border-2 hover:border-accent/55",
         preset.className,
         className
       )}

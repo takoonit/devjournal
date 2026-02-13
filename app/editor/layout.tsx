@@ -60,10 +60,10 @@ export default function EditorLayout({
 
     const getNavItemClasses = (isActive: boolean) =>
         cn(
-            "group flex items-center gap-2 rounded border px-3 py-2 text-sm transition-colors",
+            "group flex items-center gap-2 rounded-r-md border-y border-r border-l-[3px] py-2 pr-3 pl-[9px] text-sm transition-colors",
             isActive
-                ? "border-cyan-400/50 bg-cyan-500/10 text-zinc-50"
-                : "border-transparent text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100"
+                ? "border-l-accent border-r-accent/45 border-y-accent/25 bg-accent/10 text-zinc-50"
+                : "border-l-transparent border-r-transparent border-y-transparent text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100"
         );
 
     const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
