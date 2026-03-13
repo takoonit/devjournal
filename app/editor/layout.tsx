@@ -4,7 +4,7 @@ import DecryptedText from "@/components/reactbits/decrypted-text";
 import { useToast } from "@/components/ui/toast";
 import { useDevJournalStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
-import { Folder, FolderInput, Plus, Settings } from "lucide-react";
+import { Folder, FolderInput, Plus, Settings, LayoutDashboard } from "lucide-react";
 import { Breadcrumbs, type BreadcrumbItem } from "@/components/ui/breadcrumbs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,6 +20,7 @@ function EditorLayoutContent({
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { addToast } = useToast();
     const pathname = usePathname();
+    const isDashboardActive = pathname === "/editor";
     const isSettingsActive = pathname === "/editor/settings";
     const isEntryFormRoute = /^\/editor\/projects\/[^/]+\/entries\/(new|[^/]+\/edit)$/.test(pathname);
     const uiPreferences = useDevJournalStore((state) => state.uiPreferences);
@@ -124,10 +125,34 @@ function EditorLayoutContent({
                     </div>
                 </div>
 
-                <nav className="space-y-6" aria-label="Editor navigation">
+                <nav className="space-y-8 flex-1 overflow-y-auto pr-2" aria-label="Editor navigation">
+                    <div className="space-y-1">
+                        <Link
+                            href="/editor"
+                            className={getNavItemClasses(isDashboardActive)}
+                        >
+                            <LayoutDashboard
+                                className={cn(
+                                    "h-4 w-4 transition-colors",
+                                    isDashboardActive
+                                        ? "text-brand-300"
+                                        : "text-zinc-500 group-hover:text-zinc-200"
+                                )}
+                            />
+                            <span
+                                className={cn(
+                                    "transition-colors",
+                                    isDashboardActive && "font-medium text-zinc-50"
+                                )}
+                            >
+                                Dashboard
+                            </span>
+                        </Link>
+                    </div>
+
                     <div>
                         <div className="mb-3 flex items-center justify-between">
-                            <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">
+                            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
                                 Projects
                             </h3>
                             <div className="flex items-center gap-1">
@@ -194,28 +219,33 @@ function EditorLayoutContent({
                         </div>
                     </div>
 
-                    <div className="border-t border-zinc-800 pt-6 space-y-2">
-                        <Link
-                            href="/editor/settings"
-                            className={getNavItemClasses(isSettingsActive)}
-                        >
-                            <Settings
-                                className={cn(
-                                    "h-4 w-4 transition-colors",
-                                    isSettingsActive
-                                        ? "text-brand-300"
-                                        : "text-zinc-500 group-hover:text-zinc-200"
-                                )}
-                            />
-                            <span
-                                className={cn(
-                                    "transition-colors",
-                                    isSettingsActive && "font-medium text-zinc-50"
-                                )}
+                    <div>
+                        <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                            System
+                        </h3>
+                        <div className="space-y-1">
+                            <Link
+                                href="/editor/settings"
+                                className={getNavItemClasses(isSettingsActive)}
                             >
-                                Settings
-                            </span>
-                        </Link>
+                                <Settings
+                                    className={cn(
+                                        "h-4 w-4 transition-colors",
+                                        isSettingsActive
+                                            ? "text-brand-300"
+                                            : "text-zinc-500 group-hover:text-zinc-200"
+                                    )}
+                                />
+                                <span
+                                    className={cn(
+                                        "transition-colors",
+                                        isSettingsActive && "font-medium text-zinc-50"
+                                    )}
+                                >
+                                    Settings
+                                </span>
+                            </Link>
+                        </div>
                     </div>
                 </nav>
 

@@ -29,21 +29,33 @@ export default function NewProjectPage() {
         router.push("/editor");
     };
 
-    const addTech = () => {
-        if (techInput.trim() && !formData.techStack.includes(techInput.trim())) {
-            setFormData({
-                ...formData,
-                techStack: [...formData.techStack, techInput.trim()],
-            });
+    const addTech = (techStr: string) => {
+        const cleanTech = techStr.trim();
+        if (cleanTech && !formData.techStack.includes(cleanTech)) {
+            setFormData(prev => ({
+                ...prev,
+                techStack: [...prev.techStack, cleanTech],
+            }));
             setTechInput("");
         }
     };
 
+    const handleTechKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" || e.key === " " || e.key === ",") {
+            e.preventDefault();
+            addTech(techInput);
+        } else if (e.key === "Backspace" && !techInput && formData.techStack.length > 0) {
+            e.preventDefault();
+            const lastTech = formData.techStack[formData.techStack.length - 1];
+            removeTech(lastTech);
+        }
+    };
+
     const removeTech = (tech: string) => {
-        setFormData({
-            ...formData,
-            techStack: formData.techStack.filter((t) => t !== tech),
-        });
+        setFormData(prev => ({
+            ...prev,
+            techStack: prev.techStack.filter((t) => t !== tech),
+        }));
     };
 
     return (
@@ -98,39 +110,39 @@ export default function NewProjectPage() {
                     <label className="block text-sm font-medium text-zinc-300 mb-2">
                         Tech Stack
                     </label>
-                    <div className="flex gap-2 mb-3">
-                        <input
-                            type="text"
-                            value={techInput}
-                            onChange={(e) => setTechInput(e.target.value)}
-                            onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTech())}
-                            className="flex-1 px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-brand-400 transition-colors"
-                            placeholder="e.g., React, TypeScript, Next.js"
-                        />
-                        <button
-                            type="button"
-                            onClick={addTech}
-                            className="px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-300 hover:bg-zinc-700 transition-colors"
-                        >
-                            <Plus className="w-5 h-5" />
-                        </button>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap items-center gap-2 p-2 bg-zinc-900/50 border border-zinc-700 rounded-lg focus-within:border-brand-400 focus-within:ring-1 focus-within:ring-brand-400 transition-colors">
                         {formData.techStack.map((tech, index) => (
                             <span
                                 key={`${tech}-${index}`}
-                                className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-800/50 border border-zinc-700/50 rounded text-sm text-zinc-300"
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-800 border border-zinc-700/50 rounded-md text-sm text-zinc-200"
                             >
                                 {tech}
                                 <button
                                     type="button"
                                     onClick={() => removeTech(tech)}
-                                    className="text-zinc-500 hover:text-zinc-300 transition-colors"
+                                    className="text-zinc-500 hover:text-brand-400 transition-colors"
                                 >
-                                    <X className="w-3 h-3" />
+                                    <X className="w-3.5 h-3.5" />
                                 </button>
                             </span>
                         ))}
+                        <input
+                            type="text"
+                            value={techInput}
+                            onChange={(e) => {
+                                // If the user types a comma directly, we catch it here just in case,
+                                // but onKeyDown usually handles the space and comma beforehand.
+                                const val = e.target.value;
+                                if (val.endsWith(",")) {
+                                    addTech(val.slice(0, -1));
+                                } else {
+                                    setTechInput(val);
+                                }
+                            }}
+                            onKeyDown={handleTechKeyDown}
+                            className="flex-1 min-w-[120px] bg-transparent text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none py-1 px-1"
+                            placeholder={formData.techStack.length === 0 ? "e.g., React, TypeScript (press Space or Enter)" : "Add more..."}
+                        />
                     </div>
                 </div>
 

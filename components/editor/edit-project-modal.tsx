@@ -16,34 +16,58 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
 
     const [name, setName] = useState(project.name);
     const [description, setDescription] = useState(project.description);
-    const [techStack, setTechStack] = useState(project.techStack.join(", "));
+    const [techStack, setTechStack] = useState<string[]>(project.techStack);
+    const [techInput, setTechInput] = useState("");
     const [status, setStatus] = useState<"in-progress" | "shipped">(project.status);
 
     useEffect(() => {
         if (isOpen) {
             setName(project.name);
             setDescription(project.description);
-            setTechStack(project.techStack.join(", "));
+            setTechStack(project.techStack);
+            setTechInput("");
             setStatus(project.status);
         }
     }, [isOpen, project]);
 
     if (!isOpen) return null;
 
+    const addTech = (techStr: string) => {
+        const cleanTech = techStr.trim();
+        if (cleanTech && !techStack.includes(cleanTech)) {
+            setTechStack((prev) => [...prev, cleanTech]);
+            setTechInput("");
+        }
+    };
+
+    const handleTechKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" || e.key === " " || e.key === ",") {
+            e.preventDefault();
+            addTech(techInput);
+        } else if (e.key === "Backspace" && !techInput && techStack.length > 0) {
+            e.preventDefault();
+            setTechStack((prev) => prev.slice(0, -1));
+        }
+    };
+
+    const removeTech = (tech: string) => {
+        setTechStack((prev) => prev.filter((t) => t !== tech));
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const techArray = Array.from(new Set(
-            techStack
-                .split(",")
-                .map((t) => t.trim())
-                .filter((t) => t !== "")
-        ));
+        // Add any remaining text in the input as a tag before saving
+        let finalTechStack = [...techStack];
+        const cleanInput = techInput.trim();
+        if (cleanInput && !finalTechStack.includes(cleanInput)) {
+            finalTechStack.push(cleanInput);
+        }
 
         updateProject(project.id, {
             name,
             description,
-            techStack: techArray,
+            techStack: finalTechStack,
             status,
         });
 
@@ -97,15 +121,40 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
 
                     <div>
                         <label className="block text-sm font-medium text-zinc-400 mb-1.5">
-                            Tech Stack (comma separated)
+                            Tech Stack
                         </label>
-                        <input
-                            type="text"
-                            value={techStack}
-                            onChange={(e) => setTechStack(e.target.value)}
-                            className="w-full px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500/50 transition-all"
-                            placeholder="e.g. React, Next.js, Tailwind"
-                        />
+                        <div className="flex flex-wrap items-center gap-2 p-2 bg-zinc-950 border border-zinc-800 rounded-lg focus-within:ring-2 focus-within:ring-brand-500/40 focus-within:border-brand-500/50 transition-all">
+                            {techStack.map((tech, index) => (
+                                <span
+                                    key={`${tech}-${index}`}
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-800 border border-zinc-700/50 rounded-md text-sm text-zinc-200"
+                                >
+                                    {tech}
+                                    <button
+                                        type="button"
+                                        onClick={() => removeTech(tech)}
+                                        className="text-zinc-500 hover:text-brand-400 transition-colors"
+                                    >
+                                        <X className="w-3.5 h-3.5" />
+                                    </button>
+                                </span>
+                            ))}
+                            <input
+                                type="text"
+                                value={techInput}
+                                onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val.endsWith(",")) {
+                                        addTech(val.slice(0, -1));
+                                    } else {
+                                        setTechInput(val);
+                                    }
+                                }}
+                                onKeyDown={handleTechKeyDown}
+                                className="flex-1 min-w-[120px] bg-transparent text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none py-1 px-1"
+                                placeholder={techStack.length === 0 ? "e.g., React, TypeScript (press Space)" : "Add more..."}
+                            />
+                        </div>
                     </div>
 
                     <div>
