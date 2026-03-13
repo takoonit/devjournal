@@ -47,27 +47,6 @@ export function TechStackInput({ value, onChange, placeholder = "e.g., React, Ty
         onChange(value.filter((tech) => tech !== techToRemove));
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        // Handle input clearing
-        if (e.key === "Backspace" && !inputValue && value.length > 0) {
-            e.preventDefault();
-            onChange(value.slice(0, -1));
-        }
-
-        // Auto-commit on Space or Comma (only if we're not using the dropdown actively with arrows)
-        // If the dropdown is open and user is navigating, we shouldn't steal the enter/space.
-        if ((e.key === "Enter" || e.key === " " || e.key === ",") && inputValue) {
-            // Let the Command component handle Enter if dropdown is open and it has focus,
-            // otherwise commit whatever is typed.
-            if (e.key === " " || e.key === ",") {
-                e.preventDefault();
-                addTech(inputValue);
-            }
-            // For enter, we let CMD-K handle it if there's an active selection,
-            // but we can also handle fallback if nothing is highlighted
-        }
-    };
-
     // Close on click outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -84,12 +63,6 @@ export function TechStackInput({ value, onChange, placeholder = "e.g., React, Ty
         <Command
             className="relative"
             shouldFilter={true}
-            onKeyDown={(e) => {
-                if (e.key === "Enter" && inputValue && !isOpen) {
-                     e.preventDefault();
-                     addTech(inputValue);
-                }
-            }}
         >
             <div
                 ref={containerRef}
@@ -128,7 +101,29 @@ export function TechStackInput({ value, onChange, placeholder = "e.g., React, Ty
                         }
                     }}
                     onFocus={() => setIsOpen(true)}
-                    onKeyDown={handleKeyDown}
+                    onKeyDown={(e) => {
+                        // Handle input clearing via Backspace
+                        if (e.key === "Backspace" && !inputValue && value.length > 0) {
+                            e.preventDefault();
+                            onChange(value.slice(0, -1));
+                            return;
+                        }
+
+                        // Auto-commit on Space or Comma
+                        if ((e.key === " " || e.key === ",") && inputValue.trim()) {
+                            e.preventDefault();
+                            addTech(inputValue);
+                            return;
+                        }
+
+                        if (e.key === "Enter") {
+                           if (!isOpen || !availableSuggestions.some(s => s.toLowerCase().includes(inputValue.toLowerCase()))) {
+                               e.preventDefault();
+                               if (inputValue.trim()) addTech(inputValue);
+                           }
+                           // If it is open, cmdk handles it
+                        }
+                    }}
                     className="flex-1 min-w-[120px] bg-transparent text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none py-1 px-1"
                     placeholder={value.length === 0 ? placeholder : "Add more..."}
                 />
