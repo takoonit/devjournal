@@ -8,7 +8,7 @@ export default function NotFound() {
                 <p className="text-zinc-400 mb-8">Project not found</p>
                 <Link
                     href="/portfolio"
-                    className="inline-block px-6 py-3 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/20 transition-colors"
+                    className="inline-block px-6 py-3 rounded-lg bg-brand-500/10 text-brand-400 border border-brand-500/30 hover:bg-brand-500/20 transition-colors"
                 >
                     Back to portfolio
                 </Link>

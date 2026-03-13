@@ -9,6 +9,20 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
+                brand: {
+                    DEFAULT: "#ff914d",
+                    50: "#fff4ed",
+                    100: "#ffe6d4",
+                    200: "#ffccab",
+                    300: "#ffab79",
+                    400: "#ff914d",
+                    500: "#ff6d24",
+                    600: "#f0510f",
+                    700: "#c73d0a",
+                    800: "#9e300f",
+                    900: "#7f2a10",
+                    950: "#451205",
+                },
                 background: "rgb(var(--color-surface-canvas) / <alpha-value>)",
                 foreground: "rgb(var(--color-text-primary) / <alpha-value>)",
                 surface: {

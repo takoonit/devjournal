@@ -50,7 +50,7 @@ export default function NewProjectPage() {
         <div className="max-w-3xl">
             <Link
                 href="/editor"
-                className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-cyan-400 transition-colors mb-6"
+                className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-brand-400 transition-colors mb-6"
             >
                 <ArrowLeft className="w-4 h-4" />
                 Back to editor
@@ -73,7 +73,7 @@ export default function NewProjectPage() {
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-400 transition-colors"
+                        className="w-full px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-brand-400 transition-colors"
                         placeholder="e.g., My Awesome App"
                         required
                     />
@@ -89,7 +89,7 @@ export default function NewProjectPage() {
                             setFormData({ ...formData, description: e.target.value })
                         }
                         rows={4}
-                        className="w-full px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-400 transition-colors resize-none"
+                        className="w-full px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-brand-400 transition-colors resize-none"
                         placeholder="Brief description of your project..."
                     />
                 </div>
@@ -104,7 +104,7 @@ export default function NewProjectPage() {
                             value={techInput}
                             onChange={(e) => setTechInput(e.target.value)}
                             onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTech())}
-                            className="flex-1 px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-400 transition-colors"
+                            className="flex-1 px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-brand-400 transition-colors"
                             placeholder="e.g., React, TypeScript, Next.js"
                         />
                         <button
@@ -144,7 +144,7 @@ export default function NewProjectPage() {
                         onChange={(e) =>
                             setFormData({ ...formData, repositoryLink: e.target.value })
                         }
-                        className="w-full px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-400 transition-colors"
+                        className="w-full px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-brand-400 transition-colors"
                         placeholder="https://github.com/..."
                     />
                 </div>
@@ -165,7 +165,7 @@ export default function NewProjectPage() {
                                         status: e.target.value as "in-progress",
                                     })
                                 }
-                                className="text-cyan-400 focus:ring-cyan-400"
+                                className="text-brand-400 focus:ring-brand-400"
                             />
                             <span className="text-sm text-zinc-300">In Progress</span>
                         </label>
@@ -177,7 +177,7 @@ export default function NewProjectPage() {
                                 onChange={(e) =>
                                     setFormData({ ...formData, status: e.target.value as "shipped" })
                                 }
-                                className="text-cyan-400 focus:ring-cyan-400"
+                                className="text-brand-400 focus:ring-brand-400"
                             />
                             <span className="text-sm text-zinc-300">Shipped</span>
                         </label>
@@ -187,9 +187,9 @@ export default function NewProjectPage() {
                 <div className="flex gap-4 pt-4">
                     <button
                         type="submit"
-                        className="px-6 py-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/20 transition-colors font-medium"
+                        className="px-6 py-3 bg-brand-500/10 border border-brand-500/30 rounded-lg hover:bg-brand-500/20 transition-colors font-medium"
                     >
-                        <ShinyText text="Create Project" className="text-cyan-400" speed={3} />
+                        <ShinyText text="Create Project" className="text-brand-400" speed={3} />
                     </button>
                     <Link
                         href="/editor"

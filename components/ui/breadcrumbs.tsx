@@ -20,7 +20,7 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
           return (
             <li key={`${item.label}-${index}`} className="flex items-center gap-2">
               {item.href && !isLast ? (
-                <Link href={item.href} className="rounded px-1 py-0.5 transition-colors hover:text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500/60">
+                <Link href={item.href} className="rounded px-1 py-0.5 transition-colors hover:text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/60">
                   {item.label}
                 </Link>
               ) : (

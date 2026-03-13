@@ -51,7 +51,7 @@ export default function SettingsPage() {
         <div className="max-w-3xl">
             <Link
                 href="/editor"
-                className="mb-6 inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-cyan-400"
+                className="mb-6 inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-brand-400"
             >
                 <ArrowLeft className="h-4 w-4" />
                 Back to editor
@@ -74,7 +74,7 @@ export default function SettingsPage() {
                         type="text"
                         value={formData.name}
                         onChange={(e) => { profileDirtyRef.current = true; setFormData({ ...formData, name: e.target.value }); }}
-                        className="w-full rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-cyan-400 focus:outline-none"
+                        className="w-full rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-brand-400 focus:outline-none"
                         placeholder="Your Name"
                     />
                 </div>
@@ -85,7 +85,7 @@ export default function SettingsPage() {
                         type="text"
                         value={formData.role}
                         onChange={(e) => { profileDirtyRef.current = true; setFormData({ ...formData, role: e.target.value }); }}
-                        className="w-full rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-cyan-400 focus:outline-none"
+                        className="w-full rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-brand-400 focus:outline-none"
                         placeholder="e.g., Software Engineer"
                     />
                 </div>
@@ -96,7 +96,7 @@ export default function SettingsPage() {
                         value={formData.bio}
                         onChange={(e) => { profileDirtyRef.current = true; setFormData({ ...formData, bio: e.target.value }); }}
                         rows={3}
-                        className="w-full resize-none rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-cyan-400 focus:outline-none"
+                        className="w-full resize-none rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-brand-400 focus:outline-none"
                         placeholder="Brief bio about you..."
                     />
                 </div>
@@ -160,7 +160,7 @@ export default function SettingsPage() {
                             type="checkbox"
                             checked={uiFormData.focusMode}
                             onChange={(e) => updatePreference("focusMode", e.target.checked)}
-                            className="h-4 w-4 rounded border-zinc-600 bg-zinc-900 text-cyan-400"
+                            className="h-4 w-4 rounded border-zinc-600 bg-zinc-900 text-brand-400"
                         />
                         Focus Mode (reduce decorative effects)
                     </label>
@@ -181,7 +181,7 @@ export default function SettingsPage() {
                                         socialLinks: { ...formData.socialLinks, github: e.target.value },
                                     });
                                 }}
-                                className="w-full rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-cyan-400 focus:outline-none"
+                                className="w-full rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-brand-400 focus:outline-none"
                                 placeholder="https://github.com/username"
                             />
                         </div>
@@ -198,7 +198,7 @@ export default function SettingsPage() {
                                         socialLinks: { ...formData.socialLinks, twitter: e.target.value },
                                     });
                                 }}
-                                className="w-full rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-cyan-400 focus:outline-none"
+                                className="w-full rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-brand-400 focus:outline-none"
                                 placeholder="https://twitter.com/username"
                             />
                         </div>
@@ -215,7 +215,7 @@ export default function SettingsPage() {
                                         socialLinks: { ...formData.socialLinks, linkedin: e.target.value },
                                     });
                                 }}
-                                className="w-full rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-cyan-400 focus:outline-none"
+                                className="w-full rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-brand-400 focus:outline-none"
                                 placeholder="https://linkedin.com/in/username"
                             />
                         </div>
@@ -232,7 +232,7 @@ export default function SettingsPage() {
                                         socialLinks: { ...formData.socialLinks, email: e.target.value },
                                     });
                                 }}
-                                className="w-full rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-cyan-400 focus:outline-none"
+                                className="w-full rounded-lg border border-zinc-700 bg-zinc-900/50 px-4 py-2 text-zinc-100 placeholder-zinc-500 transition-colors focus:border-brand-400 focus:outline-none"
                                 placeholder="your@email.com"
                             />
                         </div>
@@ -242,9 +242,9 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-4 pt-4">
                     <button
                         type="submit"
-                        className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-6 py-3 font-medium transition-colors hover:bg-cyan-500/20"
+                        className="rounded-lg border border-brand-500/30 bg-brand-500/10 px-6 py-3 font-medium transition-colors hover:bg-brand-500/20"
                     >
-                        <ShinyText text="Save Changes" className="text-cyan-400" speed={3} />
+                        <ShinyText text="Save Changes" className="text-brand-400" speed={3} />
                     </button>
                 </div>
             </form>
@@ -253,7 +253,7 @@ export default function SettingsPage() {
                 <Link
                     href="/portfolio"
                     target="_blank"
-                    className="inline-flex items-center gap-2 text-sm text-cyan-400 transition-colors hover:text-cyan-300"
+                    className="inline-flex items-center gap-2 text-sm text-brand-400 transition-colors hover:text-brand-300"
                 >
                     Preview your public portfolio →
                 </Link>

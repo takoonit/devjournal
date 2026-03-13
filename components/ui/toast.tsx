@@ -42,13 +42,13 @@ export function useToast() {
 const icons: Record<ToastTone, ReactNode> = {
   success: <CheckCircle2 className="h-4 w-4 text-emerald-300" />,
   error: <XCircle className="h-4 w-4 text-rose-300" />,
-  info: <Info className="h-4 w-4 text-cyan-300" />,
+  info: <Info className="h-4 w-4 text-brand-300" />,
 };
 
 const toneClasses: Record<ToastTone, string> = {
   success: "border-emerald-500/40 bg-emerald-500/10",
   error: "border-rose-500/40 bg-rose-500/10",
-  info: "border-cyan-500/40 bg-cyan-500/10",
+  info: "border-brand-500/40 bg-brand-500/10",
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {

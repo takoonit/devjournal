@@ -40,7 +40,7 @@ export default async function ProjectDetailPage({
                                         href={project.repositoryLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50 text-zinc-300 hover:text-[#ff914d] hover:border-[#ff914d]/50 transition-all text-sm"
+                                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50 text-zinc-300 hover:text-brand-400 hover:border-brand-400/50 transition-all text-sm"
                                     >
                                         <span>Repository</span>
                                         <ExternalLink className="w-4 h-4" />

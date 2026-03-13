@@ -44,7 +44,7 @@ export function BioSidebar() {
                                 href={href}
                                 target={platform !== "email" ? "_blank" : undefined}
                                 rel={platform !== "email" ? "noopener noreferrer" : undefined}
-                                className="flex items-center justify-center w-10 h-10 rounded-lg bg-zinc-800/50 border border-zinc-700/50 text-zinc-400 hover:text-cyan-400 hover:border-cyan-400/50 transition-all"
+                                className="flex items-center justify-center w-10 h-10 rounded-lg bg-zinc-800/50 border border-zinc-700/50 text-zinc-400 hover:text-brand-400 hover:border-brand-400/50 transition-all"
                                 aria-label={platform}
                             >
                                 <Icon className="w-5 h-5" />
@@ -56,7 +56,7 @@ export function BioSidebar() {
                 <div className="mt-8 pt-6 border-t border-zinc-800">
                     <Link
                         href="/editor"
-                        className="block w-full px-4 py-2 text-center text-sm font-medium rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/20 transition-colors"
+                        className="block w-full px-4 py-2 text-center text-sm font-medium rounded-lg bg-brand-500/10 text-brand-400 border border-brand-500/30 hover:bg-brand-500/20 transition-colors"
                     >
                         Editor →
                     </Link>

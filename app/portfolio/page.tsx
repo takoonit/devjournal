@@ -28,7 +28,7 @@ export default async function PortfolioPage() {
                             <p className="text-zinc-400">
                                 Build logs documenting the development process.
                                 {projects.length > 0 && (
-                                    <span className="ml-2 text-[#ff914d] font-mono">
+                                    <span className="ml-2 text-brand-400 font-mono">
                                         <CountUp to={projects.length} duration={1.5} /> active
                                     </span>
                                 )}
