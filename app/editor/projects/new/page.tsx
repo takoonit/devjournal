@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, X } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import BlurText from "@/components/reactbits/blur-text";
 import ShinyText from "@/components/reactbits/shiny-text";
+import { TechStackInput } from "@/components/editor/tech-stack-input";
 
 export default function NewProjectPage() {
     const router = useRouter();
@@ -19,7 +20,6 @@ export default function NewProjectPage() {
         repositoryLink: "",
         status: "in-progress" as "in-progress" | "shipped",
     });
-    const [techInput, setTechInput] = useState("");
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,35 +27,6 @@ export default function NewProjectPage() {
 
         addProject(formData);
         router.push("/editor");
-    };
-
-    const addTech = (techStr: string) => {
-        const cleanTech = techStr.trim();
-        if (cleanTech && !formData.techStack.includes(cleanTech)) {
-            setFormData(prev => ({
-                ...prev,
-                techStack: [...prev.techStack, cleanTech],
-            }));
-            setTechInput("");
-        }
-    };
-
-    const handleTechKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter" || e.key === " " || e.key === ",") {
-            e.preventDefault();
-            addTech(techInput);
-        } else if (e.key === "Backspace" && !techInput && formData.techStack.length > 0) {
-            e.preventDefault();
-            const lastTech = formData.techStack[formData.techStack.length - 1];
-            removeTech(lastTech);
-        }
-    };
-
-    const removeTech = (tech: string) => {
-        setFormData(prev => ({
-            ...prev,
-            techStack: prev.techStack.filter((t) => t !== tech),
-        }));
     };
 
     return (
@@ -110,40 +81,10 @@ export default function NewProjectPage() {
                     <label className="block text-sm font-medium text-zinc-300 mb-2">
                         Tech Stack
                     </label>
-                    <div className="flex flex-wrap items-center gap-2 p-2 bg-zinc-900/50 border border-zinc-700 rounded-lg focus-within:border-brand-400 focus-within:ring-1 focus-within:ring-brand-400 transition-colors">
-                        {formData.techStack.map((tech, index) => (
-                            <span
-                                key={`${tech}-${index}`}
-                                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-800 border border-zinc-700/50 rounded-md text-sm text-zinc-200"
-                            >
-                                {tech}
-                                <button
-                                    type="button"
-                                    onClick={() => removeTech(tech)}
-                                    className="text-zinc-500 hover:text-brand-400 transition-colors"
-                                >
-                                    <X className="w-3.5 h-3.5" />
-                                </button>
-                            </span>
-                        ))}
-                        <input
-                            type="text"
-                            value={techInput}
-                            onChange={(e) => {
-                                // If the user types a comma directly, we catch it here just in case,
-                                // but onKeyDown usually handles the space and comma beforehand.
-                                const val = e.target.value;
-                                if (val.endsWith(",")) {
-                                    addTech(val.slice(0, -1));
-                                } else {
-                                    setTechInput(val);
-                                }
-                            }}
-                            onKeyDown={handleTechKeyDown}
-                            className="flex-1 min-w-[120px] bg-transparent text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none py-1 px-1"
-                            placeholder={formData.techStack.length === 0 ? "e.g., React, TypeScript (press Space or Enter)" : "Add more..."}
-                        />
-                    </div>
+                    <TechStackInput
+                        value={formData.techStack}
+                        onChange={(newStack) => setFormData({ ...formData, techStack: newStack })}
+                    />
                 </div>
 
                 <div>
