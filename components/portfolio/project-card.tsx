@@ -14,7 +14,7 @@ export function ProjectCard({ project, href }: ProjectCardProps) {
             <Link
                 href={href}
                 aria-label={`Open ${project.name} build log`}
-                className="absolute inset-0 z-10 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff914d]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+                className="absolute inset-0 z-10 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
             />
 
             <div className="flex items-start justify-between mb-4">
@@ -36,7 +36,7 @@ export function ProjectCard({ project, href }: ProjectCardProps) {
                         href={project.repositoryLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="relative z-30 -m-1 rounded p-1 text-zinc-400 transition-colors hover:text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff914d]/70"
+                        className="relative z-30 -m-1 rounded p-1 text-zinc-400 transition-colors hover:text-zinc-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400/70"
                         aria-label={`Open ${project.name} repository`}
                         onClick={(e) => e.stopPropagation()}
                     >

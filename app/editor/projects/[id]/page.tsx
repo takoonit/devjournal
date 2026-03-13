@@ -111,7 +111,7 @@ export default function ProjectDetailPage({
         return (
             <div className="max-w-4xl">
                 <p className="text-zinc-500">Project not found.</p>
-                <Link href="/editor" className="text-cyan-400 hover:text-cyan-300">
+                <Link href="/editor" className="text-brand-400 hover:text-brand-300">
                     Back to editor
                 </Link>
             </div>
@@ -158,7 +158,7 @@ export default function ProjectDetailPage({
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setIsEditModalOpen(true)}
-                            className="p-2 rounded-lg text-zinc-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors"
+                            className="p-2 rounded-lg text-zinc-500 hover:text-brand-400 hover:bg-brand-500/10 transition-colors"
                             aria-label="Edit project"
                         >
                             <Pencil className="w-5 h-5" />
@@ -188,7 +188,7 @@ export default function ProjectDetailPage({
                 <div className="flex items-center gap-4 text-sm text-zinc-500">
                     <span>Created {formatDate(project.createdAt)}</span>
                     <span>•</span>
-                    <span className={project.status === "shipped" ? "text-emerald-400" : "text-cyan-400"}>
+                    <span className={project.status === "shipped" ? "text-emerald-400" : "text-brand-400"}>
                         {project.status === "shipped" ? "Shipped" : "In Progress"}
                     </span>
                     <span>•</span>
@@ -202,10 +202,10 @@ export default function ProjectDetailPage({
             <div className="mb-8 flex flex-wrap items-center gap-3">
                 <Link
                     href={`/editor/projects/${project.id}/entries/new`}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/20 transition-colors font-medium"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-brand-500/10 text-brand-400 border border-brand-500/30 rounded-lg hover:bg-brand-500/20 transition-colors font-medium"
                 >
                     <Plus className="w-5 h-5" />
-                    <ShinyText text="New Entry" className="text-cyan-400" speed={3} />
+                    <ShinyText text="New Entry" className="text-brand-400" speed={3} />
                 </Link>
                 {hasDraft && (
                     <Link
@@ -224,7 +224,7 @@ export default function ProjectDetailPage({
                     <p className="text-zinc-500 mb-4">No entries yet.</p>
                     <Link
                         href={`/editor/projects/${project.id}/entries/new`}
-                        className="text-cyan-400 hover:text-cyan-300"
+                        className="text-brand-400 hover:text-brand-300"
                     >
                         Create your first entry →
                     </Link>
@@ -251,7 +251,7 @@ export default function ProjectDetailPage({
                                 </button>
                                 <Link
                                     href={`/editor/projects/${project.id}/entries/${entry.id}/edit`}
-                                    className="p-2 rounded-lg text-zinc-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors"
+                                    className="p-2 rounded-lg text-zinc-500 hover:text-brand-400 hover:bg-brand-500/10 transition-colors"
                                     aria-label={`Edit entry: ${entry.title}`}
                                 >
                                     <Pencil className="w-4 h-4" />

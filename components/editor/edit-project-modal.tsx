@@ -76,7 +76,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                             required
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/50 transition-all"
+                            className="w-full px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500/50 transition-all"
                             placeholder="e.g. My Awesome Project"
                         />
                     </div>
@@ -90,7 +90,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             rows={3}
-                            className="w-full px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/50 transition-all resize-none"
+                            className="w-full px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500/50 transition-all resize-none"
                             placeholder="Short summary of the project..."
                         />
                     </div>
@@ -103,7 +103,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                             type="text"
                             value={techStack}
                             onChange={(e) => setTechStack(e.target.value)}
-                            className="w-full px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/50 transition-all"
+                            className="w-full px-4 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500/50 transition-all"
                             placeholder="e.g. React, Next.js, Tailwind"
                         />
                     </div>
@@ -117,7 +117,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                                 type="button"
                                 onClick={() => setStatus("in-progress")}
                                 className={`px-4 py-2 rounded-lg border transition-all text-sm font-medium ${status === "in-progress"
-                                    ? "bg-cyan-500/10 border-cyan-500/50 text-cyan-400"
+                                    ? "bg-brand-500/10 border-brand-500/50 text-brand-400"
                                     : "bg-zinc-950 border-zinc-800 text-zinc-500 hover:border-zinc-700"
                                     }`}
                             >
@@ -146,7 +146,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                         </button>
                         <button
                             type="submit"
-                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition-colors font-medium shadow-lg shadow-cyan-500/20"
+                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-brand-500 hover:bg-cyan-600 text-white rounded-lg transition-colors font-medium shadow-lg shadow-brand-500/20"
                         >
                             <Save className="w-4 h-4" />
                             Save Changes

@@ -69,7 +69,7 @@ export function ExportImportSection() {
         <div className="mt-12 pt-8 border-t border-zinc-800">
             <h3 className="text-xl font-bold text-zinc-100 mb-2">Data Portability</h3>
             <p className="text-zinc-400 mb-8">
-                Manage your exports and imports using the unified <code className="text-cyan-400">.devjournal</code> format.
+                Manage your exports and imports using the unified <code className="text-brand-400">.devjournal</code> format.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-8">
@@ -93,7 +93,7 @@ export function ExportImportSection() {
                                                 key={project.id}
                                                 onClick={() => toggleProject(project.id)}
                                                 className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${isSelected
-                                                        ? "bg-cyan-500/5 border-cyan-500/30 text-cyan-400"
+                                                        ? "bg-brand-500/5 border-brand-500/30 text-brand-400"
                                                         : "bg-zinc-800/20 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300"
                                                     }`}
                                             >
@@ -108,7 +108,7 @@ export function ExportImportSection() {
                                     <button
                                         onClick={handleExportSelected}
                                         disabled={selectedProjectIds.length === 0}
-                                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-cyan-500 text-zinc-950 rounded-lg hover:bg-cyan-400 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-brand-500 text-zinc-950 rounded-lg hover:bg-brand-400 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                                     >
                                         Export Selected ({selectedProjectIds.length})
                                     </button>
@@ -137,7 +137,7 @@ export function ExportImportSection() {
                         </div>
 
                         <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
-                            Import projects or full backups. This action is <span className="text-cyan-400 font-medium">non-destructive</span>—imported items will be merged with your existing data.
+                            Import projects or full backups. This action is <span className="text-brand-400 font-medium">non-destructive</span>—imported items will be merged with your existing data.
                         </p>
 
                         <button
@@ -165,13 +165,13 @@ export function ExportImportSection() {
                         ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
                         : status.type === "error"
                             ? "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                            : "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                            : "bg-brand-500/10 border-brand-500/30 text-brand-400"
                         }`}
                 >
                     {status.type === "success" && <CheckCircle2 className="w-5 h-5" />}
                     {status.type === "error" && <XCircle className="w-5 h-5" />}
                     {status.type === "loading" && (
-                        <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-brand-400 border-t-transparent rounded-full animate-spin" />
                     )}
                     <span className="text-sm font-medium">{status.message}</span>
                 </div>

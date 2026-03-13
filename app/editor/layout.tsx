@@ -63,7 +63,7 @@ function EditorLayoutContent({
         cn(
             "group flex items-center gap-2 rounded border px-3 py-2 text-sm transition-colors",
             isActive
-                ? "border-cyan-400/50 bg-cyan-500/10 text-zinc-50"
+                ? "border-brand-400/50 bg-brand-500/10 text-zinc-50"
                 : "border-transparent text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100"
         );
 
@@ -97,15 +97,15 @@ function EditorLayoutContent({
             {/* Sidebar */}
             <aside
                 className={cn(
-                    "w-64 border-r border-zinc-800 bg-zinc-950/50",
+                    "w-64 border-r border-zinc-800 bg-zinc-950/50 flex flex-col",
                     uiPreferences.density === "compact" ? "p-4" : "p-6",
                     uiPreferences.focusMode && "bg-zinc-950"
                 )}
             >
                 <div className="mb-8">
                     <Link
-                        href="/portfolio"
-                        className="text-xl font-bold text-zinc-100 transition-colors hover:text-cyan-400"
+                        href="/editor"
+                        className="text-xl font-bold text-zinc-100 transition-colors hover:text-brand-400"
                     >
                         <DecryptedText
                             text="DevJournal"
@@ -114,10 +114,14 @@ function EditorLayoutContent({
                             maxIterations={8}
                             characters="01"
                             className="text-zinc-100"
-                            encryptedClassName="text-cyan-400/60"
+                            encryptedClassName="text-brand-400/60"
                         />
                     </Link>
-                    <p className="mt-1 text-xs text-zinc-500">Editor Mode</p>
+                    <div className="mt-2 flex items-center gap-2">
+                        <span className="inline-flex items-center rounded-full bg-zinc-800 px-2 py-0.5 text-xs font-medium text-zinc-300">
+                            Editor Mode
+                        </span>
+                    </div>
                 </div>
 
                 <nav className="space-y-6" aria-label="Editor navigation">
@@ -129,7 +133,7 @@ function EditorLayoutContent({
                             <div className="flex items-center gap-1">
                                 <button
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-cyan-400"
+                                    className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-brand-400"
                                     title="Import Project"
                                     aria-label="Import project from file"
                                 >
@@ -137,7 +141,7 @@ function EditorLayoutContent({
                                 </button>
                                 <Link
                                     href="/editor/projects/new"
-                                    className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-cyan-400"
+                                    className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-brand-400"
                                     title="New Project"
                                     aria-label="Create new project"
                                 >
@@ -169,7 +173,7 @@ function EditorLayoutContent({
                                             className={cn(
                                                 "h-4 w-4 transition-colors",
                                                 isProjectActive
-                                                    ? "text-cyan-300"
+                                                    ? "text-brand-300"
                                                     : "text-zinc-500 group-hover:text-zinc-200"
                                             )}
                                         />
@@ -190,7 +194,7 @@ function EditorLayoutContent({
                         </div>
                     </div>
 
-                    <div className="border-t border-zinc-800 pt-6">
+                    <div className="border-t border-zinc-800 pt-6 space-y-2">
                         <Link
                             href="/editor/settings"
                             className={getNavItemClasses(isSettingsActive)}
@@ -199,7 +203,7 @@ function EditorLayoutContent({
                                 className={cn(
                                     "h-4 w-4 transition-colors",
                                     isSettingsActive
-                                        ? "text-cyan-300"
+                                        ? "text-brand-300"
                                         : "text-zinc-500 group-hover:text-zinc-200"
                                 )}
                             />
@@ -214,6 +218,22 @@ function EditorLayoutContent({
                         </Link>
                     </div>
                 </nav>
+
+                <div className="mt-auto pt-8">
+                    <Link
+                        href="/portfolio"
+                        target="_blank"
+                        className="group flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3 text-sm transition-colors hover:border-brand-500/30 hover:bg-brand-500/10"
+                    >
+                        <div className="flex h-8 w-8 items-center justify-center rounded bg-zinc-800 text-zinc-400 group-hover:bg-brand-500/20 group-hover:text-brand-400 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        </div>
+                        <div>
+                            <p className="font-medium text-zinc-200 group-hover:text-brand-400 transition-colors">View Portfolio</p>
+                            <p className="text-xs text-zinc-500">Public profile</p>
+                        </div>
+                    </Link>
+                </div>
             </aside>
 
             {/* Main Content */}

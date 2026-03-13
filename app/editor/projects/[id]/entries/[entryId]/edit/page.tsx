@@ -164,7 +164,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                                     key={option.value}
                                     type="button"
                                     onClick={() => setEntryType(option.value)}
-                                    className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${entryType === option.value ? "border-[#ff914d]/40 bg-[#ff914d]/15 text-[#ff914d]" : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"}`}
+                                    className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${entryType === option.value ? "border-brand-400/40 bg-brand-400/15 text-brand-400" : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"}`}
                                 >
                                     {option.label}
                                 </button>
@@ -175,28 +175,34 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
 
                     <div className="space-y-2">
                         <label htmlFor="title" className="text-sm text-zinc-300">Title</label>
-                        <input id="title" value={title} onChange={(e) => setTitle(e.target.value)} onKeyDown={submitShortcut} className="w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100" />
+                        <input id="title" value={title} onChange={(e) => setTitle(e.target.value)} onKeyDown={submitShortcut} autoFocus className="w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100 focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400/50 transition-all" />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 relative">
                         <label htmlFor="content" className="text-sm text-zinc-300">Body</label>
-                        <textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} onKeyDown={submitShortcut} className="h-52 w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100" />
-                        <p className={`text-xs text-zinc-500 transition-opacity ${showDraftSaved ? "opacity-100" : "opacity-0"}`} aria-live="polite">
-                            Draft saved
-                        </p>
+                        <textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} onKeyDown={submitShortcut} className="h-52 w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100 focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400/50 transition-all resize-none" />
+                        <div className="absolute right-2 bottom-2">
+                            <p className={`text-xs text-brand-400/80 transition-opacity ${showDraftSaved ? "opacity-100" : "opacity-0"}`} aria-live="polite">
+                                Draft saved
+                            </p>
+                        </div>
                     </div>
 
-                    <div>
-                        <button type="button" onClick={() => setShowDetails((prev) => !prev)} className="inline-flex items-center gap-1 text-sm text-zinc-400 hover:text-zinc-200">
-                            <ChevronDown className={`h-4 w-4 transition-transform ${showDetails ? "rotate-180" : ""}`} /> More Details
+                    <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-4 transition-colors hover:border-zinc-700/50">
+                        <button type="button" onClick={() => setShowDetails((prev) => !prev)} className="flex w-full items-center justify-between text-sm text-zinc-400 hover:text-zinc-200 focus:outline-none">
+                            <span className="font-medium">More Details <span className="text-zinc-500 font-normal">(Optional context, links, tags)</span></span>
+                            <ChevronDown className={`h-4 w-4 transition-transform ${showDetails ? "rotate-180" : ""}`} />
                         </button>
                         {showDetails ? (
-                            <textarea value={details} onChange={(e) => setDetails(e.target.value)} onKeyDown={submitShortcut} className="mt-3 h-28 w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100" placeholder="Optional tags, links, context, or attachment notes..." />
+                            <div className="mt-3">
+                                <label htmlFor="details" className="sr-only">Details</label>
+                                <textarea id="details" value={details} onChange={(e) => setDetails(e.target.value)} onKeyDown={submitShortcut} className="h-28 w-full rounded-lg border border-zinc-700 bg-zinc-950/60 px-4 py-3 text-zinc-100 focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400/50 transition-all resize-none" placeholder="Add technical context, URLs, or specific tags here..." />
+                            </div>
                         ) : null}
                     </div>
 
                     <div className="flex justify-end">
-                        <button type="submit" disabled={!canSubmit || isSubmitting} className="inline-flex items-center gap-2 rounded-lg border border-[#ff914d]/30 bg-[#ff914d]/10 px-4 py-2 text-[#ff914d] disabled:opacity-60">
+                        <button type="submit" disabled={!canSubmit || isSubmitting} className="inline-flex items-center gap-2 rounded-lg border border-brand-400/30 bg-brand-400/10 px-4 py-2 text-brand-400 disabled:opacity-60">
                             {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Update Entry
                         </button>
                     </div>
