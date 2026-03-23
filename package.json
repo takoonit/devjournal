@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "test": "node --experimental-strip-types --test lib/supportive-copy.test.ts"
+    "test": "node --test lib/supportive-copy.test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",
