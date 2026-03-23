@@ -298,7 +298,6 @@ export const useDevJournalStore = create<DevJournalStore>()(
                                 ...data.uiPreferences,
                             };
                         }
-                        // Optionally update user bio/data? Keeping merging non-destructive for user too.
                     } else if (data.type === "selective" || data.type === "project") {
                         const projs = Array.isArray(data.projects)
                             ? data.projects
