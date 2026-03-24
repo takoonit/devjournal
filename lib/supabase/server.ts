@@ -1,3 +1,4 @@
+import { logger } from "@/lib/logger/index";
 import { cacheLife, cacheTag } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import { Entry, Project, User } from "@/lib/types";
@@ -42,7 +43,7 @@ function getSupabasePublicClient() {
  */
 function logSupabaseConfigWarning() {
     if (process.env.NODE_ENV === "production") {
-        console.error(
+        logger.error(
             "Supabase public client is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or publishable key aliases)."
         );
     }
@@ -68,7 +69,7 @@ async function getCachedPublicProfile(): Promise<User> {
         .maybeSingle<ProfileRow>();
 
     if (error) {
-        console.error("Failed to fetch profile", error.message);
+        logger.error("Failed to fetch profile", error.message);
         return mapProfileRowToUser(null);
     }
 
@@ -94,7 +95,7 @@ async function getCachedPublicProjects(): Promise<Project[]> {
         .returns<ProjectRow[]>();
 
     if (error) {
-        console.error("Failed to fetch projects", error.message);
+        logger.error("Failed to fetch projects", error.message);
         return [];
     }
 
@@ -137,7 +138,7 @@ export async function getPublicProjectSlugs(): Promise<string[]> {
         .returns<Array<{ slug: string }>>();
 
     if (error) {
-        console.error("Failed to fetch project slugs", error.message);
+        logger.error("Failed to fetch project slugs", error.message);
         return [];
     }
 
@@ -185,7 +186,7 @@ export async function getPublicProjectBySlug(slug: string): Promise<{ project: P
 
     if (projectResult.error || !projectResult.data) {
         if (projectResult.error) {
-            console.error("Failed to fetch project by slug", projectResult.error.message);
+            logger.error("Failed to fetch project by slug", projectResult.error.message);
         }
         return { project: null, entries: [], user };
     }
@@ -200,7 +201,7 @@ export async function getPublicProjectBySlug(slug: string): Promise<{ project: P
         .returns<EntryRow[]>();
 
     if (entriesError) {
-        console.error("Failed to fetch public entries", entriesError.message);
+        logger.error("Failed to fetch public entries", entriesError.message);
         return { project, entries: [], user };
     }
 
