@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import { User, Project, Entry, InboxCapture } from "@/lib/types";
 import type { ThemeMode } from "@/lib/design-tokens";
 import { generateId, generateSlug } from "@/lib/utils";
+import { DevJournalExportSchema } from "@/lib/schema";
 
 export interface UiPreferences {
     themeMode: ThemeMode;
@@ -263,12 +264,27 @@ export const useDevJournalStore = create<DevJournalStore>()(
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
             },
-
             // Unified Smart Import
             importDevJournal: async (file) => {
                 try {
                     const text = await file.text();
-                    const data = JSON.parse(text);
+                    let rawData;
+                    try {
+                        rawData = JSON.parse(text);
+                    } catch (e) {
+                        return { success: false, message: "Invalid JSON format." };
+                    }
+
+                    const validationResult = DevJournalExportSchema.safeParse(rawData);
+
+                    if (!validationResult.success) {
+                        return {
+                            success: false,
+                            message: "Invalid DevJournal file structure."
+                        };
+                    }
+
+                    const data = validationResult.data;
 
                     if (data.version !== "1.0") {
                         return { success: false, message: "Unsupported or invalid DevJournal file version." };
@@ -282,36 +298,29 @@ export const useDevJournalStore = create<DevJournalStore>()(
 
                     // 1. Resolve what to import
                     if (data.type === "global") {
-                        if (!Array.isArray(data.projects) || !Array.isArray(data.entries)) {
-                            return {
-                                success: false,
-                                message: "Invalid global DevJournal payload.",
-                            };
-                        }
-
-                        projectsToImport.push(...data.projects);
-                        entriesToImport.push(...data.entries);
+                        projectsToImport.push(...(data.projects as Project[]));
+                        entriesToImport.push(...(data.entries as Entry[]));
 
                         if (data.uiPreferences && typeof data.uiPreferences === "object") {
                             importedUiPreferences = {
                                 ...defaultUiPreferences,
-                                ...data.uiPreferences,
+                                ...(data.uiPreferences as Partial<UiPreferences>),
                             };
                         }
-                        // Optionally update user bio/data? Keeping merging non-destructive for user too.
                     } else if (data.type === "selective" || data.type === "project") {
-                        const projs = Array.isArray(data.projects)
+                        const projs = data.projects
                             ? data.projects
                             : data.project
                                 ? [data.project]
                                 : [];
-                        const safeEntries = Array.isArray(data.entries) ? data.entries : [];
+                        const safeEntries = data.entries ? data.entries : [];
 
-                        projectsToImport.push(...projs);
-                        entriesToImport.push(...safeEntries);
+                        projectsToImport.push(...(projs as Project[]));
+                        entriesToImport.push(...(safeEntries as Entry[]));
                     } else {
                         return { success: false, message: "Unknown DevJournal content type." };
                     }
+
 
                     if (projectsToImport.length === 0) {
                         return { success: false, message: "No projects found to import." };

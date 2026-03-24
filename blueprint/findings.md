@@ -88,3 +88,13 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 ### Guardrails
 - Keep one dominant top-level navigation cue per screen.
 - Preserve focus-visible styles and ARIA semantics on whichever cue remains.
+
+## Security Fix: DevJournal JSON Import Vulnerability (Mar 24)
+
+### Issue
+The `importDevJournal` function in `lib/store.ts` was vulnerable to malicious inputs because it blindly trusted the output of `JSON.parse` for imported `.devjournal` files. This improper validation can lead to crashes, Cross-Site Scripting (XSS), prototype pollution, or state corruption if an attacker crafts a malicious JSON payload.
+
+### Solution
+1. Integrated `zod` schema validation to ensure the data structure completely matches expected schemas for `User`, `Project`, `Entry`, and `UiPreferences`.
+2. Used `DevJournalExportSchema.safeParse` in the `importDevJournal` function to sanitize and validate incoming configurations against rigorous shape and type standards.
+3. Enhanced test coverage in `lib/__tests__/store.test.ts` to assert that malformed JSON strings and schemas correctly fail gracefully without affecting global state.
