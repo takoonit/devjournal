@@ -159,13 +159,16 @@ export const useDevJournalStore = create<DevJournalStore>()(
                 get().entries.filter((e) => e.projectId === projectId && e.isPublic)
                     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
 
-            getPublicProjects: () =>
-                get().projects.filter((p) => {
-                    const publicEntries = get().entries.filter(
-                        (e) => e.projectId === p.id && e.isPublic
-                    );
-                    return publicEntries.length > 0;
-                }),
+            getPublicProjects: () => {
+                const entries = get().entries;
+                const publicProjectIds = new Set<string>();
+                for (let i = 0; i < entries.length; i++) {
+                    if (entries[i].isPublic) {
+                        publicProjectIds.add(entries[i].projectId);
+                    }
+                }
+                return get().projects.filter((p) => publicProjectIds.has(p.id));
+            },
 
             // Inbox capture
             inboxCaptures: [],
