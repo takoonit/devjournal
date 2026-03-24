@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 import type { Entry, EntryType } from "@/lib/types";
 import { getEntryContent, getEntryType } from "@/lib/entry-types";
 import { BookOpenText, Bug, Palette, Sparkles, Wrench } from "lucide-react";
@@ -8,7 +10,7 @@ interface TimelineEntryProps {
     entry: Entry;
 }
 
-const TYPE_CONFIG: Record<EntryType, { label: string; icon: any; color: string; dotBg: string; dotBorder: string; badgeBg: string; badgeBorder: string }> = {
+const TYPE_CONFIG: Record<EntryType, { label: string; icon: React.ElementType; color: string; dotBg: string; dotBorder: string; badgeBg: string; badgeBorder: string }> = {
     feature: { label: "Feature", icon: Sparkles, color: "text-emerald-300", dotBg: "bg-emerald-500/15", dotBorder: "border-emerald-400/40", badgeBg: "bg-emerald-500/10", badgeBorder: "border-emerald-400/35" },
     fix: { label: "Fix", icon: Bug, color: "text-rose-300", dotBg: "bg-rose-500/15", dotBorder: "border-rose-400/40", badgeBg: "bg-rose-500/10", badgeBorder: "border-rose-400/35" },
     refactor: { label: "Refactor", icon: Wrench, color: "text-slate-300", dotBg: "bg-slate-500/20", dotBorder: "border-slate-400/40", badgeBg: "bg-slate-500/15", badgeBorder: "border-slate-400/35" },
