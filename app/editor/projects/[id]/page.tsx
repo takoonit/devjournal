@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use, useMemo, useEffect, useRef, useCallback } from "react";
+import { useState, use, useMemo, useEffect, useRef } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { Plus, Trash2, Eye, EyeOff, Pencil, RotateCcw } from "lucide-react";
@@ -14,6 +14,7 @@ import CountUp from "@/components/reactbits/count-up";
 import BlurText from "@/components/reactbits/blur-text";
 import ShinyText from "@/components/reactbits/shiny-text";
 import ScrollReveal from "@/components/reactbits/scroll-reveal";
+import { useFocusTrap } from "@/lib/hooks/use-focus-trap";
 
 export default function ProjectDetailPage({
     params,
@@ -49,37 +50,7 @@ export default function ProjectDetailPage({
     const deleteModalRef = useRef<HTMLDivElement>(null);
     const entryDeleteModalRef = useRef<HTMLDivElement>(null);
 
-    const trapFocus = useCallback((modalRef: React.RefObject<HTMLDivElement | null>, onClose: () => void) => {
-        const modal = modalRef.current;
-        if (!modal) return;
-        const focusable = modal.querySelectorAll<HTMLElement>(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        if (focusable.length > 0) focusable[0].focus();
-
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") {
-                onClose();
-                return;
-            }
-            if (e.key !== "Tab") return;
-            const first = focusable[0];
-            const last = focusable[focusable.length - 1];
-            if (e.shiftKey) {
-                if (document.activeElement === first) {
-                    e.preventDefault();
-                    last.focus();
-                }
-            } else {
-                if (document.activeElement === last) {
-                    e.preventDefault();
-                    first.focus();
-                }
-            }
-        };
-        modal.addEventListener("keydown", handleKeyDown);
-        return () => modal.removeEventListener("keydown", handleKeyDown);
-    }, []);
+    const trapFocus = useFocusTrap();
 
 
     useEffect(() => {
