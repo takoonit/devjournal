@@ -325,6 +325,8 @@ export const useDevJournalStore = create<DevJournalStore>()(
 
                     let importedProjectsCount = 0;
 
+                    const existingNames = new Set(existingProjects.map(p => p.name));
+
                     projectsToImport.forEach(incomingProj => {
                         if (!incomingProj?.id || !incomingProj?.name) {
                             return;
@@ -333,7 +335,7 @@ export const useDevJournalStore = create<DevJournalStore>()(
                         let finalName = incomingProj.name;
                         let counter = 1;
 
-                        while (existingProjects.some(p => p.name === finalName)) {
+                        while (existingNames.has(finalName)) {
                             finalName = `${incomingProj.name} (${counter})`;
                             counter++;
                         }
@@ -349,6 +351,8 @@ export const useDevJournalStore = create<DevJournalStore>()(
                             createdAt: incomingProj.createdAt || new Date().toISOString(),
                             updatedAt: new Date().toISOString(),
                         });
+
+                        existingNames.add(finalName);
 
                         importedProjectsCount++;
                     });
