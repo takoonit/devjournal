@@ -1,4 +1,5 @@
 import { revalidatePath, revalidateTag } from "next/cache";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 
 interface RevalidatePayload {
@@ -8,10 +9,17 @@ interface RevalidatePayload {
 
 const revalidateTagCompat = revalidateTag as unknown as (tag: string) => void;
 
+function secureCompare(a: string | null, b: string | undefined): boolean {
+    if (typeof a !== "string" || typeof b !== "string") return false;
+    const hashA = createHash("sha256").update(a).digest();
+    const hashB = createHash("sha256").update(b).digest();
+    return timingSafeEqual(hashA, hashB);
+}
+
 export async function POST(request: NextRequest) {
     const secret = request.nextUrl.searchParams.get("secret");
 
-    if (!secret || secret !== process.env.REVALIDATE_SECRET) {
+    if (!secureCompare(secret, process.env.REVALIDATE_SECRET)) {
         return NextResponse.json({ ok: false, message: "Invalid secret" }, { status: 401 });
     }
 
