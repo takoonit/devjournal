@@ -39,7 +39,7 @@ export function EntryTimeline({ entries }: { entries: Entry[] }) {
                         key={item.value}
                         type="button"
                         onClick={() => setFilter(item.value)}
-                        className={`rounded-full border px-3 py-1 text-xs uppercase tracking-wide transition-colors ${filter === item.value ? "border-[#ff914d]/40 bg-[#ff914d]/15 text-[#ff914d]" : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"}`}
+                        className={`rounded-full border px-3 py-1 text-xs uppercase tracking-wide transition-colors ${filter === item.value ? "border-cyan-400/40 bg-cyan-500/15 text-cyan-400" : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"}`}
                     >
                         {item.label}
                     </button>

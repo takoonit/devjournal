@@ -1,3 +1,4 @@
+cat << 'INNER_EOF' > components/ui/timeline-entry.tsx
 "use client";
 
 import type { Entry, EntryType } from "@/lib/types";
@@ -34,14 +35,14 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
                 </div>
 
                 <div className="absolute left-0 top-1 z-10 flex justify-center md:relative md:left-auto">
-                    <div className={`h-6 w-6 rounded-full border ${config.dotBorder} ${config.dotBg} flex items-center justify-center transition-all duration-300 group-hover:scale-125 ${config.glowColor}`}>
-                        <Icon className={`h-3.5 w-3.5 ${config.color}`} />
+                    <div className={\`h-6 w-6 rounded-full border \${config.dotBorder} \${config.dotBg} flex items-center justify-center transition-all duration-300 group-hover:scale-125 \${config.glowColor}\`}>
+                        <Icon className={\`h-3.5 w-3.5 \${config.color}\`} />
                     </div>
                 </div>
 
                 <article className="mb-6 rounded-xl border border-zinc-800/80 bg-zinc-950/70 p-5 transition-all duration-300 group-hover:border-zinc-700 group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-black/50">
                     <header className="mb-3 flex flex-wrap items-center gap-2">
-                        <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${config.color} ${config.badgeBg} ${config.badgeBorder} transition-colors duration-300`}>
+                        <span className={\`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide \${config.color} \${config.badgeBg} \${config.badgeBorder} transition-colors duration-300\`}>
                             <Icon className="h-3 w-3" />
                             {config.label}
                         </span>
@@ -57,3 +58,4 @@ export function TimelineEntry({ entry }: TimelineEntryProps) {
         </div>
     );
 }
+INNER_EOF

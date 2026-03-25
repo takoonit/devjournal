@@ -84,7 +84,7 @@ export default function ProjectDetailPage({
 
     useEffect(() => {
         if (typeof window === "undefined") return;
-        const draftKey = `devjournal-entry-draft-\${id}`;
+        const draftKey = `devjournal-entry-draft-${id}`;
         const rawDraft = localStorage.getItem(draftKey);
         if (!rawDraft) {
             setHasDraft(false);
@@ -120,7 +120,7 @@ export default function ProjectDetailPage({
 
     const handleDeleteProject = () => {
         deleteProject(project.id);
-        addToast({ message: `"\${project.name}" deleted.`, type: "success", copyKey: "project-deleted" });
+        addToast({ message: `"${project.name}" deleted.`, type: "success", copyKey: "project-deleted" });
         router.push("/editor");
     };
 
@@ -128,7 +128,7 @@ export default function ProjectDetailPage({
         if (!entryToDelete) return;
         const entry = entries.find((e) => e.id === entryToDelete);
         deleteEntry(entryToDelete);
-        addToast({ message: `Entry "\${entry?.title || "Untitled"}" deleted.`, type: "success", copyKey: "entry-deleted" });
+        addToast({ message: `Entry "${entry?.title || "Untitled"}" deleted.`, type: "success", copyKey: "entry-deleted" });
         setEntryToDelete(null);
     };
 
@@ -177,7 +177,7 @@ export default function ProjectDetailPage({
                 <div className="flex flex-wrap gap-2 mb-4">
                     {project.techStack.map((tech, index) => (
                         <span
-                            key={`\${tech}-\${index}`}
+                            key={`${tech}-${index}`}
                             className="px-3 py-1 text-sm rounded bg-zinc-800/50 text-zinc-300 border border-zinc-700/50 hover:bg-zinc-700/60 hover:border-zinc-600 transition-colors duration-200"
                         >
                             {tech}
@@ -201,7 +201,7 @@ export default function ProjectDetailPage({
             {/* New Entry Button */}
             <div className="mb-8 flex flex-wrap items-center gap-3">
                 <Link
-                    href={`/editor/projects/\${project.id}/entries/new`}
+                    href={`/editor/projects/${project.id}/entries/new`}
                     className="group inline-flex items-center gap-2 px-6 py-3 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/20 transition-all duration-200 active:scale-[0.98] hover:shadow-[0_0_15px_rgba(34,211,238,0.15)] font-medium"
                 >
                     <Plus className="w-5 h-5 transition-transform duration-300 group-hover:rotate-90" />
@@ -209,7 +209,7 @@ export default function ProjectDetailPage({
                 </Link>
                 {hasDraft && (
                     <Link
-                        href={`/editor/projects/\${project.id}/entries/new`}
+                        href={`/editor/projects/${project.id}/entries/new`}
                         className="group inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900/80 px-4 py-2 text-xs font-medium text-zinc-300 transition-all duration-200 hover:border-zinc-500 hover:text-zinc-100 hover:bg-zinc-800 active:scale-95"
                     >
                         <RotateCcw className="h-3.5 w-3.5 transition-transform duration-500 group-hover:-rotate-180" />
@@ -223,7 +223,7 @@ export default function ProjectDetailPage({
                 <div className="text-center py-20 border border-dashed border-zinc-800 rounded-xl transition-colors duration-300 hover:border-zinc-700 hover:bg-zinc-900/20">
                     <p className="text-zinc-500 mb-4">No entries yet.</p>
                     <Link
-                        href={`/editor/projects/\${project.id}/entries/new`}
+                        href={`/editor/projects/${project.id}/entries/new`}
                         className="inline-block text-cyan-400 transition-all duration-200 hover:text-cyan-300 hover:underline hover:translate-x-1"
                     >
                         Create your first entry →
@@ -241,7 +241,7 @@ export default function ProjectDetailPage({
                             <div className="mb-4 flex items-center justify-end gap-1">
                                 <button
                                     onClick={() => toggleEntryVisibility(entry.id, entry.isPublic)}
-                                    className={`p-2 rounded-lg transition-all duration-200 active:scale-95 \${entry.isPublic
+                                    className={`p-2 rounded-lg transition-all duration-200 active:scale-95 ${entry.isPublic
                                         ? "text-emerald-400 hover:bg-emerald-500/10 hover:shadow-[0_0_10px_rgba(52,211,153,0.15)]"
                                         : "text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
                                         }`}
@@ -250,16 +250,16 @@ export default function ProjectDetailPage({
                                     {entry.isPublic ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                                 </button>
                                 <Link
-                                    href={`/editor/projects/\${project.id}/entries/\${entry.id}/edit`}
+                                    href={`/editor/projects/${project.id}/entries/${entry.id}/edit`}
                                     className="p-2 rounded-lg text-zinc-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all duration-200 active:scale-95"
-                                    aria-label={`Edit entry: \${entry.title}`}
+                                    aria-label={`Edit entry: ${entry.title}`}
                                 >
                                     <Pencil className="w-4 h-4" />
                                 </Link>
                                 <button
                                     onClick={() => setEntryToDelete(entry.id)}
                                     className="p-2 rounded-lg text-zinc-600 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 active:scale-95"
-                                    aria-label={`Delete entry: \${entry.title}`}
+                                    aria-label={`Delete entry: ${entry.title}`}
                                 >
                                     <Trash2 className="w-4 h-4" />
                                 </button>

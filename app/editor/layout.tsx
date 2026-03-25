@@ -44,7 +44,7 @@ function EditorLayoutContent({
             const project = projects.find((p) => p.id === segments[2]);
             items.push({
                 label: project?.name ?? "Project",
-                href: segments[2] ? `/editor/projects/\${segments[2]}` : undefined,
+                href: segments[2] ? `/editor/projects/${segments[2]}` : undefined,
             });
 
             if (segments[3] === "entries") {
@@ -155,9 +155,9 @@ function EditorLayoutContent({
                         </div>
                         <div className="space-y-1">
                             {projects.map((project) => {
-                                const projectPath = `/editor/projects/\${project.id}`;
+                                const projectPath = `/editor/projects/${project.id}`;
                                 const isProjectActive =
-                                    pathname === projectPath || pathname.startsWith(`\${projectPath}/`);
+                                    pathname === projectPath || pathname.startsWith(`${projectPath}/`);
 
                                 return (
                                     <Link
