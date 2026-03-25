@@ -44,7 +44,7 @@ function EditorLayoutContent({
             const project = projects.find((p) => p.id === segments[2]);
             items.push({
                 label: project?.name ?? "Project",
-                href: segments[2] ? `/editor/projects/${segments[2]}` : undefined,
+                href: segments[2] ? `/editor/projects/\${segments[2]}` : undefined,
             });
 
             if (segments[3] === "entries") {
@@ -61,9 +61,9 @@ function EditorLayoutContent({
 
     const getNavItemClasses = (isActive: boolean) =>
         cn(
-            "group flex items-center gap-2 rounded border px-3 py-2 text-sm transition-colors",
+            "group flex items-center gap-2 rounded border px-3 py-2 text-sm transition-all duration-200 active:scale-[0.98]",
             isActive
-                ? "border-cyan-400/50 bg-cyan-500/10 text-zinc-50"
+                ? "border-cyan-400/50 bg-cyan-500/10 text-zinc-50 shadow-[0_0_10px_rgba(34,211,238,0.1)]"
                 : "border-transparent text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100"
         );
 
@@ -105,7 +105,7 @@ function EditorLayoutContent({
                 <div className="mb-8">
                     <Link
                         href="/portfolio"
-                        className="text-xl font-bold text-zinc-100 transition-colors hover:text-cyan-400"
+                        className="text-xl font-bold text-zinc-100 transition-colors duration-200 hover:text-cyan-400 active:scale-95 inline-block origin-left"
                     >
                         <DecryptedText
                             text="DevJournal"
@@ -129,7 +129,7 @@ function EditorLayoutContent({
                             <div className="flex items-center gap-1">
                                 <button
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-cyan-400"
+                                    className="rounded p-1.5 text-zinc-500 transition-all duration-200 hover:bg-zinc-800 hover:text-cyan-400 active:scale-90"
                                     title="Import Project"
                                     aria-label="Import project from file"
                                 >
@@ -137,7 +137,7 @@ function EditorLayoutContent({
                                 </button>
                                 <Link
                                     href="/editor/projects/new"
-                                    className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-cyan-400"
+                                    className="rounded p-1.5 text-zinc-500 transition-all duration-200 hover:bg-zinc-800 hover:text-cyan-400 active:scale-90"
                                     title="New Project"
                                     aria-label="Create new project"
                                 >
@@ -155,9 +155,9 @@ function EditorLayoutContent({
                         </div>
                         <div className="space-y-1">
                             {projects.map((project) => {
-                                const projectPath = `/editor/projects/${project.id}`;
+                                const projectPath = `/editor/projects/\${project.id}`;
                                 const isProjectActive =
-                                    pathname === projectPath || pathname.startsWith(`${projectPath}/`);
+                                    pathname === projectPath || pathname.startsWith(`\${projectPath}/`);
 
                                 return (
                                     <Link
@@ -167,15 +167,15 @@ function EditorLayoutContent({
                                     >
                                         <Folder
                                             className={cn(
-                                                "h-4 w-4 transition-colors",
+                                                "h-4 w-4 transition-transform duration-300",
                                                 isProjectActive
-                                                    ? "text-cyan-300"
-                                                    : "text-zinc-500 group-hover:text-zinc-200"
+                                                    ? "text-cyan-300 scale-110"
+                                                    : "text-zinc-500 group-hover:text-zinc-200 group-hover:scale-105"
                                             )}
                                         />
                                         <span
                                             className={cn(
-                                                "truncate transition-colors",
+                                                "truncate transition-colors duration-200",
                                                 isProjectActive && "font-medium text-zinc-50"
                                             )}
                                         >
@@ -197,15 +197,15 @@ function EditorLayoutContent({
                         >
                             <Settings
                                 className={cn(
-                                    "h-4 w-4 transition-colors",
+                                    "h-4 w-4 transition-transform duration-300",
                                     isSettingsActive
-                                        ? "text-cyan-300"
-                                        : "text-zinc-500 group-hover:text-zinc-200"
+                                        ? "text-cyan-300 rotate-90"
+                                        : "text-zinc-500 group-hover:text-zinc-200 group-hover:rotate-45"
                                 )}
                             />
                             <span
                                 className={cn(
-                                    "transition-colors",
+                                    "transition-colors duration-200",
                                     isSettingsActive && "font-medium text-zinc-50"
                                 )}
                             >
@@ -224,7 +224,6 @@ function EditorLayoutContent({
         </div>
     );
 }
-
 
 export default function EditorLayout({
     children,
