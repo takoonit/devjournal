@@ -54,10 +54,7 @@ export function BioSidebar() {
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-zinc-800">
-                    <Link
-                        href="/editor"
-                        className="block w-full px-4 py-2 text-center text-sm font-medium rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-500/20 transition-colors"
-                    >
+                    <Link href="/editor" className="btn-primary w-full">
                         Editor →
                     </Link>
                 </div>

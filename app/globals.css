@@ -314,3 +314,9 @@ html[data-motion-level="expressive"] {
   animation-iteration-count: 2;
   animation-duration: calc(var(--motion-expressive) * 0.8);
 }
+
+/* Focus mode keeps surfaces calm: suppress decorative confirmation pulse */
+html[data-focus-mode="true"] .radiant-pulse[data-active="true"]::after {
+  animation: none;
+  opacity: 0;
+}
