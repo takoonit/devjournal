@@ -152,7 +152,7 @@ export default function ProjectDetailPage({
             {/* Project masthead */}
             <header className="rule-oxford mb-10">
                 <div className="flex flex-wrap items-start justify-between gap-4">
-                    <h1 className="print-display font-serif text-title text-text-primary sm:text-display">{project.name}</h1>
+                    <h1 className="print-display font-serif text-title text-text-primary sm:text-display print:!text-[2rem] print:!leading-[1.1]">{project.name}</h1>
                     <div className="flex items-center gap-1">
                         <button
                             onClick={() => setIsEditModalOpen(true)}
