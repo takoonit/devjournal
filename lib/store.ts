@@ -13,7 +13,7 @@ export interface UiPreferences {
 }
 
 export const defaultUiPreferences: UiPreferences = {
-    themeMode: "noir",
+    themeMode: "press",
     focusMode: false,
     density: "cozy",
     rewardIntensity: "subtle",
@@ -393,15 +393,20 @@ export const useDevJournalStore = create<DevJournalStore>()(
         }),
         {
             name: "devjournal-storage",
-            version: 3,
+            version: 4,
             migrate: (persistedState) => {
                 const state = persistedState as Partial<DevJournalStore>;
+                const persistedTheme = state.uiPreferences?.themeMode as string | undefined;
+                // v4 replaced the noir/calm-focus themes with press/ink
+                const themeMode: UiPreferences["themeMode"] =
+                    persistedTheme === "press" || persistedTheme === "ink" ? persistedTheme : "press";
 
                 return {
                     ...state,
                     uiPreferences: {
                         ...defaultUiPreferences,
                         ...state.uiPreferences,
+                        themeMode,
                     },
                     inboxCaptures: state.inboxCaptures ?? [],
                 };

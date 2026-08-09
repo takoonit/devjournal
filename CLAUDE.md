@@ -10,8 +10,8 @@ DevJournal is a "Build in Public" platform that transforms daily developer logs 
 
 - **Framework:** Next.js 16 with App Router and Turbopack
 - **UI:** React 19, TypeScript
-- **Styling:** Tailwind CSS (Noir theme — zinc-950/900 backgrounds with cyan/emerald accents)
-- **Animations:** Framer Motion
+- **Styling:** Tailwind CSS ("Press Proof" design system — warm paper/ink editorial theme with a dark "Midnight Ink" twin; all colors flow through CSS-variable tokens in `app/globals.css`)
+- **Animations:** Framer Motion (block-level settle only — see Design Rules)
 - **State:** Zustand with localStorage persistence (`lib/store.ts`)
 - **Icons:** Lucide React (semantic iconography)
 - **Package Manager:** pnpm
@@ -38,9 +38,10 @@ app/                  # Next.js App Router pages
   editor/             # Private editor interface
   portfolio/          # Public portfolio pages
 components/
+  editor/             # Editor-only components (modals, project actions)
   portfolio/          # Portfolio display components
-  reactbits/          # ReactBits-inspired animated components
-  ui/                 # Reusable UI components
+  settings/           # Settings-only components (export/import)
+  ui/                 # Reusable UI components (Reveal, stamps, TimelineEntry, toast...)
 lib/
   store.ts            # Zustand state management
   types.ts            # TypeScript type definitions
@@ -77,13 +78,35 @@ interface Entry {
 - Import types: `global` (full backup), `selective` (multiple projects), `project` (single)
 - Imports are **additive** and non-destructive — duplicate names get a counter suffix, new IDs are generated to prevent collisions
 
-## Design Rules
+## Design Rules — "Press Proof"
 
-- **Noir Aesthetic:** Dark background (zinc-950/900), subtle noise texture, minimal color
-- **Accents:** Cyan/teal only
-- **Effects:** Spotlight hover effects on cards
-- **Typography:** Monospace for dates and metadata
-- **Layout:** Resume-style timeline
+The journal is a typeset publication, not a dashboard. Every device is borrowed
+from print craft: rules, margins, stamps, figures.
+
+- **Two themes, one token set:** "Press Proof" (light, default) and "Midnight Ink"
+  (dark) via `data-theme-mode="press|ink"` on `<html>`. Never hardcode palette
+  classes (`zinc-*`, `cyan-*`, hex) — use the semantic tokens
+  (`surface-*`, `text-*`, `rule`, `accent`, `positive`, `warning`, `destructive`).
+- **Two typefaces only:** Newsreader (serif) for everything *written* — headings,
+  prose, form copy; IBM Plex Mono for everything *measured* — dates, counts,
+  labels, buttons, stamps. No sans-serif anywhere. Nothing serif renders below
+  14px; smaller text must be mono.
+- **One accent:** red ink annotates, it never decorates — links (`.link-ink`),
+  active ticks, the caret, selection, and at most ONE filled accent button per view.
+- **Structure from rules, not boxes:** hairlines are ink at reduced pressure
+  (`border-rule/15` etc.), lists are hairline-separated rows, sections open with
+  a `.keyline`. One vertical `.margin-rule` per view, max two `.rule-oxford`.
+  The `.sheet` (letterpress elevation) is reserved for modals, toasts, and the composer.
+- **Entry types are `.stamp`s** (two-letter code + word via `TypeStamp`), not
+  colored badges: fix = destructive ink, feature = positive ink, the rest stay neutral.
+- **Motion is "settle":** whole blocks fade + drift up 8px (`Reveal`), ease
+  `cubic-bezier(0.2, 0, 0, 1)`, stagger 45ms capped at 6. Text never animates
+  letter-by-letter; nothing blurs, glows, shimmers, or spins. `CountUp` appears
+  at most once per view. Honor `data-motion-level` (reduced = opacity-only).
+- **Composer parity law:** the entry textarea uses the exact published prose
+  metrics (`text-prose`, 66ch) — writing is previewing.
+- **Layout:** ledger rows with dotted `.leader`s, margin-rail timeline
+  (`TimelineEntry`), sharp 3px radii (6px inputs), tabular numerals for all figures.
 
 ## UX Guidelines — Progressive Disclosure
 
@@ -95,30 +118,31 @@ Follow the **Context-Aware Progressive Disclosure** pattern (see `blueprint/desi
 - **Personalization:** Segment users at entry (beginner vs. power user). Use AI to filter irrelevant content. Design for monotasking to minimize context-switching overhead.
 - **Friction Audit:** Validate with task completion rates, error rates, and user hesitation/backtracking patterns during testing.
 
-## ReactBits Design System — Signature Moments
+## Signature Components — Press Proof System
 
-ReactBits components live in `components/reactbits/` and are used **systematically** as page-level "signature moments" — not random effects. Every use maps to one of these roles:
+The old ReactBits effect components (BlurText, ShinyText, DecryptedText,
+GradientText, RotatingText, SpotlightCard, ScrollReveal) are **retired** — do not
+reintroduce them or equivalent effects. The system's signature moments are
+structural, and live in `components/ui/`:
 
-| Moment | Component | When to Use | Config |
-|--------|-----------|-------------|--------|
-| **Page Load** | `BlurText` | Every page title / main heading | `delay={80} animateBy="letters"` |
-| **Scroll Reveal** | `ScrollReveal` | Content blocks, cards, timeline entries | `delay={index * 0.08}` stagger per item |
-| **Brand Touch** | `DecryptedText` | "DevJournal" branding in sidebar | `characters="01" animateOn="hover"` |
-| **CTA Shimmer** | `ShinyText` | Primary action buttons (cyan accent) | `speed={3}` |
-| **Live Stats** | `CountUp` | Numeric counts (projects, entries) | `duration={1.5}` |
-| **Status/Role** | `GradientText` | User role in portfolio bio sidebar | Cyan→emerald gradient |
-| **Cards** | `SpotlightCard` | All interactive cards | Mouse-tracking spotlight |
-| **Empty States** | `RotatingText` | Cycling tips/prompts when no content | `rotationInterval={3000}` |
+| Moment | Component / Utility | When to Use |
+|--------|--------------------|-------------|
+| **Entrance** | `Reveal` | List/timeline items settling in; pass `index` for stagger |
+| **Entry types & statuses** | `TypeStamp` / `StatusStamp` | Everywhere an entry type or project status appears |
+| **Timeline** | `TimelineEntry` | Entries on the margin-rail grid (portfolio + editor) |
+| **Section openers** | `.keyline` | Every labeled section |
+| **Mastheads** | `.rule-oxford` | Page/project headers (max 2 per view) |
+| **Elevation** | `.sheet` | Modals, toasts, the composer — nothing else |
+| **Text links** | `.link-ink` | Inline and metadata links |
+| **Ledger rows** | `ProjectRow` + `.leader` | Project listings |
+| **Live count** | `CountUp` | At most one per view (portfolio masthead) |
 
 ### Rules
 
-1. **One moment per element** — never stack two ReactBits animations on the same element
-2. **Consistent config** — use the table values above; don't customize per-page
-3. **All page headings** must use `BlurText` with semantic tags (`as="h1"|"h2"|...`) or be wrapped in real heading elements
-4. **All primary CTAs** (cyan accent buttons) must use `ShinyText` inside
-5. **All list/grid items** that appear on scroll must wrap in `ScrollReveal` with staggered delays
-6. **CountUp** accompanies any visible count that appears in a subtitle or stat line
-7. **Import from `framer-motion`** (not `motion/react`) to match project convention
+1. **Headings are plain semantic tags** (`h1`–`h3`) set in Newsreader via `text-display/title/subtitle` — no animation wrappers
+2. **Primary CTAs** are solid accent-filled buttons with mono uppercase labels — one per view, no shimmer
+3. **List items** that enter on scroll wrap in `Reveal` with `index` — never re-implement entrances inline
+4. **Import from `framer-motion`** (not `motion/react`) to match project convention
 
 ## BLAST Framework
 
@@ -127,5 +151,5 @@ Follow for every new feature or refactor:
 1. **Blueprint** — Define goals in `blueprint/` docs before coding
 2. **Link** — Connect external services (Supabase, Vercel, etc.)
 3. **Architect** — Build core logic first, reach deterministic state before styling
-4. **Style** — Refine UI/UX, maintain Noir aesthetic
+4. **Style** — Refine UI/UX, maintain the Press Proof aesthetic (see Design Rules)
 5. **Trigger** — Deploy and automate

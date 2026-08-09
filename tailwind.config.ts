@@ -17,6 +17,8 @@ const config: Config = {
                     raised: "rgb(var(--color-surface-raised) / <alpha-value>)",
                     border: "rgb(var(--color-surface-border) / <alpha-value>)",
                 },
+                rule: "rgb(var(--color-rule) / <alpha-value>)",
+                scrim: "rgb(var(--color-scrim) / <alpha-value>)",
                 text: {
                     primary: "rgb(var(--color-text-primary) / <alpha-value>)",
                     secondary: "rgb(var(--color-text-secondary) / <alpha-value>)",
@@ -26,6 +28,11 @@ const config: Config = {
                     DEFAULT: "rgb(var(--color-accent-base) / <alpha-value>)",
                     soft: "rgb(var(--color-accent-soft) / <alpha-value>)",
                     contrast: "rgb(var(--color-accent-contrast) / <alpha-value>)",
+                },
+                positive: {
+                    DEFAULT: "rgb(var(--color-positive-base) / <alpha-value>)",
+                    soft: "rgb(var(--color-positive-soft) / <alpha-value>)",
+                    contrast: "rgb(var(--color-positive-contrast) / <alpha-value>)",
                 },
                 warning: {
                     DEFAULT: "rgb(var(--color-warning-base) / <alpha-value>)",
@@ -39,22 +46,28 @@ const config: Config = {
                 },
             },
             fontFamily: {
-                sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-                mono: ["var(--font-jetbrains-mono)", "monospace"],
+                sans: ["var(--font-serif)", "Georgia", "serif"],
+                serif: ["var(--font-serif)", "Georgia", "serif"],
+                mono: ["var(--font-mono)", "ui-monospace", "monospace"],
             },
-            animation: {
-                "spotlight": "spotlight 2s ease infinite",
-                "blur-in": "blur-in 0.5s ease-out forwards",
+            fontSize: {
+                // The Press Proof scale — serif for the written, mono for the measured
+                display: ["2.375rem", { lineHeight: "2.75rem", letterSpacing: "-0.01em", fontWeight: "400" }],
+                title: ["1.625rem", { lineHeight: "2rem", fontWeight: "500" }],
+                subtitle: ["1.25rem", { lineHeight: "1.75rem", fontWeight: "500" }],
+                prose: ["1.09375rem", { lineHeight: "1.8125rem", fontWeight: "400" }],
+                ui: ["0.9375rem", { lineHeight: "1.375rem", fontWeight: "400" }],
+                meta: ["0.78125rem", { lineHeight: "1.125rem", fontWeight: "400" }],
+                label: ["0.6875rem", { lineHeight: "1rem", letterSpacing: "0.08em", fontWeight: "500" }],
             },
-            keyframes: {
-                spotlight: {
-                    "0%, 100%": { opacity: "0.5" },
-                    "50%": { opacity: "1" },
-                },
-                "blur-in": {
-                    "0%": { filter: "blur(10px)", opacity: "0" },
-                    "100%": { filter: "blur(0)", opacity: "1" },
-                },
+            maxWidth: {
+                measure: "42rem",
+                page: "70rem",
+            },
+            borderRadius: {
+                // Print radii: 3px for sheets and buttons, 6px for inputs
+                DEFAULT: "3px",
+                md: "6px",
             },
             transitionDuration: {
                 subtle: "var(--motion-subtle)",
@@ -67,16 +80,11 @@ const config: Config = {
                 expressive: "var(--easing-expressive)",
             },
             spacing: {
-                "cozy-xs": "var(--space-cozy-stack-xs)",
-                "cozy-sm": "var(--space-cozy-stack-sm)",
-                "cozy-md": "var(--space-cozy-stack-md)",
-                "cozy-lg": "var(--space-cozy-stack-lg)",
-                "cozy-section": "var(--space-cozy-section)",
-                "compact-xs": "var(--space-compact-stack-xs)",
-                "compact-sm": "var(--space-compact-stack-sm)",
-                "compact-md": "var(--space-compact-stack-md)",
-                "compact-lg": "var(--space-compact-stack-lg)",
-                "compact-section": "var(--space-compact-section)",
+                "stack-xs": "var(--space-stack-xs)",
+                "stack-sm": "var(--space-stack-sm)",
+                "stack-md": "var(--space-stack-md)",
+                "stack-lg": "var(--space-stack-lg)",
+                section: "var(--space-section)",
             },
         },
     },

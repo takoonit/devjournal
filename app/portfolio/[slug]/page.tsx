@@ -1,10 +1,8 @@
 import { BioSidebarStatic } from "@/components/portfolio/bio-sidebar-static";
 import { EntryTimeline } from "@/components/portfolio/entry-timeline";
-import { notFound } from "next/navigation";
-import { ExternalLink } from "lucide-react";
-import Link from "next/link";
+import { StatusStamp } from "@/components/ui/stamp";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
-import BlurText from "@/components/reactbits/blur-text";
+import { notFound } from "next/navigation";
 import { getPublicProjectBySlug } from "@/lib/supabase/server";
 
 export default async function ProjectDetailPage({
@@ -20,54 +18,61 @@ export default async function ProjectDetailPage({
     }
 
     return (
-        <div className="min-h-screen p-6 lg:p-12">
-            <div className="max-w-7xl mx-auto">
-                <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+        <div className="min-h-screen px-6 py-12 lg:px-12 lg:py-16">
+            <div className="mx-auto max-w-page">
+                <Breadcrumbs items={[{ label: "Portfolio", href: "/portfolio" }, { label: project.name }]} />
+                <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
                     <BioSidebarStatic user={user} />
 
-                    <div className="flex-1">
-                        <Breadcrumbs items={[{ label: "Portfolio", href: "/portfolio" }, { label: project.name }]} />
-                        <div className="mb-12">
-                            <div className="flex items-start justify-between mb-4">
-                                <div>
-                                    <h1 className="text-4xl font-bold text-zinc-100 mb-2">
-                                        <BlurText text={project.name} delay={80} animateBy="letters" />
-                                    </h1>
-                                    <p className="text-zinc-400 text-lg">{project.description}</p>
-                                </div>
+                    <main className="min-w-0 flex-1">
+                        <header className="rule-oxford mb-14">
+                            <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
+                                <h1 className="font-serif text-display text-text-primary">{project.name}</h1>
+                                <StatusStamp status={project.status} />
+                            </div>
+
+                            {project.description ? (
+                                <p className="mt-4 max-w-measure text-prose text-text-secondary">
+                                    {project.description}
+                                </p>
+                            ) : null}
+
+                            <div className="mt-5 flex flex-wrap items-baseline gap-x-5 gap-y-2 font-mono text-meta text-text-muted">
+                                {project.techStack.length > 0 && (
+                                    <span>{project.techStack.join(" · ")}</span>
+                                )}
                                 {project.repositoryLink && (
                                     <a
                                         href={project.repositoryLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-800/50 border border-zinc-700/50 text-zinc-300 hover:text-[#ff914d] hover:border-[#ff914d]/50 transition-all text-sm"
+                                        className="link-ink text-text-secondary"
                                     >
-                                        <span>Repository</span>
-                                        <ExternalLink className="w-4 h-4" />
+                                        Repository ↗
                                     </a>
                                 )}
                             </div>
-
-                            <div className="flex flex-wrap gap-2">
-                                {project.techStack.map((tech) => (
-                                    <span
-                                        key={tech}
-                                        className="px-3 py-1 text-sm rounded bg-zinc-800/50 text-zinc-300 border border-zinc-700/50"
-                                    >
-                                        {tech}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
+                        </header>
 
                         {entries.length === 0 ? (
-                            <div className="text-center py-20">
-                                <p className="text-zinc-500">No public entries yet.</p>
+                            <div className="border-y border-rule/15 py-16">
+                                <p className="text-subtitle italic text-text-secondary">
+                                    No entries have been published yet.
+                                </p>
+                                <p className="mt-3 text-ui text-text-muted">
+                                    The record begins with the first public entry.
+                                </p>
                             </div>
                         ) : (
                             <EntryTimeline entries={entries} />
                         )}
-                    </div>
+
+                        <footer className="mt-24 border-t border-rule/15 pt-5 print-hidden">
+                            <p className="font-mono text-meta text-text-muted">
+                                Set in Newsreader &amp; IBM Plex Mono · Printed from the record
+                            </p>
+                        </footer>
+                    </main>
                 </div>
             </div>
         </div>
