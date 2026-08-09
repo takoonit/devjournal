@@ -761,7 +761,7 @@ html[data-motion-level="expressive"] {
   }
 
   .text-display,
-  .print-display {
+  h1.print-display {
     font-size: 2rem !important;
     line-height: 1.1 !important;
   }
