@@ -1,65 +1,70 @@
 import { User } from "@/lib/types";
-import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import Link from "next/link";
+import { ExternalLink, Mail } from "lucide-react";
 
 interface BioSidebarStaticProps {
     user: User;
 }
 
-const socialIcons = {
-    github: Github,
-    twitter: Twitter,
-    linkedin: Linkedin,
-    email: Mail,
+const SOCIAL_LABELS: Record<string, string> = {
+    github: "GitHub",
+    twitter: "Twitter",
+    linkedin: "LinkedIn",
+    email: "Email",
 };
 
+/**
+ * The masthead: author, role, and colophon details set like the
+ * front matter of a printed issue.
+ */
 export function BioSidebarStatic({ user }: BioSidebarStaticProps) {
+    const links = Object.entries(user.socialLinks).filter(([platform, link]) => Boolean(link) && SOCIAL_LABELS[platform]);
+
     return (
-        <aside className="w-full lg:w-80 lg:sticky lg:top-8 lg:self-start">
-            <div className="p-8 rounded-xl border border-zinc-800 bg-zinc-900/30 backdrop-blur-sm">
-                <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-zinc-100 mb-1">{user.name}</h1>
-                    <p className="font-mono text-sm text-[#ff914d]">{user.role}</p>
-                </div>
+        <aside className="portfolio-sidebar">
+            <div className="rule-oxford">
+                <p className="font-mono text-label uppercase text-text-muted">Build in Public</p>
+                <h1 className="mt-4 font-serif text-title text-text-primary">{user.name}</h1>
+                <p className="mt-2 font-mono text-label uppercase text-text-secondary">{user.role}</p>
+            </div>
 
-                <p className="text-zinc-400 text-sm mb-6 leading-relaxed">{user.bio}</p>
+            <p className="mt-6 max-w-prose text-ui leading-relaxed text-text-secondary">{user.bio}</p>
 
-                <div className="flex gap-3">
-                    {Object.entries(user.socialLinks).map(([platform, link]) => {
-                        if (!link) {
-                            return null;
-                        }
-
-                        const Icon = socialIcons[platform as keyof typeof socialIcons];
-                        if (!Icon) {
-                            return null;
-                        }
-
-                        const href = platform === "email" ? `mailto:${link}` : link;
+            {links.length > 0 && (
+                <ul className="mt-8 space-y-2">
+                    {links.map(([platform, link]) => {
+                        const href = platform === "email" ? `mailto:${link}` : (link as string);
 
                         return (
-                            <a
-                                key={platform}
-                                href={href}
-                                target={platform !== "email" ? "_blank" : undefined}
-                                rel={platform !== "email" ? "noopener noreferrer" : undefined}
-                                className="flex items-center justify-center w-10 h-10 rounded-lg bg-zinc-800/50 border border-zinc-700/50 text-zinc-400 hover:text-[#ff914d] hover:border-[#ff914d]/50 transition-all"
-                                aria-label={platform}
-                            >
-                                <Icon className="w-5 h-5" />
-                            </a>
+                            <li key={platform} className="font-mono text-meta">
+                                <a
+                                    href={href}
+                                    target={platform !== "email" ? "_blank" : undefined}
+                                    rel={platform !== "email" ? "noopener noreferrer" : undefined}
+                                    className="control-target link-ink justify-start gap-1.5"
+                                >
+                                    {SOCIAL_LABELS[platform]}
+                                    {platform === "email" ? (
+                                        <Mail className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                                    ) : (
+                                        <ExternalLink className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                                    )}
+                                </a>
+                            </li>
                         );
                     })}
-                </div>
+                </ul>
+            )}
 
-                <div className="mt-8 pt-6 border-t border-zinc-800">
-                    <Link
-                        href="/editor"
-                        className="block w-full px-4 py-2 text-center text-sm font-medium rounded-lg bg-[#ff914d]/10 text-[#ff914d] border border-[#ff914d]/30 hover:bg-[#ff914d]/20 transition-colors"
-                    >
-                        Editor →
-                    </Link>
-                </div>
+            <div className="mt-10 flex flex-col items-start gap-3 border-t border-rule/15 pt-5 print-hidden">
+                <Link
+                    href="/editor"
+                    className="control-target justify-start font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:text-accent"
+                >
+                    Open the editor →
+                </Link>
+                <ThemeToggle />
             </div>
         </aside>
     );

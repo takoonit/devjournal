@@ -2,7 +2,8 @@
 
 import { useState, useRef } from "react";
 import { useDevJournalStore } from "@/lib/store";
-import { FolderOutput, FolderInput, CheckCircle2, XCircle, CheckSquare, Square } from "lucide-react";
+import { CheckSquare, Square } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function ExportImportSection() {
     const projects = useDevJournalStore((state) => state.projects);
@@ -28,9 +29,9 @@ export function ExportImportSection() {
     const handleExportAll = () => {
         try {
             exportJournal();
-            setStatus({ type: "success", message: "Full journal backup exported!" });
+            setStatus({ type: "success", message: "Full journal backup exported." });
             setTimeout(() => setStatus({ type: "idle", message: "" }), 3000);
-        } catch (error) {
+        } catch {
             setStatus({ type: "error", message: "Export failed." });
         }
     };
@@ -39,10 +40,10 @@ export function ExportImportSection() {
         if (selectedProjectIds.length === 0) return;
         try {
             exportSelectedProjects(selectedProjectIds);
-            setStatus({ type: "success", message: `Exported ${selectedProjectIds.length} projects.` });
+            setStatus({ type: "success", message: `Exported ${selectedProjectIds.length} ${selectedProjectIds.length === 1 ? "project" : "projects"}.` });
             setTimeout(() => setStatus({ type: "idle", message: "" }), 3000);
             setSelectedProjectIds([]);
-        } catch (error) {
+        } catch {
             setStatus({ type: "error", message: "Export failed." });
         }
     };
@@ -51,7 +52,7 @@ export function ExportImportSection() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        setStatus({ type: "loading", message: "Processing DevJournal file..." });
+        setStatus({ type: "loading", message: "Reading .devjournal file..." });
 
         const result = await importDevJournal(file);
 
@@ -65,87 +66,75 @@ export function ExportImportSection() {
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
+    const quietButton =
+        "control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary disabled:cursor-not-allowed disabled:border-rule/10 disabled:text-text-muted disabled:hover:border-rule/10";
+
     return (
-        <div className="mt-12 pt-8 border-t border-zinc-800">
-            <h3 className="text-xl font-bold text-zinc-100 mb-2">Data Portability</h3>
-            <p className="text-zinc-400 mb-8">
-                Manage your exports and imports using the unified <code className="text-cyan-400">.devjournal</code> format.
+        <section className="mt-16">
+            <div className="keyline mb-3">
+                <h2>Data Portability</h2>
+            </div>
+            <p className="mb-8 max-w-measure text-ui text-text-secondary">
+                Everything travels in the <code className="font-mono text-meta text-text-primary">.devjournal</code> format.
+                Imports are additive — nothing you have is ever overwritten.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-8">
-                {/* Export Section */}
-                <div className="space-y-6">
-                    <div className="p-6 bg-zinc-900/30 border border-zinc-800 rounded-xl">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="p-2 bg-emerald-500/10 rounded-lg">
-                                <FolderOutput className="w-5 h-5 text-emerald-400" />
-                            </div>
-                            <h4 className="font-semibold text-zinc-200">Export Projects</h4>
-                        </div>
+            <div className="settings-container">
+                <div className="settings-grid">
+                    <div>
+                        <p className="mb-4 font-mono text-label uppercase text-text-muted">Export</p>
 
-                        {projects.length > 0 ? (
-                            <div className="space-y-4">
-                                <div className="max-h-48 overflow-y-auto pr-2 space-y-2 mb-6 scrollbar-thin scrollbar-thumb-zinc-800">
-                                    {projects.map((project) => {
-                                        const isSelected = selectedProjectIds.includes(project.id);
-                                        return (
-                                            <button
-                                                key={project.id}
-                                                onClick={() => toggleProject(project.id)}
-                                                className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${isSelected
-                                                        ? "bg-cyan-500/5 border-cyan-500/30 text-cyan-400"
-                                                        : "bg-zinc-800/20 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-300"
-                                                    }`}
-                                            >
-                                                {isSelected ? <CheckSquare className="w-4 h-4" /> : <Square className="w-4 h-4" />}
-                                                <span className="text-sm font-medium truncate">{project.name}</span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={handleExportSelected}
-                                        disabled={selectedProjectIds.length === 0}
-                                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-cyan-500 text-zinc-950 rounded-lg hover:bg-cyan-400 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                                    >
-                                        Export Selected ({selectedProjectIds.length})
-                                    </button>
-                                    <button
-                                        onClick={handleExportAll}
-                                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg transition-colors border border-zinc-700 font-medium text-sm"
-                                    >
-                                        Backup Everything
-                                    </button>
-                                </div>
+                    {projects.length > 0 ? (
+                        <>
+                            <div className="mb-5 max-h-56 overflow-y-auto border-y border-rule/15">
+                                {projects.map((project) => {
+                                    const isSelected = selectedProjectIds.includes(project.id);
+                                    return (
+                                        <button
+                                            key={project.id}
+                                            onClick={() => toggleProject(project.id)}
+                                            aria-pressed={isSelected}
+                                            className={cn(
+                                                "control-target flex w-full justify-start gap-3 border-b border-rule/10 px-1 py-2.5 text-left transition-colors duration-subtle last:border-b-0",
+                                                isSelected ? "text-text-primary" : "text-text-secondary hover:text-text-primary"
+                                            )}
+                                        >
+                                            {isSelected
+                                                ? <CheckSquare className="h-3.5 w-3.5 shrink-0 text-accent" strokeWidth={1.5} />
+                                                : <Square className="h-3.5 w-3.5 shrink-0 text-text-muted" strokeWidth={1.5} />}
+                                            <span className="truncate font-serif text-ui">{project.name}</span>
+                                        </button>
+                                    );
+                                })}
                             </div>
-                        ) : (
-                            <p className="text-sm text-zinc-500 italic py-4">No projects to export.</p>
-                        )}
+
+                            <div className="flex flex-wrap gap-3">
+                                <button
+                                    onClick={handleExportSelected}
+                                    disabled={selectedProjectIds.length === 0}
+                                    className={quietButton}
+                                >
+                                    Export Selected ({selectedProjectIds.length})
+                                </button>
+                                <button onClick={handleExportAll} className={quietButton}>
+                                    Backup Everything
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <p className="text-ui italic text-text-muted">Nothing to export yet.</p>
+                    )}
                     </div>
-                </div>
 
-                {/* Import Section */}
-                <div className="space-y-6">
-                    <div className="p-6 bg-zinc-900/30 border border-zinc-800 rounded-xl">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="p-2 bg-amber-500/10 rounded-lg">
-                                <FolderInput className="w-5 h-5 text-amber-400" />
-                            </div>
-                            <h4 className="font-semibold text-zinc-200">Import .devjournal</h4>
-                        </div>
-
-                        <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
-                            Import projects or full backups. This action is <span className="text-cyan-400 font-medium">non-destructive</span>—imported items will be merged with your existing data.
+                    <div>
+                        <p className="mb-4 font-mono text-label uppercase text-text-muted">Import</p>
+                        <p className="mb-5 max-w-prose text-ui leading-relaxed text-text-secondary">
+                            Bring in single projects or full backups. Duplicate names get a
+                            counter suffix; fresh IDs prevent collisions.
                         </p>
 
-                        <button
-                            onClick={() => fileInputRef.current?.click()}
-                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-lg transition-colors border border-zinc-700 font-medium text-sm"
-                        >
-                            <FolderInput className="w-4 h-4" />
-                            Select File
+                        <button onClick={() => fileInputRef.current?.click()} className={quietButton}>
+                            Select .devjournal file
                         </button>
                         <input
                             type="file"
@@ -153,30 +142,27 @@ export function ExportImportSection() {
                             onChange={handleImport}
                             accept=".devjournal"
                             className="hidden"
+                            aria-label="Import .devjournal file"
                         />
                     </div>
                 </div>
             </div>
 
-            {/* Status Message */}
             {status.type !== "idle" && (
-                <div
-                    className={`mt-8 p-4 rounded-lg flex items-center gap-3 border animate-in fade-in slide-in-from-top-2 duration-300 ${status.type === "success"
-                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
-                        : status.type === "error"
-                            ? "bg-rose-500/10 border-rose-500/30 text-rose-400"
-                            : "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
-                        }`}
-                >
-                    {status.type === "success" && <CheckCircle2 className="w-5 h-5" />}
-                    {status.type === "error" && <XCircle className="w-5 h-5" />}
-                    {status.type === "loading" && (
-                        <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-                    )}
-                    <span className="text-sm font-medium">{status.message}</span>
+                <div className="mt-8 flex items-baseline gap-3 border-t border-rule/15 pt-4" role="status">
+                    <span
+                        className={cn(
+                            "font-mono text-label uppercase",
+                            status.type === "success" && "text-positive",
+                            status.type === "error" && "text-destructive",
+                            status.type === "loading" && "text-text-muted"
+                        )}
+                    >
+                        {status.type === "loading" ? "Working" : status.type}
+                    </span>
+                    <span className="text-ui text-text-secondary">{status.message}</span>
                 </div>
             )}
-        </div>
+        </section>
     );
 }
-

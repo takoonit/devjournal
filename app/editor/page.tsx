@@ -1,67 +1,82 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { useDevJournalStore } from "@/lib/store";
-import { ProjectCard } from "@/components/portfolio/project-card";
-import { Plus } from "lucide-react";
+import { ProjectRow } from "@/components/portfolio/project-row";
+import { Reveal } from "@/components/ui/reveal";
 import Link from "next/link";
-import RotatingText from "@/components/reactbits/rotating-text";
-import ShinyText from "@/components/reactbits/shiny-text";
-import ScrollReveal from "@/components/reactbits/scroll-reveal";
-import BlurText from "@/components/reactbits/blur-text";
-import CountUp from "@/components/reactbits/count-up";
+
+const EMPTY_STEPS = [
+    "Name the project you are building",
+    "Write down what happened today — a fix, a feature, a dead end",
+    "Publish the entries worth showing, keep the rest private",
+];
 
 export default function EditorPage() {
     const projects = useDevJournalStore((state) => state.projects);
+    const entries = useDevJournalStore((state) => state.entries);
+    const [dateline, setDateline] = useState("");
+
+    const entryCounts = useMemo(() => {
+        const counts = new Map<string, number>();
+        for (const entry of entries) {
+            counts.set(entry.projectId, (counts.get(entry.projectId) ?? 0) + 1);
+        }
+        return counts;
+    }, [entries]);
+
+    useEffect(() => {
+        const now = new Date();
+        setDateline(
+            `${now.toLocaleDateString("en-GB", { weekday: "long" })} · ${now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`.toUpperCase()
+        );
+    }, []);
 
     return (
-        <div className="max-w-6xl">
-            <div className="mb-8">
-                <BlurText
-                    text="Your Projects"
-                    className="mb-2 text-3xl font-bold text-zinc-100"
-                    delay={80}
-                    animateBy="letters"
-                />
-                <p className="text-zinc-400">
-                    Manage your projects and build logs.
-                    {projects.length > 0 && (
-                        <span className="ml-2 font-mono text-cyan-400">
-                            <CountUp to={projects.length} duration={1.5} /> {projects.length === 1 ? "project" : "projects"}
-                        </span>
-                    )}
-                </p>
-            </div>
+        <div className="max-w-page">
+            <header className="editor-masthead masthead-block rule-oxford mb-12">
+                <h1 className="masthead-title text-text-primary">Projects</h1>
+                <div className="masthead-meta font-mono text-text-muted">
+                    <p className="text-label uppercase">{dateline || "\u00a0"}</p>
+                    <p className="text-meta tabular-nums">
+                        {projects.length} {projects.length === 1 ? "project" : "projects"} ·{" "}
+                        {entries.length} {entries.length === 1 ? "entry" : "entries"} on record
+                    </p>
+                </div>
+            </header>
 
             {projects.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-zinc-700/80 bg-zinc-900/30 py-20 text-center">
-                    <div className="mb-2 flex items-center justify-center gap-2 text-zinc-500">
-                        <span>Start by</span>
-                        <RotatingText
-                            texts={["documenting a decision", "logging a bug fix", "capturing an idea", "celebrating a win"]}
-                            mainClassName="h-6 overflow-hidden font-medium text-cyan-400"
-                            staggerFrom="last"
-                            staggerDuration={0.025}
-                            rotationInterval={3000}
-                        />
-                    </div>
-                    <p className="mb-6 text-sm text-zinc-600">Create a project to begin your build journal.</p>
+                <div className="empty-ledger">
+                    <p className="mb-8 max-w-measure text-title italic text-text-secondary">
+                        Every journal starts with an empty page.
+                    </p>
+                    <ol className="editor-empty-steps mb-10 max-w-measure">
+                        {EMPTY_STEPS.map((step, index) => (
+                            <li key={step} className="flex items-baseline gap-4">
+                                <span className="w-6 shrink-0 font-mono text-meta tabular-nums text-accent">
+                                    {String(index + 1).padStart(2, "0")}
+                                </span>
+                                <span className="text-subtitle text-text-secondary">{step}</span>
+                            </li>
+                        ))}
+                    </ol>
                     <Link
                         href="/editor/projects/new"
-                        className="inline-flex items-center gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-6 py-3 transition-colors hover:bg-cyan-500/20"
+                        className="inline-block rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
                     >
-                        <Plus className="h-5 w-5 text-cyan-400" />
-                        <ShinyText text="Create your first project" className="font-medium text-cyan-400" speed={3} />
+                        Start your first project
                     </Link>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div className="project-ledger editor-project-ledger">
                     {projects.map((project, index) => (
-                        <ScrollReveal key={project.id} delay={Math.min(index * 0.08, 0.8)}>
-                            <ProjectCard
+                        <Reveal key={project.id} index={index}>
+                            <ProjectRow
                                 project={project}
                                 href={`/editor/projects/${project.id}`}
+                                entryCount={entryCounts.get(project.id) ?? 0}
                             />
-                        </ScrollReveal>
+                        </Reveal>
                     ))}
                 </div>
             )}

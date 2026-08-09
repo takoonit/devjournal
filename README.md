@@ -7,15 +7,16 @@ A premium web application for developers to document their build process and aut
 - **Private Editor**: Document your development journey with structured entries
 - **BLAST Framework**: Special planning template for feature development
 - **Public Portfolio**: Automatically generated portfolio showcasing your build logs
-- **Noir Aesthetic**: Premium editorial design with spotlight effects
-- **Entry Categories**: Plan, Build, and Reflect with multiple subcategories
+- **Press Proof Aesthetic**: Warm paper-and-ink editorial design, typeset like a printed journal
+- **Entry Categories**: Feature, fix, refactor, design, and journal entries
 - **Export/Import**: Backup and restore your journal data as JSON files
 
 ## Tech Stack
 
 - **Frontend**: Next.js 16 with App Router, React 19, TypeScript
-- **Styling**: Tailwind CSS with custom noir theme
-- **Animations**: Framer Motion, ReactBits-inspired components
+- **Styling**: Tailwind CSS over a CSS-variable token system ("Press Proof" light / "Midnight Ink" dark)
+- **Typography**: Newsreader (everything written) + IBM Plex Mono (everything measured)
+- **Animations**: Framer Motion, restrained block-level entrances
 - **State Management**: Zustand with localStorage persistence
 - **Icons**: Lucide React
 - **Package Manager**: pnpm
@@ -94,7 +95,6 @@ devjournal/
 │   └── globals.css          # Global styles
 ├── components/
 │   ├── portfolio/           # Portfolio components
-│   ├── reactbits/           # ReactBits-inspired components
 │   └── ui/                  # Reusable UI components
 ├── lib/
 │   ├── store.ts             # Zustand state management
@@ -105,13 +105,13 @@ devjournal/
 
 ## Design Philosophy
 
-DevJournal uses a "Noir" aesthetic inspired by Oscar Hernandez's editorial portfolio style:
+DevJournal is set like a typeset publication — the "Press Proof" system:
 
-- Dark background (#060010) with subtle noise texture
-- Minimal color usage (cyan/teal accents)
-- Spotlight hover effects on cards
-- Monospace typography for dates and metadata
-- Resume-style timeline layout
+- Warm paper surfaces with a dark "Midnight Ink" twin (`data-theme-mode="press|ink"`)
+- Two typefaces: Newsreader serif for everything written, IBM Plex Mono for everything measured
+- One accent — proofreader's red ink — used only to annotate (links, ticks, caret, one button per view)
+- Structure from hairline rules and whitespace: ledger rows, margin-rail timeline, keyline sections
+- Ink-stamp entry types (FT/FX/RF/DS/JN) instead of colored badges
 
 
 

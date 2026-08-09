@@ -28,13 +28,6 @@ export function formatDate(date: string | Date, formatStr: string = "MMM d, yyyy
 }
 
 /**
- * Format date for timeline (monospace display)
- */
-export function formatTimelineDate(date: string | Date): string {
-    return formatDate(date, "yyyy.MM.dd");
-}
-
-/**
  * Group entries by year and month
  */
 export function groupEntriesByYearMonth<T extends { createdAt: string }>(

@@ -17,6 +17,8 @@ const config: Config = {
                     raised: "rgb(var(--color-surface-raised) / <alpha-value>)",
                     border: "rgb(var(--color-surface-border) / <alpha-value>)",
                 },
+                rule: "rgb(var(--color-rule) / <alpha-value>)",
+                scrim: "rgb(var(--color-scrim) / <alpha-value>)",
                 text: {
                     primary: "rgb(var(--color-text-primary) / <alpha-value>)",
                     secondary: "rgb(var(--color-text-secondary) / <alpha-value>)",
@@ -26,6 +28,11 @@ const config: Config = {
                     DEFAULT: "rgb(var(--color-accent-base) / <alpha-value>)",
                     soft: "rgb(var(--color-accent-soft) / <alpha-value>)",
                     contrast: "rgb(var(--color-accent-contrast) / <alpha-value>)",
+                },
+                positive: {
+                    DEFAULT: "rgb(var(--color-positive-base) / <alpha-value>)",
+                    soft: "rgb(var(--color-positive-soft) / <alpha-value>)",
+                    contrast: "rgb(var(--color-positive-contrast) / <alpha-value>)",
                 },
                 warning: {
                     DEFAULT: "rgb(var(--color-warning-base) / <alpha-value>)",
@@ -39,22 +46,29 @@ const config: Config = {
                 },
             },
             fontFamily: {
-                sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-                mono: ["var(--font-jetbrains-mono)", "monospace"],
+                sans: ["var(--font-serif)", "Georgia", "serif"],
+                serif: ["var(--font-serif)", "Georgia", "serif"],
+                mono: ["var(--font-mono)", "ui-monospace", "monospace"],
             },
-            animation: {
-                "spotlight": "spotlight 2s ease infinite",
-                "blur-in": "blur-in 0.5s ease-out forwards",
+            fontSize: {
+                // The Press Proof scale — serif for the written, mono for the measured
+                display: ["clamp(2.25rem, calc(1.5rem + 2vw), 3.25rem)", { lineHeight: "1.1", letterSpacing: "-0.01em", fontWeight: "400" }],
+                title: ["clamp(1.375rem, calc(1.15rem + 0.9vw), 1.875rem)", { lineHeight: "1.2", fontWeight: "500" }],
+                subtitle: ["clamp(1.125rem, calc(1rem + 0.4vw), 1.375rem)", { lineHeight: "1.3", fontWeight: "500" }],
+                prose: ["clamp(1rem, calc(0.95rem + 0.25vw), 1.125rem)", { lineHeight: "var(--line-height-prose)", letterSpacing: "var(--tracking-prose)", fontWeight: "var(--font-weight-prose)" }],
+                ui: ["clamp(0.875rem, calc(0.825rem + 0.2vw), 1rem)", { lineHeight: "1.5", fontWeight: "400" }],
+                meta: ["clamp(0.75rem, calc(0.72rem + 0.1vw), 0.8125rem)", { lineHeight: "1.45", fontWeight: "400" }],
+                label: ["clamp(0.6875rem, calc(0.66rem + 0.08vw), 0.75rem)", { lineHeight: "1.45", letterSpacing: "0.08em", fontWeight: "500" }],
+                folio: ["clamp(4rem, calc(2.75rem + 4vw), 6.5rem)", { lineHeight: "1", fontWeight: "300" }],
             },
-            keyframes: {
-                spotlight: {
-                    "0%, 100%": { opacity: "0.5" },
-                    "50%": { opacity: "1" },
-                },
-                "blur-in": {
-                    "0%": { filter: "blur(10px)", opacity: "0" },
-                    "100%": { filter: "blur(0)", opacity: "1" },
-                },
+            maxWidth: {
+                measure: "66ch",
+                page: "70rem",
+            },
+            borderRadius: {
+                // Print radii: 3px for sheets and buttons, 6px for inputs
+                DEFAULT: "3px",
+                md: "6px",
             },
             transitionDuration: {
                 subtle: "var(--motion-subtle)",
@@ -67,16 +81,24 @@ const config: Config = {
                 expressive: "var(--easing-expressive)",
             },
             spacing: {
-                "cozy-xs": "var(--space-cozy-stack-xs)",
-                "cozy-sm": "var(--space-cozy-stack-sm)",
-                "cozy-md": "var(--space-cozy-stack-md)",
-                "cozy-lg": "var(--space-cozy-stack-lg)",
-                "cozy-section": "var(--space-cozy-section)",
-                "compact-xs": "var(--space-compact-stack-xs)",
-                "compact-sm": "var(--space-compact-stack-sm)",
-                "compact-md": "var(--space-compact-stack-md)",
-                "compact-lg": "var(--space-compact-stack-lg)",
-                "compact-section": "var(--space-compact-section)",
+                "stack-xs": "var(--space-stack-xs)",
+                "stack-sm": "var(--space-stack-sm)",
+                "stack-md": "var(--space-stack-md)",
+                "stack-lg": "var(--space-stack-lg)",
+                section: "var(--space-section)",
+                "page-inline": "var(--space-page-inline)",
+                "page-block": "var(--space-page-block)",
+                "timeline-rail": "var(--timeline-rail-width)",
+                "timeline-node": "var(--timeline-node-column)",
+            },
+            width: {
+                "editor-sidebar": "var(--editor-sidebar-width)",
+                "portfolio-sidebar": "var(--portfolio-sidebar-width)",
+            },
+            minHeight: {
+                control: "var(--control-min-size)",
+                composer: "var(--composer-min-block)",
+                "composer-details": "var(--composer-details-min-block)",
             },
         },
     },

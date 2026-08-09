@@ -2,9 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { TimelineEntry } from "@/components/ui/timeline-entry";
+import { Reveal } from "@/components/ui/reveal";
+import { ENTRY_STAMPS } from "@/components/ui/stamp";
 import type { Entry, EntryType } from "@/lib/types";
 import { groupEntriesByYearMonth } from "@/lib/utils";
 import { getEntryType } from "@/lib/entry-types";
+import { cn } from "@/lib/utils";
 
 const FILTERS: Array<{ label: string; value: "all" | EntryType }> = [
     { label: "All", value: "all" },
@@ -29,40 +32,80 @@ export function EntryTimeline({ entries }: { entries: Entry[] }) {
     );
 
     const groupedEntries = useMemo(() => groupEntriesByYearMonth(filteredEntries), [filteredEntries]);
-    const years = useMemo(() => Object.keys(groupedEntries).sort((a, b) => parseInt(b, 10) - parseInt(a, 10)), [groupedEntries]);
+    const years = useMemo(
+        () => Object.keys(groupedEntries).sort((a, b) => parseInt(b, 10) - parseInt(a, 10)),
+        [groupedEntries]
+    );
+
+    let entryIndex = 0;
 
     return (
-        <div className="space-y-8">
-            <div className="flex flex-wrap gap-2">
-                {FILTERS.map((item) => (
-                    <button
-                        key={item.value}
-                        type="button"
-                        onClick={() => setFilter(item.value)}
-                        className={`rounded-full border px-3 py-1 text-xs uppercase tracking-wide transition-colors ${filter === item.value ? "border-[#ff914d]/40 bg-[#ff914d]/15 text-[#ff914d]" : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"}`}
-                    >
-                        {item.label}
-                    </button>
-                ))}
+        <div>
+            <div className="mb-12 flex flex-wrap gap-2 print-hidden" role="group" aria-label="Filter entries by type">
+                {FILTERS.map((item) => {
+                    const active = filter === item.value;
+                    const tone =
+                        item.value === "all" || !active
+                            ? active
+                                ? "text-accent"
+                                : "text-text-muted hover:text-text-secondary"
+                            : ENTRY_STAMPS[item.value].tone;
+
+                    return (
+                        <button
+                            key={item.value}
+                            type="button"
+                            onClick={() => setFilter(item.value)}
+                            aria-pressed={active}
+                            className={cn("control-target stamp stamp-control transition-colors", active && "stamp-pressed", tone)}
+                        >
+                            {item.label}
+                        </button>
+                    );
+                })}
             </div>
 
-            <div className="space-y-12">
-                {years.map((year) => (
-                    <div key={year}>
-                        <h2 className="mb-8 text-2xl font-bold font-mono text-zinc-100">{year}</h2>
-                        {Object.keys(groupedEntries[year]).map((month) => (
-                            <div key={month} className="mb-10">
-                                <h3 className="mb-6 text-lg font-semibold text-zinc-300">{month}</h3>
-                                <div className="space-y-4">
+            {filteredEntries.length === 0 ? (
+                <div className="border-t border-rule/15 py-14">
+                    <p className="text-ui italic text-text-muted">
+                        Nothing filed under this mark yet.
+                    </p>
+                </div>
+            ) : (
+                <div className="timeline-container relative">
+                    {/* The one vertical rule this view is allowed */}
+                    <div
+                        className="timeline-rule margin-rule"
+                        aria-hidden="true"
+                    />
+
+                    {years.map((year) => (
+                        <section key={year} className="relative">
+                            <span
+                                className="pointer-events-none absolute right-0 top-8 select-none font-serif text-folio text-text-primary/[0.07]"
+                                aria-hidden="true"
+                            >
+                                {year}
+                            </span>
+
+                            {Object.keys(groupedEntries[year]).map((month) => (
+                                <div key={`${year}-${month}`}>
+                                    <div className="timeline-keyline keyline">
+                                        <h2 className="font-mono text-subtitle uppercase text-text-secondary">
+                                            {month} {year}
+                                        </h2>
+                                    </div>
                                     {groupedEntries[year][month].map((entry) => (
-                                        <TimelineEntry key={entry.id} entry={entry} />
+                                        <Reveal key={entry.id} index={entryIndex++}>
+                                            <TimelineEntry entry={entry} dropCap />
+                                        </Reveal>
                                     ))}
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-                ))}
-            </div>
+                            ))}
+                        </section>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

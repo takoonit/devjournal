@@ -13,11 +13,11 @@ export function ProjectActions({ projectId }: ProjectActionsProps) {
     return (
         <button
             onClick={() => exportSelectedProjects([projectId])}
-            className="flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-md transition-colors border border-zinc-700 text-sm font-medium"
+            className="control-target gap-2 rounded border border-surface-border bg-transparent px-3 py-1.5 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
             title="Export project journal as .devjournal"
         >
-            <FolderOutput className="w-4 h-4" />
-            Export Project
+            <FolderOutput className="h-3.5 w-3.5" strokeWidth={1.5} />
+            Export
         </button>
     );
 }

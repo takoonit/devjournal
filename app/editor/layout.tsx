@@ -1,10 +1,9 @@
 "use client";
 
-import DecryptedText from "@/components/reactbits/decrypted-text";
 import { useToast } from "@/components/ui/toast";
 import { useDevJournalStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
-import { Folder, FolderInput, Plus, Settings } from "lucide-react";
+import { FolderInput, Plus, Settings } from "lucide-react";
 import { Breadcrumbs, type BreadcrumbItem } from "@/components/ui/breadcrumbs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -59,14 +58,6 @@ function EditorLayoutContent({
         return items;
     }, [pathname, projects]);
 
-    const getNavItemClasses = (isActive: boolean) =>
-        cn(
-            "group flex items-center gap-2 rounded border px-3 py-2 text-sm transition-colors",
-            isActive
-                ? "border-cyan-400/50 bg-cyan-500/10 text-zinc-50"
-                : "border-transparent text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100"
-        );
-
     const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -81,67 +72,69 @@ function EditorLayoutContent({
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
+    const navItemClasses = (isActive: boolean) =>
+        cn(
+            "relative flex min-h-control items-center py-1.5 pl-4 font-serif text-ui transition-colors duration-subtle",
+            isActive
+                ? "text-text-primary before:absolute before:left-0 before:top-1/2 before:h-3.5 before:w-0.5 before:-translate-y-1/2 before:bg-accent"
+                : "text-text-secondary hover:text-text-primary"
+        );
+
     return (
         <div
-            className={cn(
-                "flex min-h-screen",
-                uiPreferences.themeMode === "calm-focus" && "bg-zinc-950",
-                uiPreferences.density === "compact" ? "text-sm" : "text-base"
-            )}
+            className="flex min-h-screen"
             data-theme-mode={uiPreferences.themeMode}
             data-focus-mode={uiPreferences.focusMode}
             data-density={uiPreferences.density}
             data-reward-intensity={uiPreferences.rewardIntensity}
             data-motion-level={uiPreferences.motionLevel}
         >
-            {/* Sidebar */}
+            <a
+                href="#editor-content"
+                className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-accent focus:px-4 focus:py-2 focus:font-mono focus:text-label focus:uppercase focus:text-accent-contrast"
+            >
+                Skip to content
+            </a>
+            {/* The index column */}
             <aside
                 className={cn(
-                    "w-64 border-r border-zinc-800 bg-zinc-950/50",
-                    uiPreferences.density === "compact" ? "p-4" : "p-6",
-                    uiPreferences.focusMode && "bg-zinc-950"
+                    "editor-sidebar hidden shrink-0 border-r border-surface-border bg-surface-base lg:block",
+                    uiPreferences.focusMode &&
+                        "opacity-30 transition-opacity duration-expressive hover:opacity-100 focus-within:opacity-100"
                 )}
             >
-                <div className="mb-8">
+                <div className="mb-10">
                     <Link
                         href="/portfolio"
-                        className="text-xl font-bold text-zinc-100 transition-colors hover:text-cyan-400"
+                        className="control-target justify-start font-serif text-subtitle text-text-primary transition-colors duration-subtle hover:text-accent"
                     >
-                        <DecryptedText
-                            text="DevJournal"
-                            animateOn="hover"
-                            speed={60}
-                            maxIterations={8}
-                            characters="01"
-                            className="text-zinc-100"
-                            encryptedClassName="text-cyan-400/60"
-                        />
+                        DevJournal
                     </Link>
-                    <p className="mt-1 text-xs text-zinc-500">Editor Mode</p>
+                    <p className="mt-1 font-mono text-label uppercase text-text-muted">The Editor</p>
                 </div>
 
-                <nav className="space-y-6" aria-label="Editor navigation">
+                <nav className="space-y-8" aria-label="Editor navigation">
                     <div>
-                        <div className="mb-3 flex items-center justify-between">
-                            <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">
-                                Projects
-                            </h3>
-                            <div className="flex items-center gap-1">
+                        <div className="mb-3 flex items-baseline justify-between gap-2">
+                            <div className="keyline flex-1">
+                                <span>Projects</span>
+                            </div>
+                            <div className="flex items-center gap-0.5">
                                 <button
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-cyan-400"
+                                    className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
                                     title="Import Project"
                                     aria-label="Import project from file"
                                 >
-                                    <FolderInput className="h-4 w-4" />
+                                    <FolderInput className="h-3.5 w-3.5" strokeWidth={1.5} />
                                 </button>
                                 <Link
                                     href="/editor/projects/new"
-                                    className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-cyan-400"
+                                    className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
                                     title="New Project"
                                     aria-label="Create new project"
                                 >
-                                    <Plus className="h-4 w-4" />
+                                    <Plus className="h-3.5 w-3.5" strokeWidth={1.5} />
                                 </Link>
                             </div>
                             <input
@@ -153,7 +146,7 @@ function EditorLayoutContent({
                                 aria-label="Import .devjournal file"
                             />
                         </div>
-                        <div className="space-y-1">
+                        <div>
                             {projects.map((project) => {
                                 const projectPath = `/editor/projects/${project.id}`;
                                 const isProjectActive =
@@ -163,52 +156,27 @@ function EditorLayoutContent({
                                     <Link
                                         key={project.id}
                                         href={projectPath}
-                                        className={getNavItemClasses(isProjectActive)}
+                                        className={navItemClasses(isProjectActive)}
+                                        aria-current={isProjectActive ? "page" : undefined}
                                     >
-                                        <Folder
-                                            className={cn(
-                                                "h-4 w-4 transition-colors",
-                                                isProjectActive
-                                                    ? "text-cyan-300"
-                                                    : "text-zinc-500 group-hover:text-zinc-200"
-                                            )}
-                                        />
-                                        <span
-                                            className={cn(
-                                                "truncate transition-colors",
-                                                isProjectActive && "font-medium text-zinc-50"
-                                            )}
-                                        >
-                                            {project.name}
-                                        </span>
+                                        <span className="block truncate">{project.name}</span>
                                     </Link>
                                 );
                             })}
                             {projects.length === 0 && (
-                                <p className="px-3 py-2 text-xs text-zinc-600">No projects yet</p>
+                                <p className="py-1.5 text-ui italic text-text-muted">No projects yet</p>
                             )}
                         </div>
                     </div>
 
-                    <div className="border-t border-zinc-800 pt-6">
+                    <div className="border-t border-rule/15 pt-6">
                         <Link
                             href="/editor/settings"
-                            className={getNavItemClasses(isSettingsActive)}
+                            className={navItemClasses(isSettingsActive)}
+                            aria-current={isSettingsActive ? "page" : undefined}
                         >
-                            <Settings
-                                className={cn(
-                                    "h-4 w-4 transition-colors",
-                                    isSettingsActive
-                                        ? "text-cyan-300"
-                                        : "text-zinc-500 group-hover:text-zinc-200"
-                                )}
-                            />
-                            <span
-                                className={cn(
-                                    "transition-colors",
-                                    isSettingsActive && "font-medium text-zinc-50"
-                                )}
-                            >
+                            <span className="flex items-center gap-2">
+                                <Settings className="h-3.5 w-3.5" strokeWidth={1.5} />
                                 Settings
                             </span>
                         </Link>
@@ -216,10 +184,41 @@ function EditorLayoutContent({
                 </nav>
             </aside>
 
-            {/* Main Content */}
-            <main className={cn("flex-1", uiPreferences.density === "compact" ? "p-5" : "p-8")}>
-                {!isEntryFormRoute && <Breadcrumbs items={breadcrumbItems} />}
-                {children}
+            {/* The working page */}
+            <main id="editor-content" className="editor-page-frame min-w-0 flex-1">
+                <div className="editor-workspace mx-auto w-full max-w-page">
+                    <div className="mb-8 flex items-center justify-between border-b border-rule/15 pb-4 lg:hidden">
+                        <Link href="/editor" className="control-target justify-start font-serif text-subtitle text-text-primary">
+                            DevJournal
+                        </Link>
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current?.click()}
+                                className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
+                                aria-label="Import project from file"
+                            >
+                                <FolderInput className="h-5 w-5" strokeWidth={1.5} />
+                            </button>
+                            <Link
+                                href="/editor/projects/new"
+                                className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
+                                aria-label="Create new project"
+                            >
+                                <Plus className="h-5 w-5" strokeWidth={1.5} />
+                            </Link>
+                            <Link
+                                href="/editor/settings"
+                                className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
+                                aria-label="Settings"
+                            >
+                                <Settings className="h-5 w-5" strokeWidth={1.5} />
+                            </Link>
+                        </div>
+                    </div>
+                    {!isEntryFormRoute && <Breadcrumbs items={breadcrumbItems} />}
+                    {children}
+                </div>
             </main>
         </div>
     );
@@ -232,7 +231,7 @@ export default function EditorLayout({
     children: React.ReactNode;
 }) {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-zinc-950 text-zinc-100" />}>
+        <Suspense fallback={<div className="min-h-screen bg-surface-canvas" />}>
             <EditorLayoutContent>{children}</EditorLayoutContent>
         </Suspense>
     );

@@ -10,12 +10,12 @@ Indie Hackers and Engineers who want to document their journey with a "determini
 - **Narrative Journaling:** A unified Markdown editor that encourages free-form writing over rigid data entry.
 - **Smart Prompts:** Context-aware templates (e.g., "Rubber Ducking", "Decision Log") based on real-world developer workflows.
 - **Deterministic Portability:** Full JSON backup/restore at project and global levels.
-- **Noir Aesthetic:** A high-end dark theme inspired by Vercel/Linear design systems.
+- **Press Proof Publication:** A warm paper-and-ink editorial system with a Midnight Ink reading twin.
 - **Mobile-Responsive Portfolio:** Automatically generated public pages for all active projects.
 
 ## 🛠️ Tech Stack
 - Next.js 16 (Turbopack)
-- Tailwind CSS (Noir Theme)
+- Tailwind CSS (Press Proof design system)
 - Zustand (Local Persistence)
 - Framer Motion
 

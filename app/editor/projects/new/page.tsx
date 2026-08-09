@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import Link from "next/link";
-import BlurText from "@/components/reactbits/blur-text";
-import ShinyText from "@/components/reactbits/shiny-text";
+import { cn } from "@/lib/utils";
+import { inputClasses } from "@/components/ui/form-styles";
 
 export default function NewProjectPage() {
     const router = useRouter();
@@ -47,153 +47,154 @@ export default function NewProjectPage() {
     };
 
     return (
-        <div className="max-w-3xl">
-            <Link
-                href="/editor"
-                className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-cyan-400 transition-colors mb-6"
-            >
-                <ArrowLeft className="w-4 h-4" />
-                Back to editor
-            </Link>
+        <div className="max-w-measure">
+            <header className="masthead-block rule-oxford mb-10">
+                <h1 className="masthead-title text-text-primary">New Project</h1>
+                <p className="mt-2 text-ui text-text-secondary">
+                    Open a fresh section of the journal.
+                </p>
+            </header>
 
-            <h1 className="text-3xl font-bold text-zinc-100 mb-8">
-                <BlurText
-                    text="New Project"
-                    delay={80}
-                    animateBy="letters"
-                />
-            </h1>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-7">
                 <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">
-                        Project Name *
+                    <label htmlFor="project-name" className="mb-2 block font-mono text-label uppercase text-text-secondary">
+                        Name <span className="text-accent">*</span>
                     </label>
                     <input
+                        id="project-name"
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-400 transition-colors"
-                        placeholder="e.g., My Awesome App"
+                        className={cn(inputClasses, "font-serif text-subtitle")}
+                        placeholder="e.g. My Awesome App"
                         required
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">
+                    <label htmlFor="project-description" className="mb-2 block font-mono text-label uppercase text-text-secondary">
                         Description
                     </label>
                     <textarea
+                        id="project-description"
                         value={formData.description}
                         onChange={(e) =>
                             setFormData({ ...formData, description: e.target.value })
                         }
                         rows={4}
-                        className="w-full px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-400 transition-colors resize-none"
-                        placeholder="Brief description of your project..."
+                        className={cn(inputClasses, "resize-none")}
+                        placeholder="What is this project, in a sentence or two?"
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">
+                    <label htmlFor="project-tech" className="mb-2 block font-mono text-label uppercase text-text-secondary">
                         Tech Stack
                     </label>
-                    <div className="flex gap-2 mb-3">
+                    <div className="mb-3 flex gap-2">
                         <input
+                            id="project-tech"
                             type="text"
                             value={techInput}
                             onChange={(e) => setTechInput(e.target.value)}
-                            onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTech())}
-                            className="flex-1 px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-400 transition-colors"
-                            placeholder="e.g., React, TypeScript, Next.js"
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    addTech();
+                                }
+                            }}
+                            className={cn(inputClasses, "flex-1 font-mono text-meta")}
+                            placeholder="e.g. React, TypeScript, Next.js"
                         />
                         <button
                             type="button"
                             onClick={addTech}
-                            className="px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-300 hover:bg-zinc-700 transition-colors"
+                            className="control-target rounded-md border border-surface-border px-3.5 text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                            aria-label="Add technology"
                         >
-                            <Plus className="w-5 h-5" />
+                            <Plus className="h-4 w-4" strokeWidth={1.5} />
                         </button>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                        {formData.techStack.map((tech, index) => (
-                            <span
-                                key={`${tech}-${index}`}
-                                className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-800/50 border border-zinc-700/50 rounded text-sm text-zinc-300"
-                            >
-                                {tech}
-                                <button
-                                    type="button"
-                                    onClick={() => removeTech(tech)}
-                                    className="text-zinc-500 hover:text-zinc-300 transition-colors"
+                    {formData.techStack.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                            {formData.techStack.map((tech, index) => (
+                                <span
+                                    key={`${tech}-${index}`}
+                                    className="inline-flex items-center gap-2 rounded border border-surface-border px-2.5 py-1 font-mono text-meta text-text-secondary"
                                 >
-                                    <X className="w-3 h-3" />
-                                </button>
-                            </span>
-                        ))}
-                    </div>
+                                    {tech}
+                                    <button
+                                        type="button"
+                                        onClick={() => removeTech(tech)}
+                                        className="control-target -my-2 -mr-2 text-text-muted transition-colors duration-subtle hover:text-destructive"
+                                        aria-label={`Remove ${tech}`}
+                                    >
+                                        <X className="h-3 w-3" strokeWidth={1.5} />
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">
+                    <label htmlFor="project-repo" className="mb-2 block font-mono text-label uppercase text-text-secondary">
                         Repository Link
                     </label>
                     <input
+                        id="project-repo"
                         type="url"
                         value={formData.repositoryLink}
                         onChange={(e) =>
                             setFormData({ ...formData, repositoryLink: e.target.value })
                         }
-                        className="w-full px-4 py-2 bg-zinc-900/50 border border-zinc-700 rounded-lg text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-400 transition-colors"
+                        className={cn(inputClasses, "font-mono text-meta")}
                         placeholder="https://github.com/..."
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">
-                        Status
-                    </label>
-                    <div className="flex gap-4">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="radio"
-                                value="in-progress"
-                                checked={formData.status === "in-progress"}
-                                onChange={(e) =>
-                                    setFormData({
-                                        ...formData,
-                                        status: e.target.value as "in-progress",
-                                    })
-                                }
-                                className="text-cyan-400 focus:ring-cyan-400"
-                            />
-                            <span className="text-sm text-zinc-300">In Progress</span>
-                        </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="radio"
-                                value="shipped"
-                                checked={formData.status === "shipped"}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, status: e.target.value as "shipped" })
-                                }
-                                className="text-cyan-400 focus:ring-cyan-400"
-                            />
-                            <span className="text-sm text-zinc-300">Shipped</span>
-                        </label>
+                    <p className="mb-2 font-mono text-label uppercase text-text-secondary">Status</p>
+                    <div className="flex gap-2" role="group" aria-label="Status">
+                        <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, status: "in-progress" })}
+                            aria-pressed={formData.status === "in-progress"}
+                            className={cn(
+                                "control-target stamp stamp-control",
+                                formData.status === "in-progress"
+                                    ? "stamp-pressed text-text-primary"
+                                    : "text-text-muted hover:text-text-secondary"
+                            )}
+                        >
+                            In Progress
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, status: "shipped" })}
+                            aria-pressed={formData.status === "shipped"}
+                            className={cn(
+                                "control-target stamp stamp-control",
+                                formData.status === "shipped"
+                                    ? "stamp-pressed text-positive"
+                                    : "text-text-muted hover:text-text-secondary"
+                            )}
+                        >
+                            Shipped
+                        </button>
                     </div>
                 </div>
 
-                <div className="flex gap-4 pt-4">
+                <div className="flex items-center gap-3 border-t border-rule/15 pt-7">
                     <button
                         type="submit"
-                        className="px-6 py-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg hover:bg-cyan-500/20 transition-colors font-medium"
+                        className="control-target rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
                     >
-                        <ShinyText text="Create Project" className="text-cyan-400" speed={3} />
+                        Create Project
                     </button>
                     <Link
                         href="/editor"
-                        className="px-6 py-3 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-300 hover:bg-zinc-700 transition-colors font-medium"
+                        className="control-target rounded border border-surface-border px-5 py-2.5 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
                     >
                         Cancel
                     </Link>

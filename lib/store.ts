@@ -13,12 +13,16 @@ export interface UiPreferences {
 }
 
 export const defaultUiPreferences: UiPreferences = {
-    themeMode: "noir",
+    themeMode: "press",
     focusMode: false,
     density: "cozy",
     rewardIntensity: "subtle",
     motionLevel: "standard",
 };
+
+export function normalizeThemeMode(value: unknown): ThemeMode {
+    return value === "press" || value === "ink" ? value : "press";
+}
 
 interface DevJournalStore {
     // User
@@ -296,6 +300,7 @@ export const useDevJournalStore = create<DevJournalStore>()(
                             importedUiPreferences = {
                                 ...defaultUiPreferences,
                                 ...data.uiPreferences,
+                                themeMode: normalizeThemeMode(data.uiPreferences.themeMode),
                             };
                         }
                         // Optionally update user bio/data? Keeping merging non-destructive for user too.
@@ -393,15 +398,18 @@ export const useDevJournalStore = create<DevJournalStore>()(
         }),
         {
             name: "devjournal-storage",
-            version: 3,
+            version: 4,
             migrate: (persistedState) => {
                 const state = persistedState as Partial<DevJournalStore>;
+                // v4 replaced the noir/calm-focus themes with press/ink
+                const themeMode = normalizeThemeMode(state.uiPreferences?.themeMode);
 
                 return {
                     ...state,
                     uiPreferences: {
                         ...defaultUiPreferences,
                         ...state.uiPreferences,
+                        themeMode,
                     },
                     inboxCaptures: state.inboxCaptures ?? [],
                 };

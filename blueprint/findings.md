@@ -39,6 +39,9 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 
 ## 2026-02 Visual Direction Update: Keith Haring-Inspired Energy
 
+> Superseded on 2026-08-09 by the Fluid Press Proof decision below. Retained as
+> historical context, not current styling guidance.
+
 ### Observations
 1. Current guidance captured calm-focus well but lacked explicit expressive art direction.
 2. The product needs energizing visual cues for motivation without increasing cognitive load.
@@ -52,6 +55,27 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 - Readability and focus stability take precedence over expressive styling.
 - Accent elements must be repeatable via tokens/wrappers, not ad hoc one-offs.
 - Motion + color must support momentum, not overwhelm ADHD users.
+
+---
+
+## 2026-08-09 Fluid Press Proof Redesign
+
+### Observations
+1. Fixed viewport breakpoints made shared timelines compose differently depending on which page contained them.
+2. Fixed type sizes and 42rem prose measure weakened reading rhythm at both narrow and very wide widths.
+3. Mobile editor navigation omitted import, and several small print-mark controls did not provide a 44px target.
+
+### Decisions
+- Keep Press Proof as the single visual direction, with Midnight Ink as its reading twin; Noir and Haring guidance is retired.
+- Use `rem`, `ch`, and `clamp()` for scalable type and spacing, with a narrow documented pixel allowlist for rendering details.
+- Use container queries for portfolio, timeline, and settings composition; reserve viewport breakpoints for application chrome such as the editor index.
+- Treat the editor as an Operate surface and the portfolio as a Read/Experience surface while sharing identical prose metrics.
+- Make page frames, overlays, notifications, and fixed actions safe-area aware.
+
+### Guardrails
+- Composer and published prose remain identical at `text-prose` and `66ch`.
+- DOM, visual, and keyboard order must remain aligned through every reflow.
+- Fluidity must not hide primary actions or introduce horizontal scrolling at 320px.
 
 ---
 

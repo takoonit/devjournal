@@ -1,57 +1,55 @@
 import { BioSidebarStatic } from "@/components/portfolio/bio-sidebar-static";
-import { ProjectCard } from "@/components/portfolio/project-card";
-import BlurText from "@/components/reactbits/blur-text";
-import CountUp from "@/components/reactbits/count-up";
-import ScrollReveal from "@/components/reactbits/scroll-reveal";
-import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { ProjectRow } from "@/components/portfolio/project-row";
+import { Reveal } from "@/components/ui/reveal";
+import CountUp from "@/components/ui/count-up";
 import { getPublicPortfolioOverview } from "@/lib/supabase/server";
 
 export default async function PortfolioPage() {
     const { projects, user } = await getPublicPortfolioOverview();
 
     return (
-        <div className="min-h-screen p-6 lg:p-12">
-            <div className="max-w-7xl mx-auto">
-                <Breadcrumbs items={[{ label: "Portfolio" }]} />
-                <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+        <div className="page-frame min-h-screen">
+            <div className="portfolio-container mx-auto max-w-page">
+                <div className="portfolio-shell">
                     <BioSidebarStatic user={user} />
 
-                    <div className="flex-1">
-                        <div className="mb-8">
-                            <BlurText
-                                as="h2"
-                                text="Projects"
-                                className="text-3xl font-bold text-zinc-100 mb-2"
-                                delay={100}
-                                animateBy="letters"
-                            />
-                            <p className="text-zinc-400">
-                                Build logs documenting the development process.
-                                {projects.length > 0 && (
-                                    <span className="ml-2 text-[#ff914d] font-mono">
-                                        <CountUp to={projects.length} duration={1.5} /> active
-                                    </span>
-                                )}
-                            </p>
-                        </div>
+                    <main className="min-w-0 flex-1">
+                        <header className="portfolio-masthead masthead-block rule-oxford mb-12">
+                            <h2 className="masthead-title text-display text-text-primary">Projects</h2>
+                            <div className="masthead-meta">
+                                <p className="font-mono text-meta tabular-nums text-text-muted">
+                                    <CountUp to={projects.length} />{" "}
+                                    {projects.length === 1 ? "build log" : "build logs"}, kept in public
+                                </p>
+                            </div>
+                        </header>
 
                         {projects.length === 0 ? (
-                            <div className="rounded-2xl border border-dashed border-zinc-700/80 bg-zinc-900/30 py-20 text-center">
-                                <p className="text-zinc-500 mb-4">No public projects yet.</p>
-                                <p className="text-sm text-zinc-600">
-                                    Start documenting your journey in the editor.
+                            <div className="empty-ledger">
+                                <p className="max-w-measure text-title italic text-text-secondary">
+                                    The first entry is still unwritten.
+                                </p>
+                                <p className="mt-3 max-w-prose text-ui text-text-muted">
+                                    When projects are published from the editor, they are set
+                                    here — dated, typed, and bound into a record.
                                 </p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="project-ledger portfolio-project-ledger">
                                 {projects.map((project, index) => (
-                                    <ScrollReveal key={project.id} delay={index * 0.08}>
-                                        <ProjectCard project={project} href={`/portfolio/${project.slug}`} />
-                                    </ScrollReveal>
+                                    <Reveal key={project.id} index={index}>
+                                        <ProjectRow project={project} href={`/portfolio/${project.slug}`} />
+                                    </Reveal>
                                 ))}
                             </div>
                         )}
-                    </div>
+
+                        <footer className="mt-16 border-t border-rule/15 pt-5">
+                            <p className="font-mono text-meta text-text-muted">
+                                Set in Newsreader &amp; IBM Plex Mono · Entries live on your machine
+                            </p>
+                        </footer>
+                    </main>
                 </div>
             </div>
         </div>

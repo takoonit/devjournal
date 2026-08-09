@@ -1,8 +1,9 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback, ReactNode, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, Info, Sparkles, X } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { X } from "lucide-react";
+import { useDevJournalStore } from "@/lib/store";
 import {
   resolveSupportiveToastCopy,
   type ToastType,
@@ -39,21 +40,29 @@ export function useToast() {
   return context;
 }
 
-const icons: Record<ToastTone, ReactNode> = {
-  success: <CheckCircle2 className="h-4 w-4 text-emerald-300" />,
-  error: <XCircle className="h-4 w-4 text-rose-300" />,
-  info: <Info className="h-4 w-4 text-cyan-300" />,
+const toneTick: Record<ToastTone, string> = {
+  success: "bg-positive",
+  error: "bg-destructive",
+  info: "bg-accent",
 };
 
-const toneClasses: Record<ToastTone, string> = {
-  success: "border-emerald-500/40 bg-emerald-500/10",
-  error: "border-rose-500/40 bg-rose-500/10",
-  info: "border-cyan-500/40 bg-cyan-500/10",
+const toneLabel: Record<ToastTone, string> = {
+  success: "text-positive",
+  error: "text-destructive",
+  info: "text-accent",
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const timeoutRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  const { motionLevel, rewardIntensity } = useDevJournalStore((state) => state.uiPreferences);
+  const rewardIntensityRef = useRef(rewardIntensity);
+  const osReduced = useReducedMotion();
+  const still = motionLevel === "reduced" || Boolean(osReduced);
+
+  useEffect(() => {
+    rewardIntensityRef.current = rewardIntensity;
+  }, [rewardIntensity]);
 
   const addToast = useCallback(
     (input: string | ToastInput, legacyType: ToastType = "info") => {
@@ -64,7 +73,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
       const resolved = resolveSupportiveToastCopy({
         type: normalized.type,
-        rewardIntensity: "subtle",
+        rewardIntensity: rewardIntensityRef.current,
         fallbackMessage: normalized.message,
         copyKey: normalized.copyKey,
       });
@@ -101,6 +110,23 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
+  const pauseDismiss = useCallback((id: string) => {
+    const timeoutId = timeoutRef.current.get(id);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutRef.current.delete(id);
+    }
+  }, []);
+
+  const resumeDismiss = useCallback((id: string) => {
+    if (timeoutRef.current.has(id)) return;
+    const timeoutId = setTimeout(() => {
+      timeoutRef.current.delete(id);
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 1800);
+    timeoutRef.current.set(id, timeoutId);
+  }, []);
+
   useEffect(() => {
     const timeouts = timeoutRef.current;
 
@@ -112,41 +138,51 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const motionDuration = 0.2;
-
   return (
     <ToastContext.Provider value={{ addToast }}>
       {children}
-      <div className="fixed bottom-6 right-6 z-50 flex w-full max-w-sm flex-col gap-3 px-3" aria-live="polite" aria-label="Notifications">
+      <div className="toast-viewport print-hidden" aria-live="polite" aria-label="Notifications">
         <AnimatePresence>
           {toasts.map((toast) => (
             <motion.div
               key={toast.id}
-              initial={{ opacity: 0, y: 18, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -8, scale: 0.96 }}
-              transition={{ duration: motionDuration }}
-              className="rounded-xl border border-zinc-800 bg-zinc-950/95 p-3 shadow-[0_20px_45px_-28px_rgba(0,0,0,0.85)] backdrop-blur"
+              initial={{ opacity: 0, y: still ? 0 : 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: still ? 0.08 : 0.2, ease: [0.2, 0, 0, 1] }}
+              className="sheet relative overflow-hidden p-4 pl-5"
               role={toast.type === "error" ? "alert" : "status"}
+              onMouseEnter={() => pauseDismiss(toast.id)}
+              onMouseLeave={(event) => {
+                if (!event.currentTarget.contains(document.activeElement)) {
+                  resumeDismiss(toast.id);
+                }
+              }}
+              onFocus={() => pauseDismiss(toast.id)}
+              onBlur={(event) => {
+                if (
+                  !event.currentTarget.contains(event.relatedTarget as Node) &&
+                  !event.currentTarget.matches(":hover")
+                ) {
+                  resumeDismiss(toast.id);
+                }
+              }}
             >
+              <span className={`absolute inset-y-0 left-0 w-0.5 ${toneTick[toast.type]}`} aria-hidden="true" />
               <div className="flex items-start gap-3">
-                <div className={`mt-0.5 rounded-md border px-1.5 py-1 ${toneClasses[toast.type]}`}>{icons[toast.type]}</div>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-semibold text-zinc-100">{toast.title}</p>
-                    {toast.type === "success" ? (
-                      <Sparkles className="h-3.5 w-3.5 text-emerald-300" aria-hidden="true" />
-                    ) : null}
-                  </div>
-                  <p className="mt-0.5 text-sm text-zinc-300">{toast.message}</p>
-                  {toast.emphasis ? <p className="mt-1 text-xs text-zinc-400">{toast.emphasis}</p> : null}
+                  <p className={`font-mono text-label uppercase ${toneLabel[toast.type]}`}>{toast.title}</p>
+                  <p className="mt-1 text-ui text-text-primary">{toast.message}</p>
+                  {toast.emphasis ? (
+                    <p className="mt-0.5 text-ui italic text-text-secondary">{toast.emphasis}</p>
+                  ) : null}
                 </div>
                 <button
                   onClick={() => removeToast(toast.id)}
-                  className="rounded p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300"
+                  className="control-target -mr-2 -mt-2 text-text-muted transition-colors duration-subtle hover:text-text-primary"
                   aria-label="Dismiss notification"
                 >
-                  <X className="h-3.5 w-3.5" />
+                  <X className="h-3.5 w-3.5" strokeWidth={1.5} />
                 </button>
               </div>
             </motion.div>
