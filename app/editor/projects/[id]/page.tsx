@@ -116,7 +116,7 @@ export default function ProjectDetailPage({
             <div className="max-w-measure">
                 <p className="text-ui italic text-text-muted">This project is not on record.</p>
                 <p className="mt-4 font-mono text-meta">
-                    <Link href="/editor" className="link-ink">Back to the editor</Link>
+                    <Link href="/editor" className="control-target link-ink justify-start">Back to the editor</Link>
                 </p>
             </div>
         );
@@ -152,7 +152,7 @@ export default function ProjectDetailPage({
             {/* Project masthead */}
             <header className="rule-oxford mb-10">
                 <div className="flex flex-wrap items-start justify-between gap-4">
-                    <h1 className="font-serif text-display text-text-primary">{project.name}</h1>
+                    <h1 className="font-serif text-title text-text-primary sm:text-display">{project.name}</h1>
                     <div className="flex items-center gap-1">
                         <button
                             onClick={() => setIsEditModalOpen(true)}
@@ -219,7 +219,7 @@ export default function ProjectDetailPage({
                         Write the first entry — what you built, broke, or learned today.
                     </p>
                     <p className="mt-6 font-mono text-meta">
-                        <Link href={`/editor/projects/${project.id}/entries/new`} className="link-ink">
+                        <Link href={`/editor/projects/${project.id}/entries/new`} className="control-target link-ink justify-start">
                             Open a fresh page
                         </Link>
                     </p>
@@ -239,8 +239,8 @@ export default function ProjectDetailPage({
                                 </div>
                                 {groupedEntries[year][month].map((entry) => (
                                     <Reveal key={entry.id} index={entryIndex++}>
-                                        <div className="group/actions relative">
-                                            <div className="timeline-actions absolute right-0 top-0 z-10 flex items-center gap-0.5 transition-opacity duration-subtle">
+                                        <div className="editor-timeline-entry group/actions relative">
+                                            <div className="timeline-actions z-10 flex items-center gap-0.5 transition-opacity duration-subtle">
                                                 <button
                                                     onClick={() => toggleEntryVisibility(entry.id, entry.isPublic)}
                                                     className="control-target text-text-muted transition-colors duration-subtle hover:text-text-primary"

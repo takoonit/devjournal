@@ -41,7 +41,7 @@ export function BioSidebarStatic({ user }: BioSidebarStaticProps) {
                                     href={href}
                                     target={platform !== "email" ? "_blank" : undefined}
                                     rel={platform !== "email" ? "noopener noreferrer" : undefined}
-                                    className="link-ink"
+                                    className="control-target link-ink justify-start"
                                 >
                                     {SOCIAL_LABELS[platform]}
                                 </a>

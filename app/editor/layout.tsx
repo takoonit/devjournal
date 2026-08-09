@@ -74,7 +74,7 @@ function EditorLayoutContent({
 
     const navItemClasses = (isActive: boolean) =>
         cn(
-            "relative block py-1.5 pl-4 font-serif text-ui transition-colors duration-subtle",
+            "relative flex min-h-control items-center py-1.5 pl-4 font-serif text-ui transition-colors duration-subtle",
             isActive
                 ? "text-text-primary before:absolute before:left-0 before:top-1/2 before:h-3.5 before:w-0.5 before:-translate-y-1/2 before:bg-accent"
                 : "text-text-secondary hover:text-text-primary"
@@ -106,7 +106,7 @@ function EditorLayoutContent({
                 <div className="mb-10">
                     <Link
                         href="/portfolio"
-                        className="font-serif text-subtitle text-text-primary transition-colors duration-subtle hover:text-accent"
+                        className="control-target justify-start font-serif text-subtitle text-text-primary transition-colors duration-subtle hover:text-accent"
                     >
                         DevJournal
                     </Link>
@@ -181,37 +181,39 @@ function EditorLayoutContent({
 
             {/* The working page */}
             <main id="editor-content" className="editor-page-frame min-w-0 flex-1">
-                <div className="mb-8 flex items-center justify-between border-b border-rule/15 pb-4 lg:hidden">
-                    <Link href="/editor" className="font-serif text-subtitle text-text-primary">
-                        DevJournal
-                    </Link>
-                    <div className="flex items-center gap-2">
-                        <button
-                            type="button"
-                            onClick={() => fileInputRef.current?.click()}
-                            className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
-                            aria-label="Import project from file"
-                        >
-                            <FolderInput className="h-5 w-5" strokeWidth={1.5} />
-                        </button>
-                        <Link
-                            href="/editor/projects/new"
-                            className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
-                            aria-label="Create new project"
-                        >
-                            <Plus className="h-5 w-5" strokeWidth={1.5} />
+                <div className="editor-workspace mx-auto w-full max-w-page">
+                    <div className="mb-8 flex items-center justify-between border-b border-rule/15 pb-4 lg:hidden">
+                        <Link href="/editor" className="control-target justify-start font-serif text-subtitle text-text-primary">
+                            DevJournal
                         </Link>
-                        <Link
-                            href="/editor/settings"
-                            className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
-                            aria-label="Settings"
-                        >
-                            <Settings className="h-5 w-5" strokeWidth={1.5} />
-                        </Link>
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current?.click()}
+                                className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
+                                aria-label="Import project from file"
+                            >
+                                <FolderInput className="h-5 w-5" strokeWidth={1.5} />
+                            </button>
+                            <Link
+                                href="/editor/projects/new"
+                                className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
+                                aria-label="Create new project"
+                            >
+                                <Plus className="h-5 w-5" strokeWidth={1.5} />
+                            </Link>
+                            <Link
+                                href="/editor/settings"
+                                className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
+                                aria-label="Settings"
+                            >
+                                <Settings className="h-5 w-5" strokeWidth={1.5} />
+                            </Link>
+                        </div>
                     </div>
+                    {!isEntryFormRoute && <Breadcrumbs items={breadcrumbItems} />}
+                    {children}
                 </div>
-                {!isEntryFormRoute && <Breadcrumbs items={breadcrumbItems} />}
-                {children}
             </main>
         </div>
     );

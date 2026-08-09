@@ -15,7 +15,7 @@ export default function NotFound() {
                     the record.
                 </p>
                 <p className="mt-8 font-mono text-meta">
-                    <Link href="/portfolio" className="link-ink">
+                    <Link href="/portfolio" className="control-target link-ink justify-start">
                         Return to the portfolio
                     </Link>
                 </p>

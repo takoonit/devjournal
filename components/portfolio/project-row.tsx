@@ -55,7 +55,7 @@ export function ProjectRow({ project, href, entryCount }: ProjectRowProps) {
                         href={project.repositoryLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="link-ink relative z-20 font-mono text-meta"
+                        className="control-target link-ink relative z-20 justify-start font-mono text-meta"
                         aria-label={`Open ${project.name} repository`}
                     >
                         Repository ↗

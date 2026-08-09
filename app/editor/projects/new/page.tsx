@@ -8,7 +8,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const inputClasses =
-    "w-full rounded-md border border-surface-border bg-surface-raised px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
+    "field-target w-full rounded-md border border-surface-border bg-surface-raised px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
 
 export default function NewProjectPage() {
     const router = useRouter();

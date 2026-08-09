@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 
 const inputClasses =
-    "w-full rounded-md border border-surface-border bg-surface-raised px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
+    "field-target w-full rounded-md border border-surface-border bg-surface-raised px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
 
 interface ToggleOption<T extends string> {
     value: T;
@@ -100,15 +100,16 @@ export default function SettingsPage() {
     ];
 
     return (
-        <div className="max-w-measure">
-            <header className="rule-oxford mb-12">
-                <h1 className="font-serif text-display text-text-primary">Settings</h1>
-                <p className="mt-2 text-ui text-text-secondary">
-                    The colophon: who you are, and how the journal is set.
-                </p>
-            </header>
+        <div className="max-w-page">
+            <div className="max-w-measure">
+                <header className="rule-oxford mb-12">
+                    <h1 className="font-serif text-display text-text-primary">Settings</h1>
+                    <p className="mt-2 text-ui text-text-secondary">
+                        The colophon: who you are, and how the journal is set.
+                    </p>
+                </header>
 
-            <form onSubmit={handleSubmit} className="space-y-14">
+                <form onSubmit={handleSubmit} className="space-y-14">
                 <section>
                     <div className="keyline mb-6">
                         <h2>Profile</h2>
@@ -254,7 +255,8 @@ export default function SettingsPage() {
                         Preview your public portfolio ↗
                     </Link>
                 </div>
-            </form>
+                </form>
+            </div>
 
             <ExportImportSection />
         </div>

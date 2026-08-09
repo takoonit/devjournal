@@ -96,6 +96,7 @@ const config: Config = {
                 "portfolio-sidebar": "var(--portfolio-sidebar-width)",
             },
             minHeight: {
+                control: "var(--control-min-size)",
                 composer: "var(--composer-min-block)",
                 "composer-details": "var(--composer-details-min-block)",
             },

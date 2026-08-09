@@ -46,7 +46,7 @@ export default async function ProjectDetailPage({
                                         href={project.repositoryLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="link-ink text-text-secondary"
+                                        className="control-target link-ink justify-start text-text-secondary"
                                     >
                                         Repository ↗
                                     </a>

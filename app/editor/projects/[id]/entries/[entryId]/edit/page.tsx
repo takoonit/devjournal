@@ -168,7 +168,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
 
                 <form ref={formRef} onSubmit={onSubmit} className="sheet px-7 py-8 md:px-12 md:py-10">
                     <div className="mb-8">
-                        <div className="flex flex-wrap gap-2" role="group" aria-label="Entry type">
+                        <div className="entry-type-picker" role="group" aria-label="Entry type">
                             {ENTRY_TYPE_OPTIONS.map((option) => {
                                 const active = entryType === option.value;
                                 return (
@@ -200,7 +200,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             onKeyDown={submitShortcut}
-                            className="-ml-3 w-full border-0 bg-transparent pl-3 font-serif text-title text-text-primary focus:outline-none focus-visible:shadow-[inset_2px_0_0_rgb(var(--color-accent-base))]"
+                            className="field-target -ml-3 w-full border-0 bg-transparent pl-3 font-serif text-title text-text-primary focus:outline-none focus-visible:shadow-[inset_2px_0_0_rgb(var(--color-accent-base))]"
                             placeholder="What changed?"
                         />
                     </div>

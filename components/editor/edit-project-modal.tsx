@@ -13,7 +13,7 @@ interface EditProjectModalProps {
 }
 
 const inputClasses =
-    "w-full rounded-md border border-surface-border bg-surface-raised px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
+    "field-target w-full rounded-md border border-surface-border bg-surface-raised px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
 
 export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalProps) {
     const updateProject = useDevJournalStore((state) => state.updateProject);
