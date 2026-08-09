@@ -117,7 +117,7 @@ test("settings, editor extremes, print, and favicon have explicit adaptations", 
     assert.match(project, /print-display/);
     assert.match(newEntry, /entry-type-picker/);
     assert.match(globals, /\.entry-type-picker\s*\{[^}]*overflow-x:\s*auto/s);
-    assert.match(globals, /@media print[\s\S]*?\.print-display\s*\{[^}]*font-size:\s*2rem/s);
+    assert.match(globals, /@media print[\s\S]*?h1\.print-display\s*\{[^}]*font-size:\s*2rem/s);
     assert.match(globals, /@media print[\s\S]*?\.timeline-entry-meta-inner\s*\{[^}]*display:\s*flex/s);
     assert.match(icon, /<svg[^>]*viewBox="0 0 32 32"/);
 });
