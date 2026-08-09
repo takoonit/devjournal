@@ -153,7 +153,20 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               className="sheet relative overflow-hidden p-4 pl-5"
               role={toast.type === "error" ? "alert" : "status"}
               onMouseEnter={() => pauseDismiss(toast.id)}
-              onMouseLeave={() => resumeDismiss(toast.id)}
+              onMouseLeave={(event) => {
+                if (!event.currentTarget.contains(document.activeElement)) {
+                  resumeDismiss(toast.id);
+                }
+              }}
+              onFocus={() => pauseDismiss(toast.id)}
+              onBlur={(event) => {
+                if (
+                  !event.currentTarget.contains(event.relatedTarget as Node) &&
+                  !event.currentTarget.matches(":hover")
+                ) {
+                  resumeDismiss(toast.id);
+                }
+              }}
             >
               <span className={`absolute inset-y-0 left-0 w-0.5 ${toneTick[toast.type]}`} aria-hidden="true" />
               <div className="flex items-start gap-3">

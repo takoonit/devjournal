@@ -15,7 +15,7 @@ export default async function PortfolioPage() {
 
                     <main className="min-w-0 flex-1">
                         <header className="portfolio-masthead masthead-block rule-oxford mb-12">
-                            <h2 className="masthead-title text-text-primary">Projects</h2>
+                            <h2 className="masthead-title text-display text-text-primary">Projects</h2>
                             <div className="masthead-meta">
                                 <p className="font-mono text-meta tabular-nums text-text-muted">
                                     <CountUp to={projects.length} />{" "}

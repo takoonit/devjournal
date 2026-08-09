@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ExportImportSection } from "@/components/settings/export-import-section";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
+import { ArrowUpRight } from "lucide-react";
 
 const inputClasses =
     "field-target w-full rounded-md border border-surface-border bg-surface-raised px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
@@ -252,7 +253,8 @@ export default function SettingsPage() {
                         Save Changes
                     </button>
                     <Link href="/portfolio" target="_blank" className="control-target link-ink justify-start font-mono text-meta">
-                        Preview your public portfolio ↗
+                        Preview your public portfolio
+                        <ArrowUpRight className="ml-1.5 h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
                     </Link>
                 </div>
                 </form>

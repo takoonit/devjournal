@@ -25,14 +25,14 @@ export function Reveal({ children, className, index = 0 }: RevealProps) {
 
     const still = focusMode || motionLevel === "reduced" || Boolean(osReduced);
     const delay = still ? 0 : Math.min(index, 5) * 0.045;
-    const duration = still ? 0.08 : motionLevel === "expressive" ? 0.48 : 0.36;
+    const duration = still ? 0 : motionLevel === "expressive" ? 0.48 : 0.36;
 
     return (
         <motion.div
             ref={ref}
             className={className}
-            initial={{ opacity: 0, y: still ? 0 : 8 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: still ? 0 : 8 }}
+            initial={still ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+            animate={still ? { opacity: 1, y: 0 } : isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
             transition={{ duration, delay, ease: EASE_SETTLE }}
         >
             {children}

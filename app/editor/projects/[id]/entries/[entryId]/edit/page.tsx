@@ -7,7 +7,7 @@ import { ArrowLeft, ChevronDown, Loader2 } from "lucide-react";
 import { useDevJournalStore } from "@/lib/store";
 import type { EntryType } from "@/lib/types";
 import { ENTRY_TYPE_OPTIONS, getEntryContent, getEntryType } from "@/lib/entry-types";
-import { ENTRY_STAMPS } from "@/components/ui/stamp";
+import { ENTRY_STAMPS, getEntryStampControlTone } from "@/components/ui/stamp";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 
@@ -179,9 +179,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                                         onClick={() => setEntryType(option.value)}
                                         className={cn(
                                             "control-target stamp stamp-control transition-colors",
-                                            active
-                                                ? cn("stamp-pressed", ENTRY_STAMPS[option.value].tone === "text-text-secondary" ? "text-text-primary" : ENTRY_STAMPS[option.value].tone)
-                                                : "text-text-muted hover:text-text-secondary"
+                                            getEntryStampControlTone(option.value, active)
                                         )}
                                     >
                                         <span className="opacity-70" aria-hidden="true">{ENTRY_STAMPS[option.value].code}</span>
@@ -248,6 +246,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                         <p className="font-mono text-meta tabular-nums text-text-muted">
                             {wordCount} {wordCount === 1 ? "word" : "words"}
                             <span
+                                aria-hidden={!showDraftSaved}
                                 className={cn(
                                     "transition-opacity duration-subtle",
                                     showDraftSaved ? "opacity-100" : "opacity-0"

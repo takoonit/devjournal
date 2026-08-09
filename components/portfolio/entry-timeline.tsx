@@ -91,7 +91,7 @@ export function EntryTimeline({ entries }: { entries: Entry[] }) {
                             {Object.keys(groupedEntries[year]).map((month) => (
                                 <div key={`${year}-${month}`}>
                                     <div className="timeline-keyline keyline">
-                                        <h2 className="font-mono text-label uppercase text-text-secondary">
+                                        <h2 className="font-mono text-subtitle uppercase text-text-secondary">
                                             {month} {year}
                                         </h2>
                                     </div>

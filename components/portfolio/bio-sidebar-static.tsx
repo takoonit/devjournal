@@ -1,6 +1,7 @@
 import { User } from "@/lib/types";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import Link from "next/link";
+import { ExternalLink, Mail } from "lucide-react";
 
 interface BioSidebarStaticProps {
     user: User;
@@ -41,11 +42,15 @@ export function BioSidebarStatic({ user }: BioSidebarStaticProps) {
                                     href={href}
                                     target={platform !== "email" ? "_blank" : undefined}
                                     rel={platform !== "email" ? "noopener noreferrer" : undefined}
-                                    className="control-target link-ink justify-start"
+                                    className="control-target link-ink justify-start gap-1.5"
                                 >
                                     {SOCIAL_LABELS[platform]}
+                                    {platform === "email" ? (
+                                        <Mail className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                                    ) : (
+                                        <ExternalLink className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                                    )}
                                 </a>
-                                <span className="text-text-muted" aria-hidden="true"> ↗</span>
                             </li>
                         );
                     })}

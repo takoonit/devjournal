@@ -5,6 +5,7 @@ import { useDevJournalStore } from "@/lib/store";
 import { Project } from "@/lib/types";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { inputClasses } from "@/components/ui/form-styles";
 
 interface EditProjectModalProps {
     project: Project;
@@ -12,17 +13,19 @@ interface EditProjectModalProps {
     onClose: () => void;
 }
 
-const inputClasses =
-    "field-target w-full rounded-md border border-surface-border bg-surface-raised px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
-
 export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalProps) {
     const updateProject = useDevJournalStore((state) => state.updateProject);
     const modalRef = useRef<HTMLDivElement>(null);
+    const onCloseRef = useRef(onClose);
 
     const [name, setName] = useState(project.name);
     const [description, setDescription] = useState(project.description);
     const [techStack, setTechStack] = useState(project.techStack.join(", "));
     const [status, setStatus] = useState<"in-progress" | "shipped">(project.status);
+
+    useEffect(() => {
+        onCloseRef.current = onClose;
+    }, [onClose]);
 
     useEffect(() => {
         if (isOpen) {
@@ -46,7 +49,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
 
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Escape") {
-                onClose();
+                onCloseRef.current();
                 return;
             }
             if (e.key !== "Tab" || focusable.length === 0) return;
@@ -69,7 +72,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
             modal.removeEventListener("keydown", handleKeyDown);
             previouslyFocused?.focus?.();
         };
-    }, [isOpen, onClose]);
+    }, [isOpen]);
 
     if (!isOpen) return null;
 
@@ -165,7 +168,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
 
                     <div>
                         <p className="mb-2 font-mono text-label uppercase text-text-secondary">Status</p>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2" role="group" aria-label="Status">
                             <button
                                 type="button"
                                 onClick={() => setStatus("in-progress")}

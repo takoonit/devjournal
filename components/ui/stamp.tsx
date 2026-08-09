@@ -14,6 +14,13 @@ export const ENTRY_STAMPS: Record<EntryType, { code: string; label: string; tone
     journal: { code: "JN", label: "Journal", tone: "text-text-secondary" },
 };
 
+export function getEntryStampControlTone(type: EntryType, active: boolean): string {
+    if (!active) return "text-text-muted hover:text-text-secondary";
+
+    const tone = ENTRY_STAMPS[type].tone;
+    return cn("stamp-pressed", tone === "text-text-secondary" ? "text-text-primary" : tone);
+}
+
 interface TypeStampProps {
     type: EntryType;
     pressed?: boolean;

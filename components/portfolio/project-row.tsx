@@ -1,7 +1,7 @@
 import { Project } from "@/lib/types";
 import { StatusStamp } from "@/components/ui/stamp";
 import { formatDate } from "@/lib/utils";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
 interface ProjectRowProps {
@@ -63,7 +63,8 @@ export function ProjectRow({ project, href, entryCount }: ProjectRowProps) {
                         className="control-target link-ink relative z-20 justify-start font-mono text-meta"
                         aria-label={`Open ${project.name} repository`}
                     >
-                        Repository ↗
+                        Repository
+                        <ExternalLink className="ml-1.5 h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
                     </a>
                 )}
             </div>

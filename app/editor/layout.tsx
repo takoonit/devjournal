@@ -157,6 +157,7 @@ function EditorLayoutContent({
                                         key={project.id}
                                         href={projectPath}
                                         className={navItemClasses(isProjectActive)}
+                                        aria-current={isProjectActive ? "page" : undefined}
                                     >
                                         <span className="block truncate">{project.name}</span>
                                     </Link>
@@ -169,7 +170,11 @@ function EditorLayoutContent({
                     </div>
 
                     <div className="border-t border-rule/15 pt-6">
-                        <Link href="/editor/settings" className={navItemClasses(isSettingsActive)}>
+                        <Link
+                            href="/editor/settings"
+                            className={navItemClasses(isSettingsActive)}
+                            aria-current={isSettingsActive ? "page" : undefined}
+                        >
                             <span className="flex items-center gap-2">
                                 <Settings className="h-3.5 w-3.5" strokeWidth={1.5} />
                                 Settings

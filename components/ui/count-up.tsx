@@ -67,5 +67,5 @@ export default function CountUp({
         return () => unsubscribe();
     }, [springValue, formatValue]);
 
-    return <span className={`tabular-nums ${className}`} ref={ref} />;
+    return <span className={`tabular-nums ${className}`} ref={ref}>{formatValue(from)}</span>;
 }

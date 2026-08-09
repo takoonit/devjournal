@@ -8,7 +8,7 @@ A premium web application for developers to document their build process and aut
 - **BLAST Framework**: Special planning template for feature development
 - **Public Portfolio**: Automatically generated portfolio showcasing your build logs
 - **Press Proof Aesthetic**: Warm paper-and-ink editorial design, typeset like a printed journal
-- **Entry Categories**: Plan, Build, and Reflect with multiple subcategories
+- **Entry Categories**: Feature, fix, refactor, design, and journal entries
 - **Export/Import**: Backup and restore your journal data as JSON files
 
 ## Tech Stack

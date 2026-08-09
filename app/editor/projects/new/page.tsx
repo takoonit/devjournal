@@ -6,9 +6,7 @@ import { useRouter } from "next/navigation";
 import { Plus, X } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-
-const inputClasses =
-    "field-target w-full rounded-md border border-surface-border bg-surface-raised px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
+import { inputClasses } from "@/components/ui/form-styles";
 
 export default function NewProjectPage() {
     const router = useRouter();
@@ -157,7 +155,7 @@ export default function NewProjectPage() {
 
                 <div>
                     <p className="mb-2 font-mono text-label uppercase text-text-secondary">Status</p>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2" role="group" aria-label="Status">
                         <button
                             type="button"
                             onClick={() => setFormData({ ...formData, status: "in-progress" })}

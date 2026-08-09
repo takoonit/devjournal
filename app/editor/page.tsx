@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { ProjectRow } from "@/components/portfolio/project-row";
 import { Reveal } from "@/components/ui/reveal";
@@ -15,6 +15,7 @@ const EMPTY_STEPS = [
 export default function EditorPage() {
     const projects = useDevJournalStore((state) => state.projects);
     const entries = useDevJournalStore((state) => state.entries);
+    const [dateline, setDateline] = useState("");
 
     const entryCounts = useMemo(() => {
         const counts = new Map<string, number>();
@@ -24,15 +25,19 @@ export default function EditorPage() {
         return counts;
     }, [entries]);
 
-    const now = new Date();
-    const dateline = `${now.toLocaleDateString("en-GB", { weekday: "long" })} · ${now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`.toUpperCase();
+    useEffect(() => {
+        const now = new Date();
+        setDateline(
+            `${now.toLocaleDateString("en-GB", { weekday: "long" })} · ${now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`.toUpperCase()
+        );
+    }, []);
 
     return (
         <div className="max-w-page">
             <header className="editor-masthead masthead-block rule-oxford mb-12">
                 <h1 className="masthead-title text-text-primary">Projects</h1>
                 <div className="masthead-meta font-mono text-text-muted">
-                    <p className="text-label uppercase">{dateline}</p>
+                    <p className="text-label uppercase">{dateline || "\u00a0"}</p>
                     <p className="text-meta tabular-nums">
                         {projects.length} {projects.length === 1 ? "project" : "projects"} ·{" "}
                         {entries.length} {entries.length === 1 ? "entry" : "entries"} on record

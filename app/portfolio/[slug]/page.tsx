@@ -4,6 +4,7 @@ import { StatusStamp } from "@/components/ui/stamp";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { notFound } from "next/navigation";
 import { getPublicProjectBySlug } from "@/lib/supabase/server";
+import { ExternalLink } from "lucide-react";
 
 export default async function ProjectDetailPage({
     params,
@@ -48,7 +49,8 @@ export default async function ProjectDetailPage({
                                         rel="noopener noreferrer"
                                         className="control-target link-ink justify-start text-text-secondary"
                                     >
-                                        Repository ↗
+                                        Repository
+                                        <ExternalLink className="ml-1.5 h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
                                     </a>
                                 )}
                             </div>

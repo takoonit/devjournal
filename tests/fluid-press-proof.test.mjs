@@ -86,6 +86,7 @@ test("navigation and form fields share the 2.75rem interaction floor", () => {
     const settings = read("app/editor/settings/page.tsx");
     const modal = read("components/editor/edit-project-modal.tsx");
     const newProject = read("app/editor/projects/new/page.tsx");
+    const formStyles = read("components/ui/form-styles.ts");
     const newEntry = read("app/editor/projects/[id]/entries/new/page.tsx");
     const editEntry = read("app/editor/projects/[id]/entries/[entryId]/edit/page.tsx");
     const notFound = read("app/portfolio/[slug]/not-found.tsx");
@@ -94,8 +95,9 @@ test("navigation and form fields share the 2.75rem interaction floor", () => {
     assert.match(editorLayout, /control-target[^"']*font-serif text-subtitle/);
     assert.match(editorLayout, /relative flex min-h-control/);
     assert.match(settings, /field-target w-full/);
-    assert.match(modal, /field-target w-full/);
-    assert.match(newProject, /field-target w-full/);
+    assert.match(formStyles, /field-target w-full/);
+    assert.match(modal, /import \{ inputClasses \} from ["']@\/components\/ui\/form-styles["']/);
+    assert.match(newProject, /import \{ inputClasses \} from ["']@\/components\/ui\/form-styles["']/);
     assert.match(newEntry, /field-target[^"']*text-title/);
     assert.match(editEntry, /field-target[^"']*text-title/);
     assert.match(notFound, /control-target link-ink/);
@@ -141,4 +143,85 @@ test("portfolio and editor use a shared bold masthead with surface-specific ledg
     assert.doesNotMatch(bio, /font-serif text-display text-text-primary/);
     assert.match(projectRow, /project-row-title/);
     assert.match(projectRow, /ArrowUpRight/);
+});
+
+test("client-only datelines and static motion render stable initial content", () => {
+    const editor = read("app/editor/page.tsx");
+    const countUp = read("components/ui/count-up.tsx");
+    const reveal = read("components/ui/reveal.tsx");
+
+    assert.match(editor, /useEffect\(\(\)\s*=>\s*\{[\s\S]*setDateline/);
+    assert.match(editor, /\{dateline\s*\|\|\s*["']\\u00a0["']\}/);
+    assert.doesNotMatch(editor.slice(0, editor.indexOf("useEffect(() =>")), /new Date\(\)/);
+    assert.match(countUp, /<span[^>]*>\{formatValue\(from\)\}<\/span>/s);
+    assert.match(reveal, /initial=\{still\s*\?\s*\{\s*opacity:\s*1,\s*y:\s*0\s*\}/);
+    assert.match(reveal, /animate=\{still\s*\?\s*\{\s*opacity:\s*1,\s*y:\s*0\s*\}/);
+});
+
+test("navigation and transient status semantics follow visible state", () => {
+    const editorLayout = read("app/editor/layout.tsx");
+    const newEntry = read("app/editor/projects/[id]/entries/new/page.tsx");
+    const editEntry = read("app/editor/projects/[id]/entries/[entryId]/edit/page.tsx");
+    const toast = read("components/ui/toast.tsx");
+
+    assert.match(editorLayout, /aria-current=\{isProjectActive\s*\?\s*["']page["']\s*:\s*undefined\}/);
+    assert.match(editorLayout, /aria-current=\{isSettingsActive\s*\?\s*["']page["']\s*:\s*undefined\}/);
+    assert.match(newEntry, /aria-hidden=\{!showDraftSaved\}/);
+    assert.match(editEntry, /aria-hidden=\{!showDraftSaved\}/);
+    assert.match(toast, /onFocus=\{\(\)\s*=>\s*pauseDismiss\(toast\.id\)\}/);
+    assert.match(toast, /onBlur=\{\(event\)\s*=>/);
+    assert.match(toast, /contains\(event\.relatedTarget as Node\)/);
+});
+
+test("theme modes are normalized for persistence, imports, and printing", () => {
+    const store = read("lib/store.ts");
+    const globals = read("app/globals.css");
+
+    assert.match(store, /export function normalizeThemeMode\(value: unknown\): ThemeMode/);
+    assert.match(store, /themeMode:\s*normalizeThemeMode\(data\.uiPreferences\.themeMode\)/);
+    assert.match(store, /const themeMode = normalizeThemeMode\(state\.uiPreferences\?\.themeMode\)/);
+    assert.match(globals, /@media print[\s\S]*:root\[data-theme-mode=["']ink["']\][\s\S]*--color-surface-canvas:\s*255 255 255/);
+    assert.match(globals, /@media print[\s\S]*html,[\s\S]*body\s*\{[^}]*background:\s*rgb\(var\(--color-surface-canvas\)\)/s);
+    assert.doesNotMatch(globals, /@media print[\s\S]*background:\s*#ffffff/);
+});
+
+test("reviewed portfolio copy, heading tokens, and external icons use project contracts", () => {
+    const notFound = read("app/portfolio/[slug]/not-found.tsx");
+    const portfolio = read("app/portfolio/page.tsx");
+    const timeline = read("components/portfolio/entry-timeline.tsx");
+    const slugPage = read("app/portfolio/[slug]/page.tsx");
+    const bio = read("components/portfolio/bio-sidebar-static.tsx");
+    const projectRow = read("components/portfolio/project-row.tsx");
+    const settings = read("app/editor/settings/page.tsx");
+    const readme = read("README.md");
+
+    assert.match(notFound, /Project not found/);
+    assert.match(notFound, /<h1[^>]*text-display/);
+    assert.match(portfolio, /<h2[^>]*text-display/);
+    assert.match(timeline, /<h2[^>]*text-subtitle/);
+    assert.match(slugPage, /<ExternalLink[^>]*aria-hidden=["']true["']/);
+    assert.match(bio, /platform === ["']email["']\s*\?\s*\(\s*<Mail/);
+    assert.match(bio, /:\s*\(\s*<ExternalLink/);
+    assert.match(projectRow, /Repository\s*<ExternalLink/);
+    assert.match(settings, /Preview your public portfolio\s*<ArrowUpRight/);
+    assert.doesNotMatch(`${slugPage}\n${bio}\n${projectRow}\n${settings}`, /↗/);
+    assert.match(readme, /feature, fix, refactor, design, and journal/i);
+});
+
+test("shared form and stamp helpers remove reviewed duplication", () => {
+    const formStyles = read("components/ui/form-styles.ts");
+    const newProject = read("app/editor/projects/new/page.tsx");
+    const modal = read("components/editor/edit-project-modal.tsx");
+    const stamp = read("components/ui/stamp.tsx");
+    const newEntry = read("app/editor/projects/[id]/entries/new/page.tsx");
+    const editEntry = read("app/editor/projects/[id]/entries/[entryId]/edit/page.tsx");
+
+    assert.match(formStyles, /export const inputClasses/);
+    assert.match(newProject, /role=["']group["']\s+aria-label=["']Status["']/);
+    assert.match(modal, /role=["']group["']\s+aria-label=["']Status["']/);
+    assert.match(modal, /const onCloseRef = useRef\(onClose\)/);
+    assert.match(modal, /onCloseRef\.current\(\)/);
+    assert.match(stamp, /export function getEntryStampControlTone/);
+    assert.match(newEntry, /getEntryStampControlTone\(option\.value, active\)/);
+    assert.match(editEntry, /getEntryStampControlTone\(option\.value, active\)/);
 });

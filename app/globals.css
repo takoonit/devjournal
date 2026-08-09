@@ -839,7 +839,7 @@ html[data-motion-level="expressive"] {
 
   html,
   body {
-    background: #ffffff;
+    background: rgb(var(--color-surface-canvas));
     overflow: visible;
   }
 
@@ -933,7 +933,9 @@ html[data-motion-level="expressive"] {
     break-inside: avoid;
   }
 
-  :root {
+  :root,
+  :root[data-theme-mode="press"],
+  :root[data-theme-mode="ink"] {
     --color-surface-canvas: 255 255 255;
     --color-surface-base: 255 255 255;
     --color-surface-raised: 255 255 255;
