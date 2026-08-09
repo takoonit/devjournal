@@ -36,9 +36,6 @@ yarn-error.log*
 /.codex/hooks.json
 /.impeccable/critique/
 
-# pnpm is the canonical package manager
-/bun.lock
-
 # env files
 .env*.local
 .env

@@ -19,30 +19,26 @@ A premium web application for developers to document their build process and aut
 - **Animations**: Framer Motion, restrained block-level entrances
 - **State Management**: Zustand with localStorage persistence
 - **Icons**: Lucide React
-- **Package Manager**: pnpm
+- **Package Manager**: Bun 1.3.14+
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 24+ (LTS) installed in WSL environment
-- pnpm (corepack enabled)
+- Bun 1.3.14+
 
 ### Installation
 
 ```bash
-# Enable corepack for pnpm
-corepack enable
-corepack prepare pnpm@latest --activate
-
 # Install dependencies
-pnpm install
+bun install
 
 # Run development server
-pnpm dev
+bun run dev
 
 # Build for production
-pnpm build
+bun run build
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the application.

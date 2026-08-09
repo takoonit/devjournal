@@ -22,10 +22,10 @@
   --tracking-prose: normal;
 
   /* Paper */
-  --color-surface-canvas: 246 244 238;  /* #F6F4EE */
-  --color-surface-base: 241 238 230;    /* #F1EEE6 — rails, washes */
-  --color-surface-raised: 251 250 246;  /* #FBFAF6 — sheets, inputs */
-  --color-surface-border: 218 213 200;  /* #DAD5C8 — strong rule */
+  --color-surface-canvas: 247 245 239;  /* #F7F5EF — reading field */
+  --color-surface-base: 232 240 235;    /* #E8F0EB — rails, washes */
+  --color-surface-raised: 255 253 248;  /* #FFFDF8 — sheets, inputs */
+  --color-surface-border: 207 216 208;  /* #CFD8D0 — strong rule */
 
   /* All rules are ink at reduced pressure: rgb(var(--color-rule) / a) */
   --color-rule: 33 30 26;
@@ -43,12 +43,12 @@
   --color-accent-soft: 124 42 14;       /* hover / pressed */
   --color-accent-contrast: 251 243 238;
 
-  --color-positive-base: 51 96 74;      /* #33604A — 6.0:1 */
-  --color-positive-soft: 226 234 226;
+  --color-positive-base: 24 104 88;     /* #186858 — 6.1:1 */
+  --color-positive-soft: 220 237 229;
   --color-positive-contrast: 251 250 246;
 
-  --color-warning-base: 138 98 16;      /* #8A6210 — 5.1:1 */
-  --color-warning-soft: 242 233 210;
+  --color-warning-base: 135 74 12;      /* #874A0C — 5.4:1 */
+  --color-warning-soft: 248 233 193;
   --color-warning-contrast: 251 250 246;
 
   --color-destructive-base: 160 43 32;  /* #A02B20 — 6.2:1 */
@@ -98,10 +98,10 @@
 
 :root[data-theme-mode="ink"] {
   /* Midnight Ink — the same page, after dark */
-  --color-surface-canvas: 19 17 16;     /* #131110 */
-  --color-surface-base: 25 22 20;
-  --color-surface-raised: 32 28 25;
-  --color-surface-border: 58 52 46;
+  --color-surface-canvas: 17 28 27;     /* #111C1B — reading field */
+  --color-surface-base: 22 43 38;       /* #162B26 — rails, washes */
+  --color-surface-raised: 28 38 35;     /* #1C2623 — sheets, inputs */
+  --color-surface-border: 62 82 72;     /* #3E5248 — strong rule */
 
   --color-rule: 233 228 217;
 
@@ -115,12 +115,12 @@
   --color-accent-soft: 194 88 53;
   --color-accent-contrast: 19 17 16;
 
-  --color-positive-base: 127 174 147;
-  --color-positive-soft: 34 46 40;
+  --color-positive-base: 112 204 177;
+  --color-positive-soft: 25 64 54;
   --color-positive-contrast: 19 17 16;
 
-  --color-warning-base: 207 160 69;
-  --color-warning-soft: 54 44 22;
+  --color-warning-base: 231 176 77;
+  --color-warning-soft: 69 51 24;
   --color-warning-contrast: 19 17 16;
 
   --color-destructive-base: 217 106 92;
@@ -280,6 +280,36 @@ select:focus-visible {
     border-block-end: 1px solid rgb(var(--color-rule) / 0.18);
   }
 
+  .portfolio-page {
+    background: rgb(var(--color-surface-base));
+  }
+
+  .portfolio-page .portfolio-shell {
+    min-block-size: calc(100vh - 2 * var(--space-page-block));
+    padding: clamp(1rem, calc(0.75rem + 1vw), 1.75rem);
+    background: rgb(var(--color-surface-canvas));
+  }
+
+  .portfolio-page .portfolio-sidebar {
+    background: rgb(var(--color-positive-soft) / 0.72);
+    padding: clamp(1rem, calc(0.75rem + 1vw), 1.5rem);
+  }
+
+  .portfolio-page .portfolio-masthead {
+    background: rgb(var(--color-surface-raised));
+    padding-inline: clamp(1rem, calc(0.75rem + 1vw), 1.75rem);
+    padding-block-start: clamp(1rem, calc(0.75rem + 1vw), 1.75rem);
+  }
+
+  .portfolio-page .portfolio-empty-ledger {
+    background: rgb(var(--color-warning-soft) / 0.78);
+    border-block-color: rgb(var(--color-warning-base) / 0.35);
+  }
+
+  .portfolio-empty-action {
+    color: rgb(var(--color-accent-base));
+  }
+
   .project-row {
     isolation: isolate;
     padding-inline: clamp(0.75rem, calc(0.5rem + 0.75vw), 1.25rem);
@@ -341,6 +371,23 @@ select:focus-visible {
   .editor-empty-steps > li {
     border-block-start: 1px solid rgb(var(--color-rule) / 0.14);
     padding-block: 1rem;
+  }
+
+  .portfolio-page main,
+  .portfolio-page .empty-ledger,
+  .portfolio-page .max-w-prose,
+  .portfolio-page .max-w-measure {
+    width: 100%;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .portfolio-page .portfolio-empty-ledger > div,
+  .portfolio-page .portfolio-empty-ledger p {
+    width: 100%;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    overflow-wrap: anywhere;
   }
 
   .editor-empty-steps > li:last-child {
@@ -643,6 +690,56 @@ select:focus-visible {
     position: sticky;
     top: var(--space-page-block);
     width: var(--portfolio-sidebar-width);
+  }
+
+  .portfolio-page .portfolio-sidebar {
+    padding: clamp(1.25rem, calc(1rem + 1vw), 2rem);
+  }
+}
+
+@media (max-width: 59.999rem) {
+  .portfolio-page .portfolio-shell > *,
+  .portfolio-page .portfolio-masthead,
+  .portfolio-page .portfolio-empty-ledger {
+    flex: none;
+    inline-size: 100%;
+    max-inline-size: 100%;
+  }
+
+  .editor-page-frame .editor-workspace > *,
+  .editor-page-frame .empty-ledger,
+  .editor-page-frame .editor-empty-steps,
+  .editor-page-frame .editor-empty-steps > li {
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .editor-page-frame {
+    inline-size: 100%;
+    max-inline-size: 100%;
+  }
+
+  .editor-page-frame .editor-workspace,
+  .portfolio-page .portfolio-shell {
+    inline-size: min(100%, calc(100vw - (2 * var(--space-page-inline))));
+    max-inline-size: 100%;
+  }
+
+  .editor-page-frame .empty-ledger > p,
+  .editor-page-frame .editor-empty-steps > li > span:last-child {
+    inline-size: 100%;
+    max-inline-size: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .editor-page-frame .empty-ledger > p {
+    max-inline-size: 24ch;
+  }
+
+  .editor-page-frame .editor-empty-steps > li > span:last-child {
+    min-inline-size: 0;
+    max-inline-size: 25ch;
   }
 }
 

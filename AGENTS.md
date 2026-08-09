@@ -14,13 +14,13 @@ DevJournal is a "Build in Public" platform that turns daily developer logs into 
 - **Animations:** Framer Motion, limited to block-level settle motion described below
 - **State:** Zustand with localStorage persistence in `lib/store.ts`
 - **Icons:** Lucide React with semantic icon choices
-- **Package manager:** pnpm
+- **Package manager:** Bun 1.3.14+
 
 ## Commands
 
-- `pnpm dev`: start the Turbopack development server
-- `pnpm build`: run the production build and TypeScript checks
-- `pnpm lint`: run ESLint
+- `bun run dev`: start the Turbopack development server
+- `bun run build`: run the production build and TypeScript checks
+- `bun run lint`: run ESLint
 
 ## Code Conventions
 

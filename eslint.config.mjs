@@ -17,7 +17,13 @@ const tsParser = require(resolveFromNext("@typescript-eslint/parser"));
 
 const config = [
   {
-    ignores: [".next/**", "node_modules/**"],
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      ".agents/**",
+      ".claude/**",
+      ".npm-cache/**",
+    ],
   },
   {
     files: ["**/*.{js,jsx,ts,tsx,mjs,cjs}"],
