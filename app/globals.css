@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,400..500&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,12 +8,18 @@
  * Two typefaces only: Newsreader for everything written, IBM Plex Mono
  * for everything measured. Structure comes from hairline rules, not boxes.
  * Contrast ratios noted per pair; all text tokens hold WCAG AA on canvas.
+ * Pixel allowlist: hairlines, focus outlines, print radii, optical transforms,
+ * shadows, scrollbars, the 7px timeline node, half-pixel axis centering, and
+ * Framer Motion observer margins. Scalable type and spacing use rem/ch/clamp.
  */
 
 :root,
 :root[data-theme-mode="press"] {
-  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-serif: var(--font-newsreader), Georgia, 'Times New Roman', serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, 'SF Mono', Menlo, monospace;
+  --line-height-prose: 1.65;
+  --font-weight-prose: 400;
+  --tracking-prose: normal;
 
   /* Paper */
   --color-surface-canvas: 246 244 238;  /* #F6F4EE */
@@ -60,17 +64,27 @@
   --easing-standard: cubic-bezier(0.2, 0, 0, 1);
   --easing-expressive: cubic-bezier(0.2, 0, 0, 1);
 
-  --space-cozy-stack-xs: 0.5rem;
-  --space-cozy-stack-sm: 1rem;
-  --space-cozy-stack-md: 1.5rem;
-  --space-cozy-stack-lg: 2.5rem;
-  --space-cozy-section: 6rem;
+  --space-cozy-stack-xs: clamp(0.5rem, calc(0.45rem + 0.2vw), 0.625rem);
+  --space-cozy-stack-sm: clamp(0.875rem, calc(0.75rem + 0.4vw), 1.125rem);
+  --space-cozy-stack-md: clamp(1.25rem, calc(1rem + 0.8vw), 1.75rem);
+  --space-cozy-stack-lg: clamp(2rem, calc(1.5rem + 1.5vw), 3rem);
+  --space-cozy-section: clamp(4rem, calc(2.75rem + 3vw), 6rem);
 
-  --space-compact-stack-xs: 0.375rem;
-  --space-compact-stack-sm: 0.75rem;
-  --space-compact-stack-md: 1rem;
-  --space-compact-stack-lg: 1.75rem;
-  --space-compact-section: 4rem;
+  --space-compact-stack-xs: clamp(0.375rem, calc(0.34rem + 0.1vw), 0.4375rem);
+  --space-compact-stack-sm: clamp(0.625rem, calc(0.55rem + 0.25vw), 0.75rem);
+  --space-compact-stack-md: clamp(0.875rem, calc(0.75rem + 0.4vw), 1.125rem);
+  --space-compact-stack-lg: clamp(1.5rem, calc(1.25rem + 0.75vw), 1.875rem);
+  --space-compact-section: clamp(3rem, calc(2.25rem + 2vw), 4rem);
+
+  --space-page-inline: clamp(1.25rem, calc(0.75rem + 2.5vw), 3rem);
+  --space-page-block: clamp(2rem, calc(1rem + 3vw), 4rem);
+  --timeline-rail-width: clamp(7.5rem, calc(6rem + 3vw), 9rem);
+  --timeline-node-column: 1.5rem;
+  --editor-sidebar-width: clamp(13rem, 24vw, 15rem);
+  --portfolio-sidebar-width: clamp(15rem, 18vw, 17rem);
+  --control-min-size: 2.75rem;
+  --composer-min-block: clamp(14rem, 40dvh, 22rem);
+  --composer-details-min-block: clamp(6rem, 18dvh, 9rem);
 
   --space-stack-xs: var(--space-cozy-stack-xs);
   --space-stack-sm: var(--space-cozy-stack-sm);
@@ -112,6 +126,10 @@
   --color-destructive-base: 217 106 92;
   --color-destructive-soft: 56 32 27;
   --color-destructive-contrast: 233 228 217;
+
+  --line-height-prose: 1.7;
+  --font-weight-prose: 425;
+  --tracking-prose: 0.005em;
 }
 
 :root[data-density="compact"] {
@@ -149,6 +167,19 @@ body {
   color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+p,
+li,
+a {
+  overflow-wrap: anywhere;
 }
 
 a {
@@ -261,7 +292,7 @@ select:focus-visible {
     font-weight: 500;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    padding: 3px 8px;
+    padding: 0.1875rem 0.5rem;
     border: 1px solid currentColor;
     border-radius: 3px;
     background: transparent;
@@ -282,19 +313,14 @@ select:focus-visible {
       color var(--motion-subtle) var(--easing-standard);
   }
 
-  .link-ink:hover {
-    color: rgb(var(--color-accent-base));
-    box-shadow: inset 0 -2px 0 rgb(var(--color-accent-base));
-  }
-
   /* The one vertical margin rule per view, faded at both ends */
   .margin-rule {
     width: 1px;
     background: linear-gradient(
       to bottom,
       transparent,
-      rgb(var(--color-rule) / 0.22) 32px,
-      rgb(var(--color-rule) / 0.22) calc(100% - 32px),
+      rgb(var(--color-rule) / 0.22) 2rem,
+      rgb(var(--color-rule) / 0.22) calc(100% - 2rem),
       transparent
     );
   }
@@ -325,15 +351,6 @@ select:focus-visible {
     border: 1px solid rgb(var(--color-text-secondary));
   }
 
-  .group\/entry:hover .node {
-    background: rgb(var(--color-accent-base));
-  }
-
-  .group\/entry:hover .node-hollow {
-    background: rgb(var(--color-surface-canvas));
-    border-color: rgb(var(--color-accent-base));
-  }
-
   /* Drop cap — public portfolio journal entries only.
      Right padding stays tight so the cap reads as part of its word. */
   .prose-drop-cap > p:first-of-type::first-letter {
@@ -343,6 +360,240 @@ select:focus-visible {
     float: left;
     line-height: 0.82;
     padding: 0.04em 0.05em 0 0;
+  }
+
+  .page-frame {
+    padding-block-start: max(var(--space-page-block), env(safe-area-inset-top));
+    padding-block-end: max(var(--space-page-block), env(safe-area-inset-bottom));
+    padding-inline-start: max(var(--space-page-inline), env(safe-area-inset-left));
+    padding-inline-end: max(var(--space-page-inline), env(safe-area-inset-right));
+  }
+
+  .editor-page-frame {
+    padding-block-start: max(var(--space-page-block), env(safe-area-inset-top));
+    padding-block-end: max(var(--space-page-block), env(safe-area-inset-bottom));
+    padding-inline-start: max(var(--space-page-inline), env(safe-area-inset-left));
+    padding-inline-end: max(var(--space-page-inline), env(safe-area-inset-right));
+  }
+
+  .editor-sidebar {
+    width: var(--editor-sidebar-width);
+    padding-block-start: max(2rem, env(safe-area-inset-top));
+    padding-block-end: max(2rem, env(safe-area-inset-bottom));
+    padding-inline-start: max(1.5rem, env(safe-area-inset-left));
+    padding-inline-end: 1.5rem;
+  }
+
+  .portfolio-container {
+    container: portfolio-shell / inline-size;
+  }
+
+  .portfolio-shell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-stack-lg);
+  }
+
+  .portfolio-sidebar {
+    width: 100%;
+  }
+
+  .timeline-container {
+    container: timeline / inline-size;
+  }
+
+  .timeline-entry {
+    position: relative;
+    break-inside: avoid;
+  }
+
+  .timeline-entry-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+    margin-block-end: 0.75rem;
+  }
+
+  .timeline-entry-node {
+    display: none;
+  }
+
+  .timeline-entry-body {
+    border-inline-start: 1px solid rgb(var(--color-rule) / 0.2);
+    padding-block-end: var(--space-stack-lg);
+    padding-inline-start: 1.25rem;
+  }
+
+  .timeline-time {
+    display: none;
+  }
+
+  .timeline-rule {
+    display: none;
+    inset-block: 0;
+    inset-inline-start: calc(var(--timeline-rail-width) + (var(--timeline-node-column) / 2) - 0.5px);
+    position: absolute;
+  }
+
+  .timeline-keyline {
+    margin-block-end: var(--space-stack-lg);
+  }
+
+  .settings-container {
+    container: settings / inline-size;
+  }
+
+  .settings-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-stack-lg);
+  }
+
+  .control-target {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    min-block-size: var(--control-min-size);
+    min-inline-size: var(--control-min-size);
+    touch-action: manipulation;
+  }
+
+  .control-target:active {
+    opacity: 0.72;
+  }
+
+  .stamp-control {
+    padding-inline: 0.75rem;
+  }
+
+  .modal-backdrop {
+    overflow-y: auto;
+    padding-block-start: max(1rem, env(safe-area-inset-top));
+    padding-block-end: max(1rem, env(safe-area-inset-bottom));
+    padding-inline-start: max(1rem, env(safe-area-inset-left));
+    padding-inline-end: max(1rem, env(safe-area-inset-right));
+  }
+
+  .modal-frame {
+    max-block-size: calc(100dvh - max(1rem, env(safe-area-inset-top)) - max(1rem, env(safe-area-inset-bottom)));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .toast-viewport {
+    position: fixed;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    inset-block-end: max(1rem, env(safe-area-inset-bottom));
+    inset-inline-start: max(0.75rem, env(safe-area-inset-left));
+    inset-inline-end: max(0.75rem, env(safe-area-inset-right));
+    margin-inline-start: auto;
+    max-inline-size: 24rem;
+  }
+
+  .fixed-action {
+    inset-block-end: max(var(--space-page-inline), env(safe-area-inset-bottom));
+    inset-inline-end: max(var(--space-page-inline), env(safe-area-inset-right));
+  }
+
+  .timeline-actions {
+    opacity: 0.6;
+  }
+
+  .timeline-actions:focus-within {
+    opacity: 1;
+  }
+}
+
+@container portfolio-shell (min-width: 60rem) {
+  .portfolio-shell {
+    flex-direction: row;
+    gap: var(--space-section);
+  }
+
+  .portfolio-sidebar {
+    align-self: flex-start;
+    flex-shrink: 0;
+    position: sticky;
+    top: var(--space-page-block);
+    width: var(--portfolio-sidebar-width);
+  }
+}
+
+@container timeline (min-width: 42rem) {
+  .timeline-entry {
+    display: grid;
+    grid-template-columns: var(--timeline-rail-width) var(--timeline-node-column) minmax(0, 1fr);
+  }
+
+  .timeline-entry-meta {
+    display: block;
+    margin-block-end: 0;
+    text-align: right;
+  }
+
+  .timeline-entry-meta-inner {
+    position: sticky;
+    top: 6rem;
+    padding-block-end: 1.5rem;
+  }
+
+  .timeline-entry-node {
+    display: flex;
+    justify-content: center;
+    padding-block-start: 0.5rem;
+  }
+
+  .timeline-entry-body {
+    border: 0;
+    padding-block-end: var(--space-section);
+    padding-inline-start: 0;
+  }
+
+  .timeline-time {
+    display: block;
+    margin-block-start: 0.125rem;
+  }
+
+  .timeline-rule {
+    display: block;
+  }
+
+  .timeline-keyline {
+    margin-inline-start: calc(var(--timeline-rail-width) + var(--timeline-node-column));
+  }
+
+  .timeline-actions {
+    opacity: 0;
+  }
+}
+
+@container settings (min-width: 38rem) {
+  .settings-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (hover: hover) {
+  .link-ink:hover {
+    color: rgb(var(--color-accent-base));
+    box-shadow: inset 0 -2px 0 rgb(var(--color-accent-base));
+  }
+
+  .group\/entry:hover .node {
+    background: rgb(var(--color-accent-base));
+  }
+
+  .group\/entry:hover .node-hollow {
+    background: rgb(var(--color-surface-canvas));
+    border-color: rgb(var(--color-accent-base));
+  }
+
+  .group\/actions:hover .timeline-actions {
+    opacity: 1;
   }
 }
 
@@ -392,7 +643,18 @@ html[data-motion-level="expressive"] {
 }
 
 @media print {
+  @page {
+    margin: 18mm 16mm;
+  }
+
   .print-hidden {
+    display: none !important;
+  }
+
+  button,
+  .control-target,
+  .editor-sidebar,
+  .timeline-actions {
     display: none !important;
   }
 
@@ -405,6 +667,42 @@ html[data-motion-level="expressive"] {
   html,
   body {
     background: #ffffff;
+    overflow: visible;
+  }
+
+  .page-frame,
+  .editor-page-frame {
+    padding: 0;
+  }
+
+  .portfolio-shell,
+  .timeline-entry {
+    display: block;
+  }
+
+  .portfolio-sidebar {
+    position: static;
+    width: auto;
+  }
+
+  .timeline-rule,
+  .timeline-entry-node {
+    display: none;
+  }
+
+  .timeline-entry-meta {
+    margin-block-end: 0.5rem;
+    text-align: start;
+  }
+
+  .timeline-entry-body {
+    border: 0;
+    padding-inline-start: 0;
+  }
+
+  article,
+  .timeline-entry {
+    break-inside: avoid;
   }
 
   :root {

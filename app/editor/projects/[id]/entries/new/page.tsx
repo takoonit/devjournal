@@ -155,7 +155,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
             <div className="mx-auto max-w-3xl">
                 <Link
                     href={`/editor/projects/${project.id}`}
-                    className="mb-8 inline-flex items-center gap-2 font-mono text-label uppercase text-text-muted transition-colors duration-subtle hover:text-text-primary"
+                    className="control-target mb-8 justify-start gap-2 font-mono text-label uppercase text-text-muted transition-colors duration-subtle hover:text-text-primary"
                 >
                     <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.5} /> {project.name}
                 </Link>
@@ -173,7 +173,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                                         aria-pressed={active}
                                         onClick={() => setEntryType(option.value)}
                                         className={cn(
-                                            "stamp transition-colors",
+                                            "control-target stamp stamp-control transition-colors",
                                             active
                                                 ? cn("stamp-pressed", ENTRY_STAMPS[option.value].tone === "text-text-secondary" ? "text-text-primary" : ENTRY_STAMPS[option.value].tone)
                                                 : "text-text-muted hover:text-text-secondary"
@@ -207,7 +207,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             onKeyDown={submitShortcut}
-                            className="-ml-3 min-h-[18rem] w-full max-w-measure resize-y border-0 bg-transparent pl-3 text-prose text-text-primary focus:outline-none focus-visible:shadow-[inset_2px_0_0_rgb(var(--color-accent-base))]"
+                            className="-ml-3 min-h-composer w-full max-w-measure resize-y border-0 bg-transparent pl-3 text-prose text-text-primary focus:outline-none focus-visible:shadow-[inset_2px_0_0_rgb(var(--color-accent-base))]"
                             placeholder="Write the story of what you built, fixed, or learned. It will be published exactly as it reads here."
                         />
                     </div>
@@ -217,7 +217,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                             type="button"
                             onClick={() => setShowDetails((prev) => !prev)}
                             aria-expanded={showDetails}
-                            className="inline-flex items-center gap-1.5 font-mono text-label uppercase text-text-muted transition-colors duration-subtle hover:text-text-secondary"
+                            className="control-target justify-start gap-1.5 font-mono text-label uppercase text-text-muted transition-colors duration-subtle hover:text-text-secondary"
                         >
                             <ChevronDown
                                 className={cn("h-3 w-3 transition-transform duration-subtle", showDetails && "rotate-180")}
@@ -233,7 +233,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                                     value={details}
                                     onChange={(e) => setDetails(e.target.value)}
                                     onKeyDown={submitShortcut}
-                                    className="-ml-3 mt-3 min-h-[7rem] w-full max-w-measure resize-y border-0 bg-transparent pl-3 text-ui text-text-secondary focus:outline-none focus-visible:shadow-[inset_2px_0_0_rgb(var(--color-accent-base))]"
+                                    className="-ml-3 mt-3 min-h-composer-details w-full max-w-measure resize-y border-0 bg-transparent pl-3 text-ui text-text-secondary focus:outline-none focus-visible:shadow-[inset_2px_0_0_rgb(var(--color-accent-base))]"
                                     placeholder="Optional tags, links, context, or attachment notes..."
                                 />
                             </>
@@ -260,7 +260,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                             <button
                                 type="submit"
                                 disabled={!canSubmit || isSubmitting}
-                                className="inline-flex items-center gap-2 rounded border border-transparent bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft disabled:cursor-not-allowed disabled:border-surface-border disabled:bg-surface-base disabled:text-text-muted"
+                                className="control-target gap-2 rounded border border-transparent bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft disabled:cursor-not-allowed disabled:border-surface-border disabled:bg-surface-base disabled:text-text-muted"
                             >
                                 {isSubmitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.5} /> : null}
                                 Save Entry

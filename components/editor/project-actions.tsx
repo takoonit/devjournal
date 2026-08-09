@@ -13,7 +13,7 @@ export function ProjectActions({ projectId }: ProjectActionsProps) {
     return (
         <button
             onClick={() => exportSelectedProjects([projectId])}
-            className="inline-flex items-center gap-2 rounded border border-surface-border bg-transparent px-3 py-1.5 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+            className="control-target gap-2 rounded border border-surface-border bg-transparent px-3 py-1.5 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
             title="Export project journal as .devjournal"
         >
             <FolderOutput className="h-3.5 w-3.5" strokeWidth={1.5} />

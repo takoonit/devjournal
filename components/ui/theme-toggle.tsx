@@ -25,7 +25,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
         <button
             type="button"
             onClick={() => updateUiPreferences({ themeMode: ink ? "press" : "ink" })}
-            className={`inline-flex items-center gap-2 font-mono text-label uppercase text-text-muted transition-colors duration-subtle hover:text-accent ${className}`}
+            className={`control-target justify-start gap-2 font-mono text-label uppercase text-text-muted transition-colors duration-subtle hover:text-accent ${className}`}
             aria-label={`Switch to ${nextLabel}`}
         >
             <Icon className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />

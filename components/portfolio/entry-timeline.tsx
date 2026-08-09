@@ -57,7 +57,7 @@ export function EntryTimeline({ entries }: { entries: Entry[] }) {
                             type="button"
                             onClick={() => setFilter(item.value)}
                             aria-pressed={active}
-                            className={cn("stamp transition-colors", active && "stamp-pressed", tone)}
+                            className={cn("control-target stamp stamp-control transition-colors", active && "stamp-pressed", tone)}
                         >
                             {item.label}
                         </button>
@@ -72,18 +72,17 @@ export function EntryTimeline({ entries }: { entries: Entry[] }) {
                     </p>
                 </div>
             ) : (
-                <div className="relative">
+                <div className="timeline-container relative">
                     {/* The one vertical rule this view is allowed */}
                     <div
-                        className="margin-rule absolute inset-y-0 hidden md:block"
-                        style={{ left: "calc(9.75rem - 0.5px)" }}
+                        className="timeline-rule margin-rule"
                         aria-hidden="true"
                     />
 
                     {years.map((year) => (
                         <section key={year} className="relative">
                             <span
-                                className="pointer-events-none absolute right-0 top-8 select-none font-serif text-[5.5rem] font-light leading-none text-text-primary/[0.07]"
+                                className="pointer-events-none absolute right-0 top-8 select-none font-serif text-folio text-text-primary/[0.07]"
                                 aria-hidden="true"
                             >
                                 {year}
@@ -91,7 +90,7 @@ export function EntryTimeline({ entries }: { entries: Entry[] }) {
 
                             {Object.keys(groupedEntries[year]).map((month) => (
                                 <div key={`${year}-${month}`}>
-                                    <div className="keyline mb-10 md:ml-[10.5rem]">
+                                    <div className="timeline-keyline keyline">
                                         <h2 className="font-mono text-label uppercase text-text-secondary">
                                             {month} {year}
                                         </h2>

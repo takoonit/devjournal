@@ -8,9 +8,9 @@ export default async function PortfolioPage() {
     const { projects, user } = await getPublicPortfolioOverview();
 
     return (
-        <div className="min-h-screen px-6 py-12 lg:px-12 lg:py-16">
-            <div className="mx-auto max-w-page">
-                <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
+        <div className="page-frame min-h-screen">
+            <div className="portfolio-container mx-auto max-w-page">
+                <div className="portfolio-shell">
                     <BioSidebarStatic user={user} />
 
                     <main className="min-w-0 flex-1">

@@ -21,7 +21,7 @@ export function BioSidebarStatic({ user }: BioSidebarStaticProps) {
     const links = Object.entries(user.socialLinks).filter(([platform, link]) => Boolean(link) && SOCIAL_LABELS[platform]);
 
     return (
-        <aside className="w-full lg:sticky lg:top-12 lg:w-[17rem] lg:shrink-0 lg:self-start">
+        <aside className="portfolio-sidebar">
             <div className="rule-oxford">
                 <p className="font-mono text-label uppercase text-text-muted">Build in Public</p>
                 <h1 className="mt-4 font-serif text-display text-text-primary">{user.name}</h1>
@@ -52,10 +52,10 @@ export function BioSidebarStatic({ user }: BioSidebarStaticProps) {
                 </ul>
             )}
 
-            <div className="mt-10 space-y-3 border-t border-rule/15 pt-5 print-hidden">
+            <div className="mt-10 flex flex-col items-start gap-3 border-t border-rule/15 pt-5 print-hidden">
                 <Link
                     href="/editor"
-                    className="block font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:text-accent"
+                    className="control-target justify-start font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:text-accent"
                 >
                     Open the editor →
                 </Link>

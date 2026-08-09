@@ -111,7 +111,7 @@ export default function NewProjectPage() {
                         <button
                             type="button"
                             onClick={addTech}
-                            className="rounded-md border border-surface-border px-3.5 text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                            className="control-target rounded-md border border-surface-border px-3.5 text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
                             aria-label="Add technology"
                         >
                             <Plus className="h-4 w-4" strokeWidth={1.5} />
@@ -128,7 +128,7 @@ export default function NewProjectPage() {
                                     <button
                                         type="button"
                                         onClick={() => removeTech(tech)}
-                                        className="text-text-muted transition-colors duration-subtle hover:text-destructive"
+                                        className="control-target -my-2 -mr-2 text-text-muted transition-colors duration-subtle hover:text-destructive"
                                         aria-label={`Remove ${tech}`}
                                     >
                                         <X className="h-3 w-3" strokeWidth={1.5} />
@@ -163,7 +163,7 @@ export default function NewProjectPage() {
                             onClick={() => setFormData({ ...formData, status: "in-progress" })}
                             aria-pressed={formData.status === "in-progress"}
                             className={cn(
-                                "stamp",
+                                "control-target stamp stamp-control",
                                 formData.status === "in-progress"
                                     ? "stamp-pressed text-text-primary"
                                     : "text-text-muted hover:text-text-secondary"
@@ -176,7 +176,7 @@ export default function NewProjectPage() {
                             onClick={() => setFormData({ ...formData, status: "shipped" })}
                             aria-pressed={formData.status === "shipped"}
                             className={cn(
-                                "stamp",
+                                "control-target stamp stamp-control",
                                 formData.status === "shipped"
                                     ? "stamp-pressed text-positive"
                                     : "text-text-muted hover:text-text-secondary"
@@ -190,13 +190,13 @@ export default function NewProjectPage() {
                 <div className="flex items-center gap-3 border-t border-rule/15 pt-7">
                     <button
                         type="submit"
-                        className="rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
+                        className="control-target rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
                     >
                         Create Project
                     </button>
                     <Link
                         href="/editor"
-                        className="rounded border border-surface-border px-5 py-2.5 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                        className="control-target rounded border border-surface-border px-5 py-2.5 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
                     >
                         Cancel
                     </Link>

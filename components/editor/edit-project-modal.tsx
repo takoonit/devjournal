@@ -95,13 +95,13 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-scrim/45 p-4"
+            className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-scrim/45"
             onClick={onClose}
             role="presentation"
         >
             <div
                 ref={modalRef}
-                className="sheet w-full max-w-md overflow-hidden"
+                className="modal-frame sheet w-full max-w-md"
                 role="dialog"
                 aria-modal="true"
                 aria-label="Edit project"
@@ -111,7 +111,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                     <h2 className="font-mono text-label uppercase text-text-secondary">Edit Project</h2>
                     <button
                         onClick={onClose}
-                        className="p-1 text-text-muted transition-colors duration-subtle hover:text-text-primary"
+                        className="control-target -mr-3 text-text-muted transition-colors duration-subtle hover:text-text-primary"
                         aria-label="Close dialog"
                     >
                         <X className="h-4 w-4" strokeWidth={1.5} />
@@ -171,7 +171,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                                 onClick={() => setStatus("in-progress")}
                                 aria-pressed={status === "in-progress"}
                                 className={cn(
-                                    "stamp",
+                                    "control-target stamp stamp-control",
                                     status === "in-progress"
                                         ? "stamp-pressed text-text-primary"
                                         : "text-text-muted hover:text-text-secondary"
@@ -184,7 +184,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                                 onClick={() => setStatus("shipped")}
                                 aria-pressed={status === "shipped"}
                                 className={cn(
-                                    "stamp",
+                                    "control-target stamp stamp-control",
                                     status === "shipped"
                                         ? "stamp-pressed text-positive"
                                         : "text-text-muted hover:text-text-secondary"
@@ -199,13 +199,13 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                         <button
                             type="button"
                             onClick={onClose}
-                            className="rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                            className="control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="rounded bg-accent px-4 py-2 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
+                            className="control-target rounded bg-accent px-4 py-2 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
                         >
                             Save Changes
                         </button>

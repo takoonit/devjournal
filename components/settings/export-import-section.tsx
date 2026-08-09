@@ -67,7 +67,7 @@ export function ExportImportSection() {
     };
 
     const quietButton =
-        "rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary disabled:cursor-not-allowed disabled:border-rule/10 disabled:text-text-muted disabled:hover:border-rule/10";
+        "control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary disabled:cursor-not-allowed disabled:border-rule/10 disabled:text-text-muted disabled:hover:border-rule/10";
 
     return (
         <section className="mt-16">
@@ -79,9 +79,10 @@ export function ExportImportSection() {
                 Imports are additive — nothing you have is ever overwritten.
             </p>
 
-            <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
-                <div>
-                    <p className="mb-4 font-mono text-label uppercase text-text-muted">Export</p>
+            <div className="settings-container">
+                <div className="settings-grid">
+                    <div>
+                        <p className="mb-4 font-mono text-label uppercase text-text-muted">Export</p>
 
                     {projects.length > 0 ? (
                         <>
@@ -94,7 +95,7 @@ export function ExportImportSection() {
                                             onClick={() => toggleProject(project.id)}
                                             aria-pressed={isSelected}
                                             className={cn(
-                                                "flex w-full items-center gap-3 border-b border-rule/10 px-1 py-2.5 text-left transition-colors duration-subtle last:border-b-0",
+                                                "control-target flex w-full justify-start gap-3 border-b border-rule/10 px-1 py-2.5 text-left transition-colors duration-subtle last:border-b-0",
                                                 isSelected ? "text-text-primary" : "text-text-secondary hover:text-text-primary"
                                             )}
                                         >
@@ -123,26 +124,27 @@ export function ExportImportSection() {
                     ) : (
                         <p className="text-ui italic text-text-muted">Nothing to export yet.</p>
                     )}
-                </div>
+                    </div>
 
-                <div>
-                    <p className="mb-4 font-mono text-label uppercase text-text-muted">Import</p>
-                    <p className="mb-5 max-w-prose text-ui leading-relaxed text-text-secondary">
-                        Bring in single projects or full backups. Duplicate names get a
-                        counter suffix; fresh IDs prevent collisions.
-                    </p>
+                    <div>
+                        <p className="mb-4 font-mono text-label uppercase text-text-muted">Import</p>
+                        <p className="mb-5 max-w-prose text-ui leading-relaxed text-text-secondary">
+                            Bring in single projects or full backups. Duplicate names get a
+                            counter suffix; fresh IDs prevent collisions.
+                        </p>
 
-                    <button onClick={() => fileInputRef.current?.click()} className={quietButton}>
-                        Select .devjournal file
-                    </button>
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleImport}
-                        accept=".devjournal"
-                        className="hidden"
-                        aria-label="Import .devjournal file"
-                    />
+                        <button onClick={() => fileInputRef.current?.click()} className={quietButton}>
+                            Select .devjournal file
+                        </button>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleImport}
+                            accept=".devjournal"
+                            className="hidden"
+                            aria-label="Import .devjournal file"
+                        />
+                    </div>
                 </div>
             </div>
 

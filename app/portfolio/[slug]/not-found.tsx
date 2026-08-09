@@ -7,7 +7,7 @@ export default function NotFound() {
                 <p className="font-mono text-label uppercase text-text-muted">
                     Entry not found
                 </p>
-                <h1 className="rule-oxford mt-4 font-serif text-[5rem] font-light leading-none text-text-primary">
+                <h1 className="rule-oxford mt-4 font-serif text-folio text-text-primary">
                     404<span className="ml-3 align-top text-[0.5em] text-accent" aria-hidden="true">¶</span>
                 </h1>
                 <p className="mt-6 text-prose text-text-secondary">

@@ -26,7 +26,7 @@
 ### S — Style
 - [ ] Apply token/wrapper-first styling.
 - [ ] Reinforce calm focus, readability, and visible focus states.
-- [ ] Apply Noir base + Keith Haring–inspired shape/color accents for energy without clutter.
+- [ ] Maintain the Press Proof publication system and its Midnight Ink reading twin.
 - [ ] Style should reduce overwhelm, not add novelty noise.
 
 ### T — Trigger
@@ -51,6 +51,13 @@
 - [ ] Convert reflections into clear next steps.
 - [ ] Improve visibility of momentum and follow-through.
 - [ ] Keep progress signals supportive, not judgmental.
+
+### Track 4 — Fluid Press Proof
+- [x] Move editorial fonts to optimized Next.js font loading.
+- [x] Centralize fluid type, page spacing, timeline, composer, and control tokens.
+- [x] Make portfolio, timeline, and settings composition respond to container width.
+- [x] Preserve editor actions below desktop width, including project import.
+- [x] Complete build, detector, responsive, zoom, theme, density, motion, and print verification.
 
 ---
 

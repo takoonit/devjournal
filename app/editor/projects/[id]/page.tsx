@@ -148,7 +148,7 @@ export default function ProjectDetailPage({
     let entryIndex = 0;
 
     return (
-        <div className="max-w-4xl">
+        <div className="max-w-page">
             {/* Project masthead */}
             <header className="rule-oxford mb-10">
                 <div className="flex flex-wrap items-start justify-between gap-4">
@@ -156,14 +156,14 @@ export default function ProjectDetailPage({
                     <div className="flex items-center gap-1">
                         <button
                             onClick={() => setIsEditModalOpen(true)}
-                            className="p-2.5 text-text-muted transition-colors duration-subtle hover:text-accent md:p-2"
+                            className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
                             aria-label="Edit project"
                         >
                             <Pencil className="h-4 w-4" strokeWidth={1.5} />
                         </button>
                         <button
                             onClick={() => setShowDeleteConfirm(true)}
-                            className="p-2.5 text-text-muted transition-colors duration-subtle hover:text-destructive md:p-2"
+                            className="control-target text-text-muted transition-colors duration-subtle hover:text-destructive"
                             aria-label="Delete project"
                         >
                             <Trash2 className="h-4 w-4" strokeWidth={1.5} />
@@ -193,14 +193,14 @@ export default function ProjectDetailPage({
             <div className="mb-14 flex flex-wrap items-center gap-3">
                 <Link
                     href={`/editor/projects/${project.id}/entries/new`}
-                    className="rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
+                    className="control-target rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
                 >
                     New Entry
                 </Link>
                 {hasDraft && (
                     <Link
                         href={`/editor/projects/${project.id}/entries/new`}
-                        className="inline-flex items-center gap-2 rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                        className="control-target gap-2 rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
                     >
                         <RotateCcw className="h-3 w-3" strokeWidth={1.5} />
                         Resume draft
@@ -225,26 +225,25 @@ export default function ProjectDetailPage({
                     </p>
                 </div>
             ) : (
-                <div className="relative">
+                <div className="timeline-container relative">
                     <div
-                        className="margin-rule absolute inset-y-0 hidden md:block"
-                        style={{ left: "calc(9.75rem - 0.5px)" }}
+                        className="timeline-rule margin-rule"
                         aria-hidden="true"
                     />
 
                     {years.map((year) =>
                         Object.keys(groupedEntries[year]).map((month) => (
                             <div key={`${year}-${month}`}>
-                                <div className="keyline mb-10 md:ml-[10.5rem]">
+                                <div className="timeline-keyline keyline">
                                     <h2>{month} {year}</h2>
                                 </div>
                                 {groupedEntries[year][month].map((entry) => (
                                     <Reveal key={entry.id} index={entryIndex++}>
                                         <div className="group/actions relative">
-                                            <div className="absolute right-0 top-0 z-10 flex items-center gap-0.5 opacity-60 transition-opacity duration-subtle focus-within:opacity-100 md:opacity-0 md:group-hover/actions:opacity-100">
+                                            <div className="timeline-actions absolute right-0 top-0 z-10 flex items-center gap-0.5 transition-opacity duration-subtle">
                                                 <button
                                                     onClick={() => toggleEntryVisibility(entry.id, entry.isPublic)}
-                                                    className="p-2.5 text-text-muted transition-colors duration-subtle hover:text-text-primary md:p-2"
+                                                    className="control-target text-text-muted transition-colors duration-subtle hover:text-text-primary"
                                                     aria-label={entry.isPublic ? "Set entry to private" : "Set entry to public"}
                                                 >
                                                     {entry.isPublic
@@ -253,14 +252,14 @@ export default function ProjectDetailPage({
                                                 </button>
                                                 <Link
                                                     href={`/editor/projects/${project.id}/entries/${entry.id}/edit`}
-                                                    className="p-2.5 text-text-muted transition-colors duration-subtle hover:text-accent md:p-2"
+                                                    className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
                                                     aria-label={`Edit entry: ${entry.title}`}
                                                 >
                                                     <Pencil className="h-4 w-4" strokeWidth={1.5} />
                                                 </Link>
                                                 <button
                                                     onClick={() => setEntryToDelete(entry.id)}
-                                                    className="p-2.5 text-text-muted transition-colors duration-subtle hover:text-destructive md:p-2"
+                                                    className="control-target text-text-muted transition-colors duration-subtle hover:text-destructive"
                                                     aria-label={`Delete entry: ${entry.title}`}
                                                 >
                                                     <Trash2 className="h-4 w-4" strokeWidth={1.5} />
@@ -279,13 +278,13 @@ export default function ProjectDetailPage({
             {/* Delete Project Modal */}
             {showDeleteConfirm && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-scrim/45 p-4"
+                    className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-scrim/45"
                     onClick={() => setShowDeleteConfirm(false)}
                     role="presentation"
                 >
                     <div
                         ref={deleteModalRef}
-                        className="sheet w-full max-w-md p-7"
+                        className="modal-frame sheet w-full max-w-md p-7"
                         role="alertdialog"
                         aria-modal="true"
                         aria-labelledby="delete-project-title"
@@ -302,13 +301,13 @@ export default function ProjectDetailPage({
                         <div className="mt-7 flex justify-end gap-3 border-t border-rule/15 pt-5">
                             <button
                                 onClick={() => setShowDeleteConfirm(false)}
-                                className="rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                                className="control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleDeleteProject}
-                                className="rounded bg-destructive px-4 py-2 font-mono text-label uppercase text-destructive-contrast transition-colors duration-subtle hover:opacity-90"
+                                className="control-target rounded bg-destructive px-4 py-2 font-mono text-label uppercase text-destructive-contrast transition-colors duration-subtle hover:opacity-90"
                             >
                                 Delete
                             </button>
@@ -320,13 +319,13 @@ export default function ProjectDetailPage({
             {/* Delete Entry Confirmation Modal */}
             {entryToDelete && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-scrim/45 p-4"
+                    className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-scrim/45"
                     onClick={() => setEntryToDelete(null)}
                     role="presentation"
                 >
                     <div
                         ref={entryDeleteModalRef}
-                        className="sheet w-full max-w-md p-7"
+                        className="modal-frame sheet w-full max-w-md p-7"
                         role="alertdialog"
                         aria-modal="true"
                         aria-labelledby="delete-entry-title"
@@ -342,13 +341,13 @@ export default function ProjectDetailPage({
                         <div className="mt-7 flex justify-end gap-3 border-t border-rule/15 pt-5">
                             <button
                                 onClick={() => setEntryToDelete(null)}
-                                className="rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                                className="control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleDeleteEntry}
-                                className="rounded bg-destructive px-4 py-2 font-mono text-label uppercase text-destructive-contrast transition-colors duration-subtle hover:opacity-90"
+                                className="control-target rounded bg-destructive px-4 py-2 font-mono text-label uppercase text-destructive-contrast transition-colors duration-subtle hover:opacity-90"
                             >
                                 Delete
                             </button>

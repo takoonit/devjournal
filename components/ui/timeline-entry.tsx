@@ -35,25 +35,25 @@ export function TimelineEntry({ entry, dropCap = false, showVisibility = false }
     const withDropCap = dropCap && entryType === "journal" && content.length > 140;
 
     return (
-        <article className="group/entry relative md:grid md:grid-cols-[9rem_1.5rem_minmax(0,1fr)]">
+        <article className="timeline-entry group/entry">
             {/* Rail: everything measured, right-aligned, tracking the reader */}
-            <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 md:mb-0 md:block md:text-right">
-                <div className="md:sticky md:top-24 md:pb-6">
+            <div className="timeline-entry-meta">
+                <div className="timeline-entry-meta-inner">
                     <time
                         dateTime={entry.createdAt}
                         className="block font-mono text-meta tabular-nums text-text-secondary"
                     >
                         {dateLine}
                     </time>
-                    <span className="hidden font-mono text-meta tabular-nums text-text-muted md:mt-0.5 md:block">
+                    <span className="timeline-time font-mono text-meta tabular-nums text-text-muted">
                         {timeLine}
                         {minutes >= 2 ? ` · ${minutes} min` : ""}
                     </span>
-                    <div className="md:mt-2.5">
+                    <div className="mt-2.5">
                         <TypeStamp type={entryType} />
                     </div>
                     {isPrivate ? (
-                        <span className="block font-mono text-label uppercase text-text-muted md:mt-2">
+                        <span className="mt-2 block font-mono text-label uppercase text-text-muted">
                             Private
                         </span>
                     ) : null}
@@ -61,12 +61,12 @@ export function TimelineEntry({ entry, dropCap = false, showVisibility = false }
             </div>
 
             {/* Node on the rule */}
-            <div className="hidden justify-center pt-2 md:flex" aria-hidden="true">
+            <div className="timeline-entry-node" aria-hidden="true">
                 <span className={cn("node", isPrivate && "node-hollow")} />
             </div>
 
             {/* The measure */}
-            <div className="border-l border-rule/20 pb-10 pl-5 md:border-0 md:pb-14 md:pl-0">
+            <div className="timeline-entry-body">
                 <h3 className="text-title text-text-primary">{entry.title}</h3>
                 <div className={cn("mt-3 max-w-measure", withDropCap && "prose-drop-cap")}>
                     <p className="whitespace-pre-wrap text-prose text-text-primary/90">

@@ -18,16 +18,16 @@ export default async function ProjectDetailPage({
     }
 
     return (
-        <div className="min-h-screen px-6 py-12 lg:px-12 lg:py-16">
-            <div className="mx-auto max-w-page">
+        <div className="page-frame min-h-screen">
+            <div className="portfolio-container mx-auto max-w-page">
                 <Breadcrumbs items={[{ label: "Portfolio", href: "/portfolio" }, { label: project.name }]} />
-                <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
+                <div className="portfolio-shell">
                     <BioSidebarStatic user={user} />
 
                     <main className="min-w-0 flex-1">
                         <header className="rule-oxford mb-14">
                             <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
-                                <h1 className="font-serif text-display text-text-primary">{project.name}</h1>
+                                <h1 className="max-w-measure font-serif text-display text-text-primary">{project.name}</h1>
                                 <StatusStamp status={project.status} />
                             </div>
 
@@ -39,7 +39,7 @@ export default async function ProjectDetailPage({
 
                             <div className="mt-5 flex flex-wrap items-baseline gap-x-5 gap-y-2 font-mono text-meta text-text-muted">
                                 {project.techStack.length > 0 && (
-                                    <span>{project.techStack.join(" · ")}</span>
+                                    <span className="min-w-0">{project.techStack.join(" · ")}</span>
                                 )}
                                 {project.repositoryLink && (
                                     <a

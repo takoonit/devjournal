@@ -89,19 +89,19 @@ If a change fails a higher layer, revise before implementation.
 - Microcopy that supports progress instead of pressure.
 
 
-### D) Noir × Haring Visual Pattern
-**Intent:** Combine calm-focus dark surfaces with expressive, motivating visual rhythm.
+### D) Fluid Press Proof Visual Pattern
+**Intent:** Combine publication-grade reading rhythm with low-friction editor operation across every available width.
 
 **Do**
-- Keep core surfaces dark and minimal for cognitive stability.
-- Use bold geometric accents (lines, halos, simple motion cues) to guide attention.
-- Use high-contrast accent colors as semantic signals (focus, progress, warning).
-- Keep shape language simple, repeatable, and tokenized.
+- Use Newsreader for written material and IBM Plex Mono for measured material.
+- Use semantic fluid tokens, readable measures, rules, stamps, and restrained red annotation.
+- Let component width drive portfolio, timeline, and settings composition.
+- Keep small print marks inside 44px touch targets.
 
 **Avoid**
-- Dense decorative motifs that compete with writing content.
-- Random color usage without semantic meaning.
-- Motion bursts that distract from typing/reading flow.
+- Decorative effects that compete with writing or published work.
+- Fixed viewport assumptions inside reusable content components.
+- Pixel-based type or scalable spacing outside the documented rendering allowlist.
 
 ---
 
@@ -110,5 +110,5 @@ If a change fails a higher layer, revise before implementation.
 - [ ] User agency is preserved (especially around AI assistance).
 - [ ] Domain/data behavior remains deterministic.
 - [ ] Shared token/component system used first.
-- [ ] Visual treatment follows Noir base + shape/color accent guidance.
+- [ ] Visual treatment follows Press Proof type, rule, measure, and adaptive-layout guidance.
 - [ ] Lint/build validation reported.

@@ -98,7 +98,7 @@ function EditorLayoutContent({
             {/* The index column */}
             <aside
                 className={cn(
-                    "hidden w-60 shrink-0 border-r border-surface-border bg-surface-base px-6 py-8 md:block",
+                    "editor-sidebar hidden shrink-0 border-r border-surface-border bg-surface-base lg:block",
                     uiPreferences.focusMode &&
                         "opacity-30 transition-opacity duration-expressive hover:opacity-100 focus-within:opacity-100"
                 )}
@@ -122,7 +122,7 @@ function EditorLayoutContent({
                             <div className="flex items-center gap-0.5">
                                 <button
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="p-1 text-text-muted transition-colors duration-subtle hover:text-accent"
+                                    className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
                                     title="Import Project"
                                     aria-label="Import project from file"
                                 >
@@ -130,7 +130,7 @@ function EditorLayoutContent({
                                 </button>
                                 <Link
                                     href="/editor/projects/new"
-                                    className="p-1 text-text-muted transition-colors duration-subtle hover:text-accent"
+                                    className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
                                     title="New Project"
                                     aria-label="Create new project"
                                 >
@@ -180,22 +180,30 @@ function EditorLayoutContent({
             </aside>
 
             {/* The working page */}
-            <main id="editor-content" className="min-w-0 flex-1 px-6 py-8 md:px-12 md:py-10">
-                <div className="mb-8 flex items-center justify-between border-b border-rule/15 pb-4 md:hidden">
+            <main id="editor-content" className="editor-page-frame min-w-0 flex-1">
+                <div className="mb-8 flex items-center justify-between border-b border-rule/15 pb-4 lg:hidden">
                     <Link href="/editor" className="font-serif text-subtitle text-text-primary">
                         DevJournal
                     </Link>
                     <div className="flex items-center gap-2">
+                        <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
+                            aria-label="Import project from file"
+                        >
+                            <FolderInput className="h-5 w-5" strokeWidth={1.5} />
+                        </button>
                         <Link
                             href="/editor/projects/new"
-                            className="p-2.5 text-text-muted transition-colors duration-subtle hover:text-accent"
+                            className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
                             aria-label="Create new project"
                         >
                             <Plus className="h-5 w-5" strokeWidth={1.5} />
                         </Link>
                         <Link
                             href="/editor/settings"
-                            className="p-2.5 text-text-muted transition-colors duration-subtle hover:text-accent"
+                            className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
                             aria-label="Settings"
                         >
                             <Settings className="h-5 w-5" strokeWidth={1.5} />

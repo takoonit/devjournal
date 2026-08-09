@@ -39,7 +39,7 @@ function ToggleGroup<T extends string>({
                             aria-pressed={active}
                             onClick={() => onChange(option.value)}
                             className={cn(
-                                "stamp",
+                                "control-target stamp stamp-control",
                                 active
                                     ? "stamp-pressed text-text-primary"
                                     : "text-text-muted hover:text-text-secondary"
@@ -246,11 +246,11 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between gap-4 border-t border-rule/15 pt-6">
                     <button
                         type="submit"
-                        className="rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
+                        className="control-target rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
                     >
                         Save Changes
                     </button>
-                    <Link href="/portfolio" target="_blank" className="link-ink font-mono text-meta">
+                    <Link href="/portfolio" target="_blank" className="control-target link-ink justify-start font-mono text-meta">
                         Preview your public portfolio ↗
                     </Link>
                 </div>

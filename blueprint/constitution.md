@@ -43,7 +43,7 @@ interface Entry {
 - **Activation First:** First interaction should be typing, not configuring.
 - **Progressive Disclosure:** Advanced options appear only when needed.
 - **Cognitive Safety:** Keep interfaces calm, predictable, and low-noise.
-- **Press Proof Visual Language:** The journal is a typeset publication — warm paper (or Midnight Ink) surfaces, Newsreader serif for the written, IBM Plex Mono for the measured, hairline rules over boxes, and one red-ink accent that only annotates (see CLAUDE.md Design Rules).
+- **Press Proof Visual Language:** The journal is a typeset publication with warm paper (or Midnight Ink) surfaces, Newsreader serif for the written, IBM Plex Mono for the measured, hairline rules over boxes, and one red-ink accent that only annotates (see `AGENTS.md`, Design Rules: Press Proof).
 - **Deterministic UI:** Use shared tokens/components before page-specific custom styling.
 
 ## 5) Data & Portability Rules

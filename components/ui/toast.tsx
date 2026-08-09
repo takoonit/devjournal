@@ -141,7 +141,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ addToast }}>
       {children}
-      <div className="fixed bottom-6 right-6 z-50 flex w-full max-w-sm flex-col gap-3 px-3 print-hidden" aria-live="polite" aria-label="Notifications">
+      <div className="toast-viewport print-hidden" aria-live="polite" aria-label="Notifications">
         <AnimatePresence>
           {toasts.map((toast) => (
             <motion.div
@@ -166,7 +166,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 </div>
                 <button
                   onClick={() => removeToast(toast.id)}
-                  className="p-1 text-text-muted transition-colors duration-subtle hover:text-text-primary"
+                  className="control-target -mr-2 -mt-2 text-text-muted transition-colors duration-subtle hover:text-text-primary"
                   aria-label="Dismiss notification"
                 >
                   <X className="h-3.5 w-3.5" strokeWidth={1.5} />
