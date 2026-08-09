@@ -29,6 +29,16 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# local tooling caches and generated agent artifacts
+/.npm-cache/
+/.agents/skills/impeccable/
+/.claude/skills/impeccable/
+/.codex/hooks.json
+/.impeccable/critique/
+
+# pnpm is the canonical package manager
+/bun.lock
+
 # env files
 .env*.local
 .env
