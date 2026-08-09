@@ -67,3 +67,56 @@ test("touch, composer, overlay, and print adaptations have shared utilities", ()
     assert.match(editEntry, /min-h-composer-details/);
     assert.match(toast, /toast-viewport/);
 });
+
+test("timeline actions stay discoverable without hover and do not overlap entry content", () => {
+    const globals = read("app/globals.css");
+    const project = read("app/editor/projects/[id]/page.tsx");
+
+    assert.match(project, /editor-timeline-entry/);
+    assert.doesNotMatch(project, /timeline-actions absolute right-0 top-0/);
+    assert.match(globals, /\.timeline-actions\s*\{[^}]*position:\s*relative/s);
+    assert.match(globals, /@media\s*\(hover:\s*none\),\s*\(pointer:\s*coarse\)[\s\S]*?\.timeline-actions\s*\{[^}]*opacity:\s*1/s);
+    assert.doesNotMatch(globals, /\.timeline-actions\s*\{\s*opacity:\s*0;\s*\}/);
+    assert.match(globals, /\.editor-timeline-entry\s+\.timeline-entry-body\s*\{[^}]*padding-inline-end:/s);
+});
+
+test("navigation and form fields share the 2.75rem interaction floor", () => {
+    const globals = read("app/globals.css");
+    const editorLayout = read("app/editor/layout.tsx");
+    const settings = read("app/editor/settings/page.tsx");
+    const modal = read("components/editor/edit-project-modal.tsx");
+    const newProject = read("app/editor/projects/new/page.tsx");
+    const newEntry = read("app/editor/projects/[id]/entries/new/page.tsx");
+    const editEntry = read("app/editor/projects/[id]/entries/[entryId]/edit/page.tsx");
+    const notFound = read("app/portfolio/[slug]/not-found.tsx");
+
+    assert.match(globals, /\.field-target\s*\{[^}]*min-block-size:\s*var\(--control-min-size\)/s);
+    assert.match(editorLayout, /control-target[^"']*font-serif text-subtitle/);
+    assert.match(editorLayout, /relative flex min-h-control/);
+    assert.match(settings, /field-target w-full/);
+    assert.match(modal, /field-target w-full/);
+    assert.match(newProject, /field-target w-full/);
+    assert.match(newEntry, /field-target[^"']*text-title/);
+    assert.match(editEntry, /field-target[^"']*text-title/);
+    assert.match(notFound, /control-target link-ink/);
+});
+
+test("settings, editor extremes, print, and favicon have explicit adaptations", () => {
+    const globals = read("app/globals.css");
+    const settings = read("app/editor/settings/page.tsx");
+    const editorLayout = read("app/editor/layout.tsx");
+    const project = read("app/editor/projects/[id]/page.tsx");
+    const newEntry = read("app/editor/projects/[id]/entries/new/page.tsx");
+    const icon = read("app/icon.svg");
+
+    assert.match(settings, /<div className="max-w-page">/);
+    assert.match(settings, /<div className="max-w-measure">/);
+    assert.match(globals, /@container\s+settings\s+\(min-width:\s*38rem\)/);
+    assert.match(editorLayout, /editor-workspace mx-auto w-full max-w-page/);
+    assert.match(project, /text-title[^"']*sm:text-display/);
+    assert.match(newEntry, /entry-type-picker/);
+    assert.match(globals, /\.entry-type-picker\s*\{[^}]*overflow-x:\s*auto/s);
+    assert.match(globals, /@media print[\s\S]*?\.text-display\s*\{[^}]*font-size:\s*2rem/s);
+    assert.match(globals, /@media print[\s\S]*?\.timeline-entry-meta-inner\s*\{[^}]*display:\s*flex/s);
+    assert.match(icon, /<svg[^>]*viewBox="0 0 32 32"/);
+});
