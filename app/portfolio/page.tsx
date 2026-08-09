@@ -14,17 +14,19 @@ export default async function PortfolioPage() {
                     <BioSidebarStatic user={user} />
 
                     <main className="min-w-0 flex-1">
-                        <div className="keyline mb-2">
-                            <h2>Projects</h2>
-                        </div>
-                        <p className="mb-10 font-mono text-meta tabular-nums text-text-muted">
-                            <CountUp to={projects.length} />{" "}
-                            {projects.length === 1 ? "build log" : "build logs"}, kept in public
-                        </p>
+                        <header className="portfolio-masthead masthead-block rule-oxford mb-12">
+                            <h2 className="masthead-title text-text-primary">Projects</h2>
+                            <div className="masthead-meta">
+                                <p className="font-mono text-meta tabular-nums text-text-muted">
+                                    <CountUp to={projects.length} />{" "}
+                                    {projects.length === 1 ? "build log" : "build logs"}, kept in public
+                                </p>
+                            </div>
+                        </header>
 
                         {projects.length === 0 ? (
-                            <div className="border-t border-rule/15 py-10">
-                                <p className="text-subtitle italic text-text-secondary">
+                            <div className="empty-ledger">
+                                <p className="max-w-measure text-title italic text-text-secondary">
                                     The first entry is still unwritten.
                                 </p>
                                 <p className="mt-3 max-w-prose text-ui text-text-muted">
@@ -33,7 +35,7 @@ export default async function PortfolioPage() {
                                 </p>
                             </div>
                         ) : (
-                            <div className="border-b border-rule/15">
+                            <div className="project-ledger portfolio-project-ledger">
                                 {projects.map((project, index) => (
                                     <Reveal key={project.id} index={index}>
                                         <ProjectRow project={project} href={`/portfolio/${project.slug}`} />

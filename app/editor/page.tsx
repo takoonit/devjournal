@@ -28,28 +28,30 @@ export default function EditorPage() {
     const dateline = `${now.toLocaleDateString("en-GB", { weekday: "long" })} · ${now.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`.toUpperCase();
 
     return (
-        <div className="max-w-measure lg:max-w-3xl">
-            <header className="mb-10">
-                <p className="font-mono text-label uppercase text-text-muted">{dateline}</p>
-                <h1 className="mt-2 font-serif text-display text-text-primary">Projects</h1>
-                <p className="mt-3 font-mono text-meta tabular-nums text-text-muted">
-                    {projects.length} {projects.length === 1 ? "project" : "projects"} ·{" "}
-                    {entries.length} {entries.length === 1 ? "entry" : "entries"} on record
-                </p>
+        <div className="max-w-page">
+            <header className="editor-masthead masthead-block rule-oxford mb-12">
+                <h1 className="masthead-title text-text-primary">Projects</h1>
+                <div className="masthead-meta font-mono text-text-muted">
+                    <p className="text-label uppercase">{dateline}</p>
+                    <p className="text-meta tabular-nums">
+                        {projects.length} {projects.length === 1 ? "project" : "projects"} ·{" "}
+                        {entries.length} {entries.length === 1 ? "entry" : "entries"} on record
+                    </p>
+                </div>
             </header>
 
             {projects.length === 0 ? (
-                <div className="border-y border-rule/15 py-12">
-                    <p className="mb-8 text-subtitle italic text-text-secondary">
+                <div className="empty-ledger">
+                    <p className="mb-8 max-w-measure text-title italic text-text-secondary">
                         Every journal starts with an empty page.
                     </p>
-                    <ol className="mb-10 space-y-4">
+                    <ol className="editor-empty-steps mb-10 max-w-measure">
                         {EMPTY_STEPS.map((step, index) => (
                             <li key={step} className="flex items-baseline gap-4">
-                                <span className="font-mono text-meta tabular-nums text-text-muted">
+                                <span className="font-mono text-meta tabular-nums text-accent">
                                     {String(index + 1).padStart(2, "0")}
                                 </span>
-                                <span className="text-ui text-text-secondary">{step}</span>
+                                <span className="text-subtitle text-text-secondary">{step}</span>
                             </li>
                         ))}
                     </ol>
@@ -61,7 +63,7 @@ export default function EditorPage() {
                     </Link>
                 </div>
             ) : (
-                <div className="border-b border-rule/15">
+                <div className="project-ledger editor-project-ledger">
                     {projects.map((project, index) => (
                         <Reveal key={project.id} index={index}>
                             <ProjectRow

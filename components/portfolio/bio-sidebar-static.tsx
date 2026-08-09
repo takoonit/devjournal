@@ -24,7 +24,7 @@ export function BioSidebarStatic({ user }: BioSidebarStaticProps) {
         <aside className="portfolio-sidebar">
             <div className="rule-oxford">
                 <p className="font-mono text-label uppercase text-text-muted">Build in Public</p>
-                <h1 className="mt-4 font-serif text-display text-text-primary">{user.name}</h1>
+                <h1 className="mt-4 font-serif text-title text-text-primary">{user.name}</h1>
                 <p className="mt-2 font-mono text-label uppercase text-text-secondary">{user.role}</p>
             </div>
 

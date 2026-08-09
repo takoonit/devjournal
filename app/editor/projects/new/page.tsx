@@ -50,8 +50,8 @@ export default function NewProjectPage() {
 
     return (
         <div className="max-w-measure">
-            <header className="rule-oxford mb-10">
-                <h1 className="font-serif text-display text-text-primary">New Project</h1>
+            <header className="masthead-block rule-oxford mb-10">
+                <h1 className="masthead-title text-text-primary">New Project</h1>
                 <p className="mt-2 text-ui text-text-secondary">
                     Open a fresh section of the journal.
                 </p>

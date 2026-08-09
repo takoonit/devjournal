@@ -1,6 +1,7 @@
 import { Project } from "@/lib/types";
 import { StatusStamp } from "@/components/ui/stamp";
 import { formatDate } from "@/lib/utils";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 interface ProjectRowProps {
@@ -22,21 +23,22 @@ export function ProjectRow({ project, href, entryCount }: ProjectRowProps) {
         .join(" · ");
 
     return (
-        <div className="group relative border-t border-rule/15 py-7 transition-colors duration-subtle hover:bg-surface-base/70">
+        <div className="project-row group relative border-t border-rule/15 transition-colors duration-subtle">
             <Link
                 href={href}
                 aria-label={`Open ${project.name} build log`}
                 className="absolute inset-0 z-10"
             />
 
-            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                <h3 className="font-serif text-title text-text-primary transition-colors duration-subtle group-hover:text-accent">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <h3 className="project-row-title font-serif text-title text-text-primary transition-colors duration-subtle">
                     {project.name}
                 </h3>
                 <span className="leader hidden sm:block" aria-hidden="true" />
                 <span className="shrink-0 font-mono text-meta tabular-nums text-text-muted">
                     {figures}
                 </span>
+                <ArrowUpRight className="project-row-arrow h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
             </div>
 
             <p className="mt-3 max-w-measure text-ui leading-relaxed text-text-secondary">

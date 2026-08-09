@@ -102,8 +102,8 @@ export default function SettingsPage() {
     return (
         <div className="max-w-page">
             <div className="max-w-measure">
-                <header className="rule-oxford mb-12">
-                    <h1 className="font-serif text-display text-text-primary">Settings</h1>
+                <header className="masthead-block rule-oxford mb-12">
+                    <h1 className="masthead-title text-text-primary">Settings</h1>
                     <p className="mt-2 text-ui text-text-secondary">
                         The colophon: who you are, and how the journal is set.
                     </p>

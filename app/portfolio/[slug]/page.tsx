@@ -25,9 +25,9 @@ export default async function ProjectDetailPage({
                     <BioSidebarStatic user={user} />
 
                     <main className="min-w-0 flex-1">
-                        <header className="rule-oxford mb-14">
+                        <header className="masthead-block rule-oxford mb-14">
                             <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
-                                <h1 className="print-display max-w-measure font-serif text-display text-text-primary print:!text-[2rem] print:!leading-[1.1]">{project.name}</h1>
+                                <h1 className="masthead-title print-display max-w-measure text-text-primary print:!text-[2rem] print:!leading-[1.1]">{project.name}</h1>
                                 <StatusStamp status={project.status} />
                             </div>
 

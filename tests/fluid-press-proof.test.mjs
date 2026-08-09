@@ -113,7 +113,7 @@ test("settings, editor extremes, print, and favicon have explicit adaptations", 
     assert.match(settings, /<div className="max-w-measure">/);
     assert.match(globals, /@container\s+settings\s+\(min-width:\s*38rem\)/);
     assert.match(editorLayout, /editor-workspace mx-auto w-full max-w-page/);
-    assert.match(project, /text-title[^"']*sm:text-display/);
+    assert.match(project, /masthead-title/);
     assert.match(project, /print-display/);
     assert.match(project, /print:!text-\[2rem\]/);
     assert.match(newEntry, /entry-type-picker/);
