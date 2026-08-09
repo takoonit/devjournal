@@ -760,7 +760,8 @@ html[data-motion-level="expressive"] {
     padding-inline-end: 0;
   }
 
-  .text-display {
+  .text-display,
+  .print-display {
     font-size: 2rem !important;
     line-height: 1.1 !important;
   }
