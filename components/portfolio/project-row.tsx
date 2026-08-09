@@ -30,15 +30,18 @@ export function ProjectRow({ project, href, entryCount }: ProjectRowProps) {
                 className="absolute inset-0 z-10"
             />
 
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
                 <h3 className="project-row-title font-serif text-title text-text-primary transition-colors duration-subtle">
                     {project.name}
                 </h3>
+                <ArrowUpRight className="project-row-arrow mt-1 h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
+            </div>
+
+            <div className="mt-3 flex items-baseline gap-4">
                 <span className="leader hidden sm:block" aria-hidden="true" />
                 <span className="shrink-0 font-mono text-meta tabular-nums text-text-muted">
                     {figures}
                 </span>
-                <ArrowUpRight className="project-row-arrow h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
             </div>
 
             <p className="mt-3 max-w-measure text-ui leading-relaxed text-text-secondary">

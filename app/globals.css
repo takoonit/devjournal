@@ -248,12 +248,16 @@ select:focus-visible {
   /* A full-width issue masthead: the title carries the visual weight while
      measured metadata sits at the edge like a printer's notation. */
   .masthead-block {
-    align-items: end;
     border-block-end: 1px solid rgb(var(--color-rule) / 0.22);
+    padding-block-end: clamp(1.5rem, calc(1rem + 1.5vw), 2.5rem);
+  }
+
+  .portfolio-masthead,
+  .editor-masthead {
+    align-items: end;
     display: grid;
     gap: var(--space-stack-md);
     grid-template-columns: minmax(0, 1fr);
-    padding-block-end: clamp(1.5rem, calc(1rem + 1.5vw), 2.5rem);
   }
 
   .masthead-title {
@@ -262,7 +266,7 @@ select:focus-visible {
     font-weight: 400;
     letter-spacing: -0.025em;
     line-height: 0.94;
-    max-inline-size: 12ch;
+    max-inline-size: 18ch;
     text-wrap: balance;
   }
 
@@ -711,7 +715,8 @@ select:focus-visible {
 }
 
 @media (min-width: 42rem) {
-  .masthead-block {
+  .portfolio-masthead,
+  .editor-masthead {
     grid-template-columns: minmax(0, 1fr) minmax(12rem, auto);
   }
 

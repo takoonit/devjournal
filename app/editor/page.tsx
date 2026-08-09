@@ -48,7 +48,7 @@ export default function EditorPage() {
                     <ol className="editor-empty-steps mb-10 max-w-measure">
                         {EMPTY_STEPS.map((step, index) => (
                             <li key={step} className="flex items-baseline gap-4">
-                                <span className="font-mono text-meta tabular-nums text-accent">
+                                <span className="w-6 shrink-0 font-mono text-meta tabular-nums text-accent">
                                     {String(index + 1).padStart(2, "0")}
                                 </span>
                                 <span className="text-subtitle text-text-secondary">{step}</span>
