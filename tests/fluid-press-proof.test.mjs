@@ -122,3 +122,23 @@ test("settings, editor extremes, print, and favicon have explicit adaptations", 
     assert.match(globals, /@media print[\s\S]*?\.timeline-entry-meta-inner\s*\{[^}]*display:\s*flex/s);
     assert.match(icon, /<svg[^>]*viewBox="0 0 32 32"/);
 });
+
+test("portfolio and editor use a shared bold masthead with surface-specific ledgers", () => {
+    const globals = read("app/globals.css");
+    const portfolio = read("app/portfolio/page.tsx");
+    const editor = read("app/editor/page.tsx");
+    const bio = read("components/portfolio/bio-sidebar-static.tsx");
+    const projectRow = read("components/portfolio/project-row.tsx");
+
+    assert.match(globals, /\.masthead-block\s*\{/);
+    assert.match(globals, /\.masthead-title\s*\{/);
+    assert.match(globals, /\.project-ledger\s*\{/);
+    assert.match(portfolio, /portfolio-masthead/);
+    assert.match(portfolio, /portfolio-project-ledger/);
+    assert.match(editor, /editor-masthead/);
+    assert.match(editor, /editor-project-ledger/);
+    assert.match(bio, /font-serif text-title text-text-primary/);
+    assert.doesNotMatch(bio, /font-serif text-display text-text-primary/);
+    assert.match(projectRow, /project-row-title/);
+    assert.match(projectRow, /ArrowUpRight/);
+});
