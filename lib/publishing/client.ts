@@ -8,6 +8,8 @@ export interface OwnerConnection {
     connected: boolean;
     owner: boolean;
     email?: string;
+    userId?: string;
+    error?: string;
 }
 
 export interface PublishingClientResult {
@@ -20,7 +22,10 @@ export async function getOwnerConnection(): Promise<OwnerConnection> {
     const client = getSupabaseBrowserClient();
     if (!client) return { configured: false, connected: false, owner: false };
 
-    const { data: { session } } = await client.auth.getSession();
+    const { data: { session }, error: sessionError } = await client.auth.getSession();
+    if (sessionError) {
+        return { configured: true, connected: false, owner: false, error: sessionError.message };
+    }
     if (!session) return { configured: true, connected: false, owner: false };
 
     const { data, error } = await client.rpc("is_portfolio_owner");
@@ -29,6 +34,8 @@ export async function getOwnerConnection(): Promise<OwnerConnection> {
         connected: true,
         owner: !error && data === true,
         email: session.user.email,
+        userId: session.user.id,
+        error: error?.message,
     };
 }
 

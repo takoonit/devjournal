@@ -6,6 +6,9 @@ import { Project } from "@/lib/types";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { inputClasses } from "@/components/ui/form-styles";
+import { TechStackField } from "@/components/editor/tech-stack-field";
+import { requestPublishingAction } from "@/lib/publishing/client";
+import { useToast } from "@/components/ui/toast";
 
 interface EditProjectModalProps {
     project: Project;
@@ -15,13 +18,16 @@ interface EditProjectModalProps {
 
 export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalProps) {
     const updateProject = useDevJournalStore((state) => state.updateProject);
+    const entries = useDevJournalStore((state) => state.entries);
+    const { addToast } = useToast();
     const modalRef = useRef<HTMLDivElement>(null);
     const onCloseRef = useRef(onClose);
 
     const [name, setName] = useState(project.name);
     const [description, setDescription] = useState(project.description);
-    const [techStack, setTechStack] = useState(project.techStack.join(", "));
+    const [techStack, setTechStack] = useState(project.techStack);
     const [status, setStatus] = useState<"in-progress" | "shipped">(project.status);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         onCloseRef.current = onClose;
@@ -31,7 +37,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
         if (isOpen) {
             setName(project.name);
             setDescription(project.description);
-            setTechStack(project.techStack.join(", "));
+            setTechStack(project.techStack);
             setStatus(project.status);
         }
     }, [isOpen, project]);
@@ -76,23 +82,32 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
-        const techArray = Array.from(new Set(
-            techStack
-                .split(",")
-                .map((t) => t.trim())
-                .filter((t) => t !== "")
-        ));
-
-        updateProject(project.id, {
-            name,
-            description,
-            techStack: techArray,
+        const updatedProject: Project = {
+            ...project,
+            name: name.trim(),
+            description: description.trim(),
+            techStack,
             status,
-        });
+            updatedAt: new Date().toISOString(),
+        };
+        const hasPublicEntry = entries.some((entry) => entry.projectId === project.id && entry.isPublic);
 
+        if (hasPublicEntry) {
+            const result = await requestPublishingAction({ type: "sync-project", project: updatedProject });
+            if (!result.ok) {
+                setIsSubmitting(false);
+                addToast({ message: result.message, type: "error" });
+                return;
+            }
+        }
+
+        updateProject(project.id, updatedProject);
+        setIsSubmitting(false);
+        addToast({ message: "Project updated.", type: "success" });
         onClose();
     };
 
@@ -152,19 +167,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                         />
                     </div>
 
-                    <div>
-                        <label htmlFor="edit-project-tech" className="mb-2 block font-mono text-label uppercase text-text-secondary">
-                            Tech Stack <span className="normal-case tracking-normal text-text-muted">(comma separated)</span>
-                        </label>
-                        <input
-                            id="edit-project-tech"
-                            type="text"
-                            value={techStack}
-                            onChange={(e) => setTechStack(e.target.value)}
-                            className={cn(inputClasses, "font-mono text-meta")}
-                            placeholder="e.g. React, Next.js, Tailwind"
-                        />
-                    </div>
+                    <TechStackField id="edit-project-tech" value={techStack} onChange={setTechStack} />
 
                     <div>
                         <p className="mb-2 font-mono text-label uppercase text-text-secondary">Status</p>
@@ -208,9 +211,10 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                         </button>
                         <button
                             type="submit"
+                            disabled={isSubmitting}
                             className="control-target rounded bg-accent px-4 py-2 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
                         >
-                            Save Changes
+                            {isSubmitting ? "Saving…" : "Save Changes"}
                         </button>
                     </div>
                 </form>

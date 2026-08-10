@@ -215,6 +215,7 @@ test("shared form and stamp helpers remove reviewed duplication", () => {
     const stamp = read("components/ui/stamp.tsx");
     const newEntry = read("app/editor/projects/[id]/entries/new/page.tsx");
     const editEntry = read("app/editor/projects/[id]/entries/[entryId]/edit/page.tsx");
+    const entryTypePicker = read("components/editor/entry-type-picker.tsx");
 
     assert.match(formStyles, /export const inputClasses/);
     assert.match(newProject, /role=["']group["']\s+aria-label=["']Status["']/);
@@ -222,6 +223,7 @@ test("shared form and stamp helpers remove reviewed duplication", () => {
     assert.match(modal, /const onCloseRef = useRef\(onClose\)/);
     assert.match(modal, /onCloseRef\.current\(\)/);
     assert.match(stamp, /export function getEntryStampControlTone/);
-    assert.match(newEntry, /getEntryStampControlTone\(option\.value, active\)/);
-    assert.match(editEntry, /getEntryStampControlTone\(option\.value, active\)/);
+    assert.match(newEntry, /EntryTypePicker/);
+    assert.match(editEntry, /EntryTypePicker/);
+    assert.match(entryTypePicker, /getEntryStampControlTone\(option\.value, active\)/);
 });

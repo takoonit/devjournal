@@ -666,6 +666,22 @@ select:focus-visible {
     scroll-snap-align: start;
   }
 
+  .entry-type-picker-mobile {
+    display: block;
+  }
+
+  .entry-type-picker-desktop {
+    display: none;
+  }
+
+  .composer-actions {
+    background: rgb(var(--color-surface-raised));
+    bottom: 0;
+    padding-block-end: max(1.25rem, env(safe-area-inset-bottom));
+    position: sticky;
+    z-index: 20;
+  }
+
   .timeline-actions {
     justify-content: flex-end;
     margin-block-end: 0.25rem;
@@ -812,6 +828,20 @@ select:focus-visible {
 }
 
 @media (min-width: 42rem) {
+  .entry-type-picker-mobile {
+    display: none;
+  }
+
+  .entry-type-picker-desktop {
+    display: block;
+  }
+
+  .composer-actions {
+    bottom: auto;
+    padding-block-end: 0;
+    position: static;
+  }
+
   .portfolio-masthead,
   .editor-masthead {
     grid-template-columns: minmax(0, 1fr) minmax(12rem, auto);

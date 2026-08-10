@@ -7,6 +7,8 @@ import { ExportImportSection } from "@/components/settings/export-import-section
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { ArrowUpRight } from "lucide-react";
+import { PublishingSection } from "@/components/settings/publishing-section";
+import { requestPublishingAction } from "@/lib/publishing/client";
 
 const inputClasses =
     "field-target w-full rounded-md border border-surface-border bg-surface-raised px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
@@ -60,11 +62,13 @@ export default function SettingsPage() {
     const updateUser = useDevJournalStore((state) => state.updateUser);
     const uiPreferences = useDevJournalStore((state) => state.uiPreferences);
     const updateUiPreferences = useDevJournalStore((state) => state.updateUiPreferences);
+    const allEntries = useDevJournalStore((state) => state.entries);
 
     const [formData, setFormData] = useState(user);
     const [uiFormData, setUiFormData] = useState<UiPreferences>(uiPreferences);
     const profileDirtyRef = useRef(false);
     const preferencesDirtyRef = useRef(false);
+    const [isSaving, setIsSaving] = useState(false);
     const { addToast } = useToast();
 
     useEffect(() => {
@@ -79,12 +83,22 @@ export default function SettingsPage() {
         }
     }, [uiPreferences]);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSaving(true);
+        if (profileDirtyRef.current && allEntries.some((entry) => entry.isPublic)) {
+            const result = await requestPublishingAction({ type: "sync-profile", profile: formData });
+            if (!result.ok) {
+                setIsSaving(false);
+                addToast({ message: result.message, type: "error" });
+                return;
+            }
+        }
         updateUser(formData);
         updateUiPreferences(uiFormData);
         profileDirtyRef.current = false;
         preferencesDirtyRef.current = false;
+        setIsSaving(false);
         addToast({ message: "Settings saved.", type: "success" });
     };
 
@@ -248,9 +262,10 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between gap-4 border-t border-rule/15 pt-6">
                     <button
                         type="submit"
+                        disabled={isSaving}
                         className="control-target rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
                     >
-                        Save Changes
+                        {isSaving ? "Saving…" : "Save Changes"}
                     </button>
                     <Link href="/portfolio" target="_blank" className="control-target link-ink justify-start font-mono text-meta">
                         Preview your public portfolio
@@ -258,6 +273,9 @@ export default function SettingsPage() {
                     </Link>
                 </div>
                 </form>
+                <div className="mt-14">
+                    <PublishingSection />
+                </div>
             </div>
 
             <ExportImportSection />

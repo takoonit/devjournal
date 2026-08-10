@@ -3,7 +3,7 @@
 - [x] 1.1 Add a Supabase migration that removes first-signup ownership, enforces one explicitly provisioned owner, adds nullable unique `source_id` fields, tightens anonymous project reads, and includes a read-only legacy-row preflight.
 - [x] 1.2 Update Supabase row contracts and focused mapping tests for source identifiers and public write payloads.
 - [x] 1.3 Add a browser Supabase client and owner-session helper using the installed client package and public environment variables.
-- [ ] 1.4 Add the Settings Publishing section for email OTP connection, disconnect, session status, missing-configuration feedback, and retry guidance.
+- [x] 1.4 Add the Settings Publishing section for email OTP connection, disconnect, session status, missing-configuration feedback, and retry guidance.
 - [x] 1.5 Add failing route tests for missing configuration, malformed actions, expired tokens, non-owner tokens, source conflicts, and valid owner mutations.
 - [x] 1.6 Implement the single `/api/publishing` mutation route with boundary validation, bearer-token verification, and existing owner RLS enforcement.
 - [x] 1.7 Implement source-aware profile and project adoption plus entry upsert, update, unpublish, and delete actions without a service-role key.
@@ -13,24 +13,24 @@
 ## 2. Confirmed Publishing UX
 
 - [x] 2.1 Make store creation actions return the created project or entry while preserving current persisted data and import behavior.
-- [ ] 2.2 Add tests proving that new entries default private, a failed publish remains private, and a failed unpublish remains marked public.
-- [ ] 2.3 Split composer submission into `Save private` and `Publish entry`, preserving a private local copy before any remote attempt.
-- [ ] 2.4 Connect entry visibility toggles to remote-first publish and unpublish actions with accurate pending, success, reconnect, conflict, and failure messages.
-- [ ] 2.5 Make edits to confirmed public entries update Supabase before local state and retain the edit draft when the remote update fails.
-- [ ] 2.6 Make public project and profile edits update Supabase before closing or reporting success; keep private-only edits local.
-- [ ] 2.7 Make deletion of public entries and projects remote-first while keeping private deletion local and preserving the existing confirmation dialogs.
-- [ ] 2.8 Replace project-publishing claims with entry-level visibility copy and show `View public page` only when the project has a confirmed public entry.
+- [x] 2.2 Add tests proving that new entries default private, a failed publish remains private, and a failed unpublish remains marked public.
+- [x] 2.3 Split composer submission into `Save private` and `Publish entry`, preserving a private local copy before any remote attempt.
+- [x] 2.4 Connect entry visibility toggles to remote-first publish and unpublish actions with accurate pending, success, reconnect, conflict, and failure messages.
+- [x] 2.5 Make edits to confirmed public entries update Supabase before local state and retain the edit draft when the remote update fails.
+- [x] 2.6 Make public project and profile edits update Supabase before closing or reporting success; keep private-only edits local.
+- [x] 2.7 Make deletion of public entries and projects remote-first while keeping private deletion local and preserving the existing confirmation dialogs.
+- [x] 2.8 Replace project-publishing claims with entry-level visibility copy and show `View public page` only when the project has a confirmed public entry.
 
 ## 3. Authoring Workflow Fixes
 
 - [x] 3.1 Add focused tests for comma and Enter tech parsing, case-insensitive deduplication, local export dates, and created-project routing.
-- [ ] 3.2 Reuse one tech-stack field in project create and edit flows, with token removal and consistent parsing.
-- [ ] 3.3 Route successful project creation directly to the new project record using the returned project ID.
-- [ ] 3.4 Add a mobile selected-TypeStamp summary and `Change type` disclosure while retaining the full desktop picker and keyboard access.
-- [ ] 3.5 Add a safe-area-aware sticky composer action row and matching content clearance for narrow visual viewports.
-- [ ] 3.6 Detect the platform after mount for the shortcut hint while continuing to accept both Meta+Enter and Ctrl+Enter.
+- [x] 3.2 Reuse one tech-stack field in project create and edit flows, with token removal and consistent parsing.
+- [x] 3.3 Route successful project creation directly to the new project record using the returned project ID.
+- [x] 3.4 Add a mobile selected-TypeStamp summary and `Change type` disclosure while retaining the full desktop picker and keyboard access.
+- [x] 3.5 Add a safe-area-aware sticky composer action row and matching content clearance for narrow visual viewports.
+- [x] 3.6 Detect the platform after mount for the shortcut hint while continuing to accept both Meta+Enter and Ctrl+Enter.
 - [x] 3.7 Format global and selected-project export filenames with the user's local `yyyy-MM-dd` date.
-- [ ] 3.8 Move the root redirect into `next.config.ts`, remove the rendered redirect page, and add a regression check for the Cache Components console error.
+- [x] 3.8 Move the root redirect into `next.config.ts`, remove the rendered redirect page, and add a regression check for the Cache Components console error.
 
 ## 4. Editorial Surface Variation
 

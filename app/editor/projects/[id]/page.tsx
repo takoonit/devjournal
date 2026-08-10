@@ -12,6 +12,7 @@ import { formatDate, groupEntriesByYearMonth } from "@/lib/utils";
 import { ProjectActions } from "@/components/editor/project-actions";
 import { EditProjectModal } from "@/components/editor/edit-project-modal";
 import { useToast } from "@/components/ui/toast";
+import { requestPublishingAction } from "@/lib/publishing/client";
 
 export default function ProjectDetailPage({
     params,
@@ -27,6 +28,7 @@ export default function ProjectDetailPage({
     const deleteProject = useDevJournalStore((state) => state.deleteProject);
     const deleteEntry = useDevJournalStore((state) => state.deleteEntry);
     const updateEntry = useDevJournalStore((state) => state.updateEntry);
+    const user = useDevJournalStore((state) => state.user);
 
     const project = useMemo(() => projects.find((p) => p.id === id), [projects, id]);
     const entries = useMemo(
@@ -45,6 +47,7 @@ export default function ProjectDetailPage({
     const [entryToDelete, setEntryToDelete] = useState<string | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [hasDraft, setHasDraft] = useState(false);
+    const [pendingMutation, setPendingMutation] = useState<string | null>(null);
 
     const deleteModalRef = useRef<HTMLDivElement>(null);
     const entryDeleteModalRef = useRef<HTMLDivElement>(null);
@@ -122,27 +125,73 @@ export default function ProjectDetailPage({
         );
     }
 
-    const handleDeleteProject = () => {
+    const handleDeleteProject = async () => {
+        setPendingMutation("project-delete");
+        if (entries.some((entry) => entry.isPublic)) {
+            const result = await requestPublishingAction({
+                type: "delete-project",
+                projectSourceId: project.id,
+                projectSlug: project.slug,
+            });
+            if (!result.ok) {
+                setPendingMutation(null);
+                addToast({ message: result.message, type: "error" });
+                return;
+            }
+        }
         deleteProject(project.id);
         addToast({ message: `"${project.name}" deleted.`, type: "success", copyKey: "project-deleted" });
         router.push("/editor");
     };
 
-    const handleDeleteEntry = () => {
+    const handleDeleteEntry = async () => {
         if (!entryToDelete) return;
         const entry = entries.find((e) => e.id === entryToDelete);
+        if (!entry) return;
+        setPendingMutation(`entry-delete-${entry.id}`);
+        if (entry.isPublic) {
+            const result = await requestPublishingAction({
+                type: "delete-entry",
+                entrySourceId: entry.id,
+                projectSlug: project.slug,
+            });
+            if (!result.ok) {
+                setPendingMutation(null);
+                addToast({ message: result.message, type: "error" });
+                return;
+            }
+        }
         deleteEntry(entryToDelete);
-        addToast({ message: `Entry "${entry?.title || "Untitled"}" deleted.`, type: "success", copyKey: "entry-deleted" });
+        addToast({ message: `Entry "${entry.title || "Untitled"}" deleted.`, type: "success", copyKey: "entry-deleted" });
+        setPendingMutation(null);
         setEntryToDelete(null);
     };
 
-    const toggleEntryVisibility = (entryId: string, currentStatus: boolean) => {
+    const toggleEntryVisibility = async (entryId: string, currentStatus: boolean) => {
+        const entry = entries.find((item) => item.id === entryId);
+        if (!entry) return;
+        setPendingMutation(`entry-visibility-${entryId}`);
+
+        const result = currentStatus
+            ? await requestPublishingAction({
+                type: "unpublish-entry",
+                entrySourceId: entry.id,
+                projectSlug: project.slug,
+            })
+            : await requestPublishingAction({ type: "publish-entry", profile: user, project, entry });
+
+        if (!result.ok) {
+            setPendingMutation(null);
+            addToast({
+                message: `${result.message} The entry is still ${currentStatus ? "public" : "private"}.`,
+                type: "error",
+            });
+            return;
+        }
+
         updateEntry(entryId, { isPublic: !currentStatus });
-        addToast({
-            message: currentStatus ? "Entry set to private." : "Entry set to public.",
-            type: "info",
-            copyKey: currentStatus ? "entry-private" : "entry-public",
-        });
+        setPendingMutation(null);
+        addToast({ message: currentStatus ? "Entry is now private." : "Entry published.", type: "success" });
     };
 
     let entryIndex = 0;
@@ -207,6 +256,15 @@ export default function ProjectDetailPage({
                     </Link>
                 )}
                 <ProjectActions projectId={project.id} />
+                {entries.some((entry) => entry.isPublic) ? (
+                    <Link
+                        href={`/portfolio/${project.slug}`}
+                        target="_blank"
+                        className="control-target link-ink justify-start font-mono text-meta"
+                    >
+                        View public page
+                    </Link>
+                ) : null}
             </div>
 
             {/* The record */}
@@ -243,6 +301,7 @@ export default function ProjectDetailPage({
                                             <div className="timeline-actions z-10 flex items-center gap-0.5 transition-opacity duration-subtle">
                                                 <button
                                                     onClick={() => toggleEntryVisibility(entry.id, entry.isPublic)}
+                                                    disabled={pendingMutation !== null}
                                                     className="control-target text-text-muted transition-colors duration-subtle hover:text-text-primary"
                                                     aria-label={entry.isPublic ? "Set entry to private" : "Set entry to public"}
                                                 >
@@ -259,6 +318,7 @@ export default function ProjectDetailPage({
                                                 </Link>
                                                 <button
                                                     onClick={() => setEntryToDelete(entry.id)}
+                                                    disabled={pendingMutation !== null}
                                                     className="control-target text-text-muted transition-colors duration-subtle hover:text-destructive"
                                                     aria-label={`Delete entry: ${entry.title}`}
                                                 >
@@ -307,9 +367,10 @@ export default function ProjectDetailPage({
                             </button>
                             <button
                                 onClick={handleDeleteProject}
+                                disabled={pendingMutation !== null}
                                 className="control-target rounded bg-destructive px-4 py-2 font-mono text-label uppercase text-destructive-contrast transition-colors duration-subtle hover:opacity-90"
                             >
-                                Delete
+                                {pendingMutation === "project-delete" ? "Deleting…" : "Delete"}
                             </button>
                         </div>
                     </div>
@@ -347,9 +408,10 @@ export default function ProjectDetailPage({
                             </button>
                             <button
                                 onClick={handleDeleteEntry}
+                                disabled={pendingMutation !== null}
                                 className="control-target rounded bg-destructive px-4 py-2 font-mono text-label uppercase text-destructive-contrast transition-colors duration-subtle hover:opacity-90"
                             >
-                                Delete
+                                {pendingMutation?.startsWith("entry-delete-") ? "Deleting…" : "Delete"}
                             </button>
                         </div>
                     </div>

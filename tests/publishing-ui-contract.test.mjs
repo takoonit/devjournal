@@ -10,7 +10,10 @@ test("entry creation makes private save and publish separate outcomes", () => {
     assert.match(page, /Save private/i);
     assert.match(page, /Publish entry/i);
     assert.match(page, /requestPublishingAction/);
-    assert.doesNotMatch(page, /isPublic:\s*true/);
+    const creation = page.slice(page.indexOf("const savedEntry = addEntry"), page.indexOf("let message"));
+    assert.doesNotMatch(creation, /isPublic\s*:/);
+    assert.ok(page.indexOf("const savedEntry = addEntry") < page.indexOf("await requestPublishingAction"));
+    assert.ok(page.indexOf("await requestPublishingAction") < page.indexOf("updateEntry(savedEntry.id, { isPublic: true })"));
 });
 
 test("public entry mutations are remote-first", () => {
@@ -26,6 +29,9 @@ test("public entry mutations are remote-first", () => {
     assert.match(edit, /type:\s*"update-entry"/);
     assert.match(modal, /type:\s*"sync-project"/);
     assert.match(settings, /type:\s*"sync-profile"/);
+    const visibility = project.slice(project.indexOf("const toggleEntryVisibility"), project.indexOf("let entryIndex"));
+    assert.ok(visibility.indexOf("await requestPublishingAction") < visibility.indexOf("updateEntry(entryId"));
+    assert.match(visibility, /entry is still.*public.*private/s);
 });
 
 test("settings exposes explicit owner connection state", () => {
