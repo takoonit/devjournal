@@ -12,7 +12,15 @@ The system SHALL create every new entry as private unless the owner explicitly c
 - **THEN** the system SHALL NOT send the entry to the public data store
 
 ### Requirement: Only the authenticated owner can publish
-The system SHALL require a valid Supabase owner session for every public mutation and SHALL rely on owner RLS policies for authorization.
+The system SHALL require a valid Supabase owner session for every public mutation, SHALL rely on owner RLS policies for authorization, and SHALL grant ownership only through explicit administrative provisioning.
+
+#### Scenario: Owner is provisioned
+- **WHEN** an administrator inserts the intended Supabase Auth UUID into an empty `owner_settings` table
+- **THEN** that account becomes the sole publishing owner
+
+#### Scenario: First signup is not the owner
+- **WHEN** an account signs up while `owner_settings` is empty
+- **THEN** the system SHALL NOT grant publishing ownership based on signup order
 
 #### Scenario: Connected owner publishes
 - **WHEN** an authenticated owner publishes a valid private entry
@@ -68,15 +76,19 @@ The system SHALL use stable local source identifiers for repeatable public write
 - **THEN** the system updates the remote record with the matching source identifier instead of creating a duplicate
 
 #### Scenario: Legacy project can be adopted safely
-- **WHEN** a legacy remote project has the same slug and no source identifier
+- **WHEN** exactly one legacy remote project has the same slug and no source identifier
 - **THEN** the system assigns the local source identifier once and continues the mutation
+
+#### Scenario: Legacy profile requires reconciliation
+- **WHEN** a remote profile has no source identifier
+- **THEN** the system rejects automatic adoption and directs the owner to reconcile it administratively
 
 #### Scenario: Conflicting source identity
 - **WHEN** a slug is already assigned to a different non-null source identifier
 - **THEN** the system rejects the mutation and reports a conflict without overwriting either record
 
 ### Requirement: Public routes expose only projects with public entries
-The system SHALL list and resolve a project publicly only while it has at least one entry whose confirmed public state is true in Supabase.
+The system SHALL allow anonymous project reads, list a project, and resolve its slug only while it has at least one entry whose confirmed public state is true in Supabase.
 
 #### Scenario: First entry is published
 - **WHEN** the first entry for a project becomes public
@@ -96,4 +108,3 @@ The system SHALL invalidate the portfolio data tags and affected paths after eac
 #### Scenario: Mutation completes
 - **WHEN** a publish, update, unpublish, or delete mutation succeeds
 - **THEN** the system invalidates `/portfolio`, the affected project path, and the relevant portfolio cache tags before returning success
-

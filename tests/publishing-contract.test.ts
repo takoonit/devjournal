@@ -78,6 +78,18 @@ describe("publishing action validation", () => {
 
         expect(result).toEqual({ ok: false, error: "Entry content is too long." });
     });
+
+    test("rejects unknown fields instead of allowing overposting", () => {
+        const result = parsePublishingAction({
+            type: "publish-entry",
+            profile,
+            project,
+            entry,
+            is_public: true,
+        });
+
+        expect(result).toEqual({ ok: false, error: "Publishing action contains unknown fields." });
+    });
 });
 
 describe("Supabase write mapping", () => {

@@ -39,6 +39,15 @@ describe("publishing route handler", () => {
         expect(response.status).toBe(503);
     });
 
+    test("rejects oversized request bodies", async () => {
+        const response = await createPublishingHandler(dependencies())(request({
+            ...validAction,
+            padding: "x".repeat(600_000),
+        }));
+
+        expect(response.status).toBe(413);
+    });
+
     test("rejects malformed actions before authorization", async () => {
         let authorized = false;
         const response = await createPublishingHandler(dependencies({

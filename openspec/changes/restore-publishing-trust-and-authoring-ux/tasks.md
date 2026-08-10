@@ -1,6 +1,6 @@
 ## 1. Publishing Data Contract
 
-- [ ] 1.1 Add a Supabase migration for nullable unique `source_id` fields on profiles, projects, and entries, including a read-only preflight query for legacy public rows that need reconciliation.
+- [ ] 1.1 Add a Supabase migration that removes first-signup ownership, enforces one explicitly provisioned owner, adds nullable unique `source_id` fields, tightens anonymous project reads, and includes a read-only legacy-row preflight.
 - [ ] 1.2 Update Supabase row contracts and focused mapping tests for source identifiers and public write payloads.
 - [ ] 1.3 Add a browser Supabase client and owner-session helper using the installed client package and public environment variables.
 - [ ] 1.4 Add the Settings Publishing section for email OTP connection, disconnect, session status, missing-configuration feedback, and retry guidance.

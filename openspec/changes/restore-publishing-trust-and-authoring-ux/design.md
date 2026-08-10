@@ -39,6 +39,8 @@ Alternative considered: treat `isPublic` as desired state and add a background o
 
 Settings gains a compact Publishing section where the owner connects with Supabase email OTP and can see connection state. Drafting does not require a session. A publish control without a valid session keeps the entry private and directs the owner to connect.
 
+Ownership is provisioned explicitly by inserting one known Supabase Auth UUID into `owner_settings` through the SQL editor or an admin migration. Signup order never grants publishing authority. A singleton index prevents a second owner row; an empty table safely disables all public writes until provisioning is complete.
+
 The browser sends its access token to one server mutation route. The route creates a Supabase client with the configured anon key and the request bearer token, verifies the user with Supabase Auth, validates the action payload, and performs the write under the existing owner RLS policies. The route invalidates the affected portfolio tags and paths only after a successful write.
 
 No service-role key is sent to the browser or required by the mutation route. No new auth package is needed because the existing Supabase client can manage the browser session and bearer token.
@@ -52,8 +54,9 @@ Current local IDs are timestamp-based strings while Supabase primary keys are UU
 Publishing resolves records in this order:
 
 1. Match `source_id` and update the record.
-2. For a legacy profile or project with a null `source_id`, adopt the newest profile or the matching project slug once.
-3. Return a visible conflict if a matching slug already belongs to another non-null source identifier.
+2. For a legacy project, adopt one matching slug only when that row has a null `source_id` and no second candidate exists.
+3. Require explicit operator reconciliation for legacy profiles and entries without source identifiers.
+4. Return a visible conflict if identity is ambiguous or a matching slug belongs to another non-null source identifier.
 
 Entry records are matched only by `source_id`; title and date are not safe identity keys. The migration includes a preflight query for legacy public entries without source identifiers. Release pauses for backup and manual reconciliation if that query returns rows.
 
@@ -61,7 +64,7 @@ Alternative considered: migrate every persisted browser ID to UUID. That would r
 
 ### 4. Keep one narrow publishing route and explicit actions
 
-One `/api/publishing` route accepts a small discriminated action set: publish entry, update published entry, unpublish entry, delete published entry, sync published project, sync public profile, and delete published project. Each action accepts only the domain fields it needs and checks string lengths, URL shape, entry type, project status, identifiers, and authorization at the boundary.
+One `/api/publishing` route accepts a small discriminated action set: publish entry, update published entry, unpublish entry, delete published entry, sync published project, sync public profile, and delete published project. Each action accepts only the domain fields it needs, rejects unknown fields, caps request size, and checks string lengths, URL shape, entry type, project status, identifiers, and authorization at the boundary. Remote IDs, project relationships, visibility, and revalidation targets are derived on the server.
 
 The route owns camelCase-to-row mapping for writes. Existing `lib/supabase/types.ts` remains the row contract, and public reads continue through `lib/supabase/server.ts`. Successful mutations invalidate `portfolio`, the relevant data tag, `/portfolio`, and the affected old and new slug paths.
 
@@ -69,7 +72,7 @@ No repository layer or generic sync engine is introduced. Two callers are not en
 
 ### 5. Align public project visibility with entry visibility
 
-The portfolio index filters projects to those with at least one public entry. Direct project reads return not found when the project has no public entries. Project records may remain in Supabase after the last entry is unpublished, but they are not exposed by public routes.
+The public project SELECT policy and the portfolio readers filter projects to those with at least one public entry. Direct project reads return not found when the project has no public entries. Project records may remain in Supabase after the last entry is unpublished, but anonymous requests cannot read them.
 
 Editor copy uses `public entry`, `private entry`, `publish`, and `unpublish`. It does not claim that a project has a separate publish switch. A project record with a confirmed public entry shows a direct `View public page` link.
 
@@ -101,7 +104,8 @@ Existing semantic headings, DOM order, focus behavior, 44px targets, safe areas,
 
 - [Expired owner session during a publish] -> Preserve the local private copy, keep the form content, and offer reconnect plus retry.
 - [Failed unpublish or delete leaves content public] -> Perform the remote mutation first and keep the local public marker until Supabase confirms success.
-- [Legacy Supabase rows cannot be matched safely] -> Run the migration preflight, back up returned rows, and stop rollout until their source identifiers are reconciled.
+- [Legacy Supabase rows cannot be matched safely] -> Run the migration preflight, back up returned rows, and stop rollout until profile and entry source identifiers are reconciled; adopt a project only for one unclaimed slug match.
+- [An unintended signup claims publishing access] -> Remove first-signup seeding, require explicit owner UUID provisioning, and enforce one owner row.
 - [Two stores drift after a published profile or project edit] -> Save remotely first for records with public entries and keep the local form dirty on failure.
 - [ISR hides a successful write briefly] -> Revalidate tags and exact paths in the mutation route, then link to the public page only after success.
 - [Sticky mobile actions cover content] -> Reserve matching bottom padding, include safe-area inset, and verify with small visual viewports and an open software keyboard.
@@ -110,7 +114,7 @@ Existing semantic headings, DOM order, focus behavior, 44px targets, safe areas,
 
 ## Migration Plan
 
-1. Add the nullable `source_id` columns, unique indexes, owner-write policy coverage, and legacy-row preflight query. Back up any rows reported by the preflight.
+1. Remove first-signup owner seeding, enforce one explicit owner row, add the nullable `source_id` columns and unique indexes, tighten anonymous project reads, and run the legacy-row preflight. Back up and reconcile any returned rows.
 2. Add owner connection and the authenticated publishing route behind controls that still default to private.
 3. Change creation, visibility, edit, and delete flows to remote-first confirmed public state. Update public filtering and cache invalidation.
 4. Verify publish, update, unpublish, last-entry removal, failure, reconnect, and legacy-conflict cases in a preview Supabase project.
