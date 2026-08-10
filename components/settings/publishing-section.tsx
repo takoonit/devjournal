@@ -30,8 +30,11 @@ export function PublishingSection() {
 
     useEffect(() => { void refresh(); }, []);
 
-    const connect = async (event: React.FormEvent) => {
-        event.preventDefault();
+    const connect = async () => {
+        if (!email.trim()) {
+            setMessage("Enter the owner email, then try again.");
+            return;
+        }
         setLoading(true);
         const result = await sendOwnerMagicLink(email.trim());
         setMessage(result.message);
@@ -46,8 +49,7 @@ export function PublishingSection() {
     };
 
     return (
-        <section>
-            <div className="keyline mb-6"><h2>Publishing</h2></div>
+        <div>
             {loading ? (
                 <p className="flex items-center gap-2 text-ui text-text-secondary">
                     <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.5} /> Checking owner connection…
@@ -80,16 +82,29 @@ export function PublishingSection() {
                     </button>
                 </div>
             ) : (
-                <form onSubmit={connect} className="space-y-4 border-y border-rule/15 py-5">
+                <div className="space-y-4 border-y border-rule/15 py-5">
                     {connection.error ? <p className="text-ui text-warning">{connection.error} Check the connection and try again.</p> : null}
                     <div>
                         <label htmlFor="publishing-email" className="mb-2 block font-mono text-label uppercase text-text-secondary">Owner email</label>
-                        <input id="publishing-email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} className={inputClasses} placeholder="owner@example.com" />
+                        <input
+                            id="publishing-email"
+                            type="email"
+                            value={email}
+                            onChange={(event) => setEmail(event.target.value)}
+                            onKeyDown={(event) => {
+                                if (event.key === "Enter") {
+                                    event.preventDefault();
+                                    void connect();
+                                }
+                            }}
+                            className={inputClasses}
+                            placeholder="owner@example.com"
+                        />
                     </div>
-                    <button type="submit" className="control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary hover:border-text-secondary hover:text-text-primary">
+                    <button type="button" onClick={() => void connect()} className="control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary hover:border-text-secondary hover:text-text-primary">
                         Email sign-in link
                     </button>
-                </form>
+                </div>
             )}
             {message ? <p role="status" className="mt-3 text-ui text-text-secondary">{message}</p> : null}
             {connection.configured ? (
@@ -98,6 +113,6 @@ export function PublishingSection() {
                 </button>
             ) : null}
             <p className="mt-3 text-ui italic text-text-muted">Private drafts stay in this browser. Publishing always requires the connected owner and an explicit public action.</p>
-        </section>
+        </div>
     );
 }

@@ -198,8 +198,8 @@ export default function ProjectDetailPage({
 
     return (
         <div className="max-w-page">
-            {/* Project masthead */}
-            <header className="masthead-block rule-oxford mb-10">
+            {/* Issue cover */}
+            <header className="issue-cover rule-oxford mb-14">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                     <h1 className="masthead-title print-display text-text-primary print:!text-[2rem] print:!leading-[1.1]">{project.name}</h1>
                     <div className="flex items-center gap-1">
@@ -224,22 +224,16 @@ export default function ProjectDetailPage({
                     <p className="mt-3 max-w-measure text-prose text-text-secondary">{project.description}</p>
                 ) : null}
 
-                <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
-                    <StatusStamp status={project.status} />
-                    <span className="font-mono text-meta tabular-nums text-text-muted">
-                        Opened {formatDate(project.createdAt, "dd MMM yyyy")} · {entries.length}{" "}
-                        {entries.length === 1 ? "entry" : "entries"}
-                    </span>
-                    {project.techStack.length > 0 && (
-                        <span className="font-mono text-meta text-text-muted">
-                            {project.techStack.join(" · ")}
-                        </span>
-                    )}
-                </div>
-            </header>
+                <dl className="issue-cover-facts">
+                    <div><dt>Status</dt><dd><StatusStamp status={project.status} /></dd></div>
+                    <div><dt>Opened</dt><dd>{formatDate(project.createdAt, "dd MMM yyyy")}</dd></div>
+                    <div><dt>Updated</dt><dd>{formatDate(project.updatedAt, "dd MMM yyyy")}</dd></div>
+                    <div><dt>Record</dt><dd>{entries.length} {entries.length === 1 ? "entry" : "entries"}</dd></div>
+                    <div><dt>Public</dt><dd>{entries.filter((entry) => entry.isPublic).length} confirmed</dd></div>
+                    {project.techStack.length > 0 ? <div className="issue-cover-stack"><dt>Stack</dt><dd>{project.techStack.join(" · ")}</dd></div> : null}
+                </dl>
 
-            {/* Actions row */}
-            <div className="mb-14 flex flex-wrap items-center gap-3">
+            <div className="issue-cover-actions flex flex-wrap items-center gap-3">
                 <Link
                     href={`/editor/projects/${project.id}/entries/new`}
                     className="control-target rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
@@ -266,6 +260,7 @@ export default function ProjectDetailPage({
                     </Link>
                 ) : null}
             </div>
+            </header>
 
             {/* The record */}
             {entries.length === 0 ? (

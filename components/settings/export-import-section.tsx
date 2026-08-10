@@ -70,10 +70,7 @@ export function ExportImportSection() {
         "control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary disabled:cursor-not-allowed disabled:border-rule/10 disabled:text-text-muted disabled:hover:border-rule/10";
 
     return (
-        <section className="mt-16">
-            <div className="keyline mb-3">
-                <h2>Data Portability</h2>
-            </div>
+        <div>
             <p className="mb-8 max-w-measure text-ui text-text-secondary">
                 Everything travels in the <code className="font-mono text-meta text-text-primary">.devjournal</code> format.
                 Imports are additive — nothing you have is ever overwritten.
@@ -163,6 +160,6 @@ export function ExportImportSection() {
                     <span className="text-ui text-text-secondary">{status.message}</span>
                 </div>
             )}
-        </section>
+        </div>
     );
 }

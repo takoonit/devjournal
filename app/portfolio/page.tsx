@@ -3,7 +3,6 @@ import { ProjectRow } from "@/components/portfolio/project-row";
 import { Reveal } from "@/components/ui/reveal";
 import CountUp from "@/components/ui/count-up";
 import { getPublicPortfolioOverview } from "@/lib/supabase/server";
-import Link from "next/link";
 
 export default async function PortfolioPage() {
     const { projects, user } = await getPublicPortfolioOverview();
@@ -26,24 +25,15 @@ export default async function PortfolioPage() {
                         </header>
 
                         {projects.length === 0 ? (
-                            <div className="empty-ledger portfolio-empty-ledger">
+                            <div className="portfolio-empty-folio">
                                 <div>
-                                    <p className="max-w-measure text-title italic text-text-secondary">
-                                        The first entry is still unwritten.
+                                    <p className="folio-mark font-mono text-meta uppercase text-text-muted">Folio — unprinted</p>
+                                    <p className="mt-5 max-w-measure text-title italic text-text-secondary">
+                                        No entries have been published yet.
                                     </p>
                                     <p className="mt-3 max-w-prose text-ui text-text-muted">
-                                        When projects are published from the editor,
-                                        <br className="sm:hidden" /> {" "}
-                                        they are set here — dated,
-                                        <br className="sm:hidden" /> {" "}
-                                        typed, and bound into a record.
+                                        Publish an entry from the editor and its project will be set here as part of the public record.
                                     </p>
-                                    <Link
-                                        href="/editor"
-                                        className="portfolio-empty-action control-target link-ink mt-6 justify-start gap-2 font-mono text-label uppercase"
-                                    >
-                                        Open the editor <span aria-hidden="true">→</span>
-                                    </Link>
                                 </div>
                             </div>
                         ) : (

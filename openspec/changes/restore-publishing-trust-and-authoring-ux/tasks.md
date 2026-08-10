@@ -34,13 +34,13 @@
 
 ## 4. Editorial Surface Variation
 
-- [ ] 4.1 Recompose the editor index as a working ledger with compact totals and clear active-work entry points using existing Press Proof primitives.
-- [ ] 4.2 Recompose the project header as an issue cover that groups identity, status, dates, stack, record actions, and confirmed public access before the timeline.
-- [ ] 4.3 Recompose Settings as a colophon with a short chapter index and native disclosures; keep Profile and Publishing open initially and preserve dirty form state across collapse.
-- [ ] 4.4 Replace the public empty-state warning slab with an unprinted-folio treatment and accurate entry-level copy.
-- [ ] 4.5 Adjust Midnight Ink token values to separate canvas, base, raised sheet, inputs, and rules without adding colors or effects.
-- [ ] 4.6 Verify the revised surfaces retain semantic heading order, 44px targets, visible focus, safe areas, 66ch prose, and reduced-motion behavior.
-- [ ] 4.7 Leave populated public project rows and timelines structurally unchanged except for publishing correctness and access-state fixes.
+- [x] 4.1 Recompose the editor index as a working ledger with compact totals and clear active-work entry points using existing Press Proof primitives.
+- [x] 4.2 Recompose the project header as an issue cover that groups identity, status, dates, stack, record actions, and confirmed public access before the timeline.
+- [x] 4.3 Recompose Settings as a colophon with a short chapter index and native disclosures; keep Profile and Publishing open initially and preserve dirty form state across collapse.
+- [x] 4.4 Replace the public empty-state warning slab with an unprinted-folio treatment and accurate entry-level copy.
+- [x] 4.5 Adjust Midnight Ink token values to separate canvas, base, raised sheet, inputs, and rules without adding colors or effects.
+- [x] 4.6 Verify the revised surfaces retain semantic heading order, 44px targets, visible focus, safe areas, 66ch prose, and reduced-motion behavior.
+- [x] 4.7 Leave populated public project rows and timelines structurally unchanged except for publishing correctness and access-state fixes.
 
 ## 5. Documentation and Automated Verification
 

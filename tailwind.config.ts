@@ -15,6 +15,7 @@ const config: Config = {
                     canvas: "rgb(var(--color-surface-canvas) / <alpha-value>)",
                     base: "rgb(var(--color-surface-base) / <alpha-value>)",
                     raised: "rgb(var(--color-surface-raised) / <alpha-value>)",
+                    input: "rgb(var(--color-surface-input) / <alpha-value>)",
                     border: "rgb(var(--color-surface-border) / <alpha-value>)",
                 },
                 rule: "rgb(var(--color-rule) / <alpha-value>)",

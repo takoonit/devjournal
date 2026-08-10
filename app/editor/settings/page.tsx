@@ -11,7 +11,7 @@ import { PublishingSection } from "@/components/settings/publishing-section";
 import { requestPublishingAction } from "@/lib/publishing/client";
 
 const inputClasses =
-    "field-target w-full rounded-md border border-surface-border bg-surface-raised px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
+    "field-target w-full rounded-md border border-surface-border bg-surface-input px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
 
 interface ToggleOption<T extends string> {
     value: T;
@@ -117,19 +117,25 @@ export default function SettingsPage() {
     return (
         <div className="max-w-page">
             <div className="max-w-measure">
-                <header className="masthead-block rule-oxford mb-12">
-                    <h1 className="masthead-title text-text-primary">Settings</h1>
+                <header className="colophon-header mb-8">
+                    <h1 className="text-display text-text-primary">Colophon</h1>
                     <p className="mt-2 text-ui text-text-secondary">
-                        The colophon: who you are, and how the journal is set.
+                        Who you are, how the journal is set, and what leaves this browser.
                     </p>
                 </header>
 
-                <form onSubmit={handleSubmit} className="space-y-14">
-                <section>
-                    <div className="keyline mb-6">
-                        <h2>Profile</h2>
-                    </div>
-                    <div className="space-y-6">
+                <nav className="settings-chapter-index mb-10" aria-label="Settings chapters">
+                    <a href="#profile">Profile</a>
+                    <a href="#publishing">Publishing</a>
+                    <a href="#composition">Composition</a>
+                    <a href="#links">Links</a>
+                    <a href="#data-portability">Data portability</a>
+                </nav>
+
+                <form onSubmit={handleSubmit} className="space-y-3">
+                <details open id="profile" className="settings-disclosure">
+                    <summary>Profile</summary>
+                    <div className="space-y-6 px-1 pb-8 pt-4">
                         <div>
                             <label htmlFor="settings-name" className="mb-2 block font-mono text-label uppercase text-text-secondary">
                                 Full Name
@@ -172,12 +178,18 @@ export default function SettingsPage() {
                             />
                         </div>
                     </div>
-                </section>
+                </details>
 
-                <section>
-                    <div className="keyline mb-2">
-                        <h2>Composition</h2>
+                <details open id="publishing" className="settings-disclosure">
+                    <summary>Publishing</summary>
+                    <div className="px-1 pb-8 pt-4">
+                        <PublishingSection />
                     </div>
+                </details>
+
+                <details id="composition" className="settings-disclosure">
+                    <summary>Composition</summary>
+                    <div className="px-1 pb-8 pt-2">
                     <ToggleGroup
                         label="Theme"
                         value={uiFormData.themeMode}
@@ -228,13 +240,12 @@ export default function SettingsPage() {
                     <p className="mt-3 text-ui italic text-text-muted">
                         Focus mode quiets the chrome and leaves ink on the page.
                     </p>
-                </section>
-
-                <section>
-                    <div className="keyline mb-6">
-                        <h2>Links</h2>
                     </div>
-                    <div className="space-y-6">
+                </details>
+
+                <details id="links" className="settings-disclosure">
+                    <summary>Links</summary>
+                    <div className="space-y-6 px-1 pb-8 pt-4">
                         {socialFields.map((field) => (
                             <div key={field.key}>
                                 <label htmlFor={`settings-${field.key}`} className="mb-2 block font-mono text-label uppercase text-text-secondary">
@@ -257,7 +268,7 @@ export default function SettingsPage() {
                             </div>
                         ))}
                     </div>
-                </section>
+                </details>
 
                 <div className="flex items-center justify-between gap-4 border-t border-rule/15 pt-6">
                     <button
@@ -273,12 +284,13 @@ export default function SettingsPage() {
                     </Link>
                 </div>
                 </form>
-                <div className="mt-14">
-                    <PublishingSection />
-                </div>
+                <details id="data-portability" className="settings-disclosure mt-3">
+                    <summary>Data portability</summary>
+                    <div className="px-1 pb-8 pt-4">
+                        <ExportImportSection />
+                    </div>
+                </details>
             </div>
-
-            <ExportImportSection />
         </div>
     );
 }

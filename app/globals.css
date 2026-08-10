@@ -24,7 +24,8 @@
   /* Paper */
   --color-surface-canvas: 247 245 239;  /* #F7F5EF — reading field */
   --color-surface-base: 232 240 235;    /* #E8F0EB — rails, washes */
-  --color-surface-raised: 255 253 248;  /* #FFFDF8 — sheets, inputs */
+  --color-surface-raised: 255 253 248;  /* #FFFDF8 — sheets */
+  --color-surface-input: 255 253 248;   /* #FFFDF8 — controls */
   --color-surface-border: 207 216 208;  /* #CFD8D0 — strong rule */
 
   /* All rules are ink at reduced pressure: rgb(var(--color-rule) / a) */
@@ -98,16 +99,17 @@
 
 :root[data-theme-mode="ink"] {
   /* Midnight Ink — the same page, after dark */
-  --color-surface-canvas: 17 28 27;     /* #111C1B — reading field */
-  --color-surface-base: 22 43 38;       /* #162B26 — rails, washes */
-  --color-surface-raised: 28 38 35;     /* #1C2623 — sheets, inputs */
-  --color-surface-border: 62 82 72;     /* #3E5248 — strong rule */
+  --color-surface-canvas: 14 22 21;     /* #0E1615 — reading field */
+  --color-surface-base: 21 34 30;       /* #15221E — rails, washes */
+  --color-surface-raised: 29 42 38;     /* #1D2A26 — sheets */
+  --color-surface-input: 35 51 45;      /* #23332D — controls */
+  --color-surface-border: 74 92 83;     /* #4A5C53 — strong rule */
 
   --color-rule: 233 228 217;
 
   --color-text-primary: 233 228 217;    /* 13.8:1 */
   --color-text-secondary: 173 165 152;  /* 7.1:1 */
-  --color-text-muted: 148 140 127;      /* 4.5:1+ even on raised */
+  --color-text-muted: 160 152 139;      /* 4.6:1+ even on inputs */
 
   --color-scrim: 0 0 0;
 
@@ -301,13 +303,15 @@ select:focus-visible {
     padding-block-start: clamp(1rem, calc(0.75rem + 1vw), 1.75rem);
   }
 
-  .portfolio-page .portfolio-empty-ledger {
-    background: rgb(var(--color-warning-soft) / 0.78);
-    border-block-color: rgb(var(--color-warning-base) / 0.35);
+  .portfolio-empty-folio {
+    background: rgb(var(--color-surface-raised));
+    border-block: 1px solid rgb(var(--color-rule) / 0.2);
+    padding: clamp(2rem, calc(1.5rem + 2vw), 3.5rem)
+      clamp(1rem, calc(0.5rem + 1.5vw), 2rem);
   }
 
-  .portfolio-empty-action {
-    color: rgb(var(--color-accent-base));
+  .folio-mark {
+    letter-spacing: 0.08em;
   }
 
   .project-row {
@@ -373,6 +377,113 @@ select:focus-visible {
     padding-block: 1rem;
   }
 
+  .ledger-summary {
+    border-block-start: 1px solid rgb(var(--color-rule) / 0.2);
+  }
+
+  .ledger-figures {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ledger-figures > div {
+    border-block-end: 1px solid rgb(var(--color-rule) / 0.15);
+    padding-block: 0.875rem;
+  }
+
+  .ledger-figures dt,
+  .issue-cover-facts dt {
+    color: rgb(var(--color-text-muted));
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .ledger-figures dd {
+    color: rgb(var(--color-text-primary));
+    font-family: var(--font-mono);
+    font-size: 1.125rem;
+    margin-block-start: 0.25rem;
+  }
+
+  .issue-cover {
+    border-block-end: 1px solid rgb(var(--color-rule) / 0.24);
+    padding-block-end: clamp(1.5rem, calc(1rem + 1.5vw), 2.5rem);
+  }
+
+  .issue-cover-facts {
+    border-block-start: 1px solid rgb(var(--color-rule) / 0.16);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-block-start: 1.5rem;
+  }
+
+  .issue-cover-facts > div {
+    border-block-end: 1px solid rgb(var(--color-rule) / 0.12);
+    min-inline-size: 0;
+    padding-block: 0.875rem;
+    padding-inline-end: 1rem;
+  }
+
+  .issue-cover-facts dd {
+    color: rgb(var(--color-text-secondary));
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    margin-block-start: 0.375rem;
+    overflow-wrap: anywhere;
+  }
+
+  .issue-cover-stack {
+    grid-column: 1 / -1;
+  }
+
+  .issue-cover-actions {
+    margin-block-start: 1.25rem;
+  }
+
+  .colophon-header {
+    border-block-end: 1px solid rgb(var(--color-rule) / 0.22);
+    padding-block-end: 1.5rem;
+  }
+
+  .settings-chapter-index {
+    border-block: 1px solid rgb(var(--color-rule) / 0.16);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.25rem;
+  }
+
+  .settings-chapter-index a {
+    align-items: center;
+    color: rgb(var(--color-text-muted));
+    display: inline-flex;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    min-block-size: var(--control-min-size);
+  }
+
+  .settings-disclosure {
+    border-block-end: 1px solid rgb(var(--color-rule) / 0.16);
+    scroll-margin-block-start: 1rem;
+  }
+
+  .settings-disclosure > summary {
+    color: rgb(var(--color-text-primary));
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    min-block-size: var(--control-min-size);
+    padding-block: 0.875rem;
+    text-transform: uppercase;
+  }
+
+  .settings-disclosure > summary::marker {
+    color: rgb(var(--color-accent-base));
+  }
+
   .portfolio-page main,
   .portfolio-page .empty-ledger,
   .portfolio-page .max-w-prose,
@@ -382,8 +493,8 @@ select:focus-visible {
     max-inline-size: 100%;
   }
 
-  .portfolio-page .portfolio-empty-ledger > div,
-  .portfolio-page .portfolio-empty-ledger p {
+  .portfolio-page .portfolio-empty-folio > div,
+  .portfolio-page .portfolio-empty-folio p {
     width: 100%;
     min-inline-size: 0;
     max-inline-size: 100%;
@@ -716,7 +827,7 @@ select:focus-visible {
 @media (max-width: 59.999rem) {
   .portfolio-page .portfolio-shell > *,
   .portfolio-page .portfolio-masthead,
-  .portfolio-page .portfolio-empty-ledger {
+  .portfolio-page .portfolio-empty-folio {
     flex: none;
     inline-size: 100%;
     max-inline-size: 100%;
@@ -1066,6 +1177,7 @@ html[data-motion-level="expressive"] {
     --color-surface-canvas: 255 255 255;
     --color-surface-base: 255 255 255;
     --color-surface-raised: 255 255 255;
+    --color-surface-input: 255 255 255;
     --color-text-primary: 0 0 0;
     --color-text-secondary: 51 51 51;
     --color-text-muted: 85 85 85;
