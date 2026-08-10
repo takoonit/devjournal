@@ -35,6 +35,7 @@ yarn-error.log*
 /.claude/skills/impeccable/
 /.codex/hooks.json
 /.impeccable/critique/
+/.playwright-mcp/
 
 # env files
 .env*.local

@@ -54,6 +54,19 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 - Remove the owner row to stop public writes without touching local drafts or published rows.
 - Redeploy the previous app version if needed, but keep the additive source-ID columns and indexes. Take a `.devjournal` backup before any rollback work.
 
+### Dependency audit
+- `bun audit` reported 31 advisories: 22 high, 8 moderate, and 1 low. The reported paths are in the Next.js, Tailwind, PostCSS, Babel, and ESLint build or lint graph.
+- Direct dependencies are already at their latest compatible versions. The resolved direct PostCSS version is 8.5.26; older reported PostCSS and Nano ID versions are transitive.
+- This change accepts the findings rather than mixing framework, Tailwind, or ESLint major upgrades into the publishing release. Recheck the audit during that separate upgrade.
+
+### Persona verification
+- Isolated browser runs covered a privacy-conscious diarist, a disconnected build-in-public author, a mobile commuter at 320px and 390px, a returning power user, and an independent creative UX review across Press Proof and Midnight Ink.
+- Private create, edit, export, import, and delete paths made no publishing requests. Failed publishing remained private, exposed a direct recovery link, and did not appear in the public portfolio.
+- Mobile composer focus order, 44px controls, safe-area actions, Ctrl+Enter private save, and page overflow checks passed. The creative review captured 24 desktop and mobile surface states and found no P0 or P1 visual issue.
+- Findings fixed during the run: owner-connection recovery, Settings chapter opening and focus, chapter target sizing, the mobile empty-folio action, pre-hydration form protection, repository editing and access, and accessible composer headings.
+- Five focused project-creation reruns reached the created record within 400ms. The earlier navigation report was an automation timing error, not an app failure.
+- Deferred P3 notes: the 320px Settings preview label can wrap without clipping, and Publishing uses technical configuration terms appropriate to the local setup screen.
+- A preview Supabase project was not configured locally. Owner connection, successful remote publish/update/unpublish/delete, cross-device reads, and cache refresh remain release blockers rather than claimed passes.
 
 ---
 

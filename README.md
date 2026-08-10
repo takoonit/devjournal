@@ -47,7 +47,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ### 1. Configure Your Profile
 
-1. Navigate to `/editor/settings`
+1. Open `/editor/settings`
 2. Fill in your name, role, bio, and social links
 3. Profile changes stay local until public work exists and a connected owner confirms the update
 

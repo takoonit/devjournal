@@ -79,4 +79,3 @@ The system SHALL redirect `/` to `/portfolio` through Next.js routing configurat
 #### Scenario: Visit the root route
 - **WHEN** a visitor requests `/`
 - **THEN** the response redirects to `/portfolio` without logging a page-render redirect validation error
-

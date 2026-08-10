@@ -47,17 +47,17 @@
 - [x] 5.1 Update README and blueprint documentation for the local-draft/public-projection boundary, owner connection, source-ID migration, entry-level visibility, and rollback steps.
 - [x] 5.2 Add or update automated tests for publishing payload validation, source matching, auth failure, public filtering, composer privacy, workflow utilities, and root routing.
 - [x] 5.3 Run `bun test` and resolve all failures.
-- [ ] 5.4 Run `bun run lint` and `bun run build` and resolve all errors and warnings introduced by the change.
-- [ ] 5.5 Run `bun audit`, review the final diff for secrets and unrelated files, and record any accepted dependency finding.
-- [ ] 5.6 Run `openspec validate restore-publishing-trust-and-authoring-ux --type change --strict` and resolve every artifact or requirement error.
+- [x] 5.4 Run `bun run lint` and `bun run build` and resolve all errors and warnings introduced by the change.
+- [x] 5.5 Run `bun audit`, review the final diff for secrets and unrelated files, and record any accepted dependency finding.
+- [x] 5.6 Run `openspec validate restore-publishing-trust-and-authoring-ux --type change --strict` and resolve every artifact or requirement error.
 
 ## 6. Persona-Based Manual Verification
 
 - [ ] 6.1 Start the app with Bun against a preview Supabase project, use isolated browser storage per persona, and capture console and network failures during each flow.
-- [ ] 6.2 Assign a privacy-conscious diarist subagent to create, edit, export, and delete private work and verify that no action publishes without explicit consent.
+- [x] 6.2 Assign a privacy-conscious diarist subagent to create, edit, export, and delete private work and verify that no action publishes without explicit consent.
 - [ ] 6.3 Assign a build-in-public solo developer subagent to connect, publish, edit, view cross-device, unpublish, and delete entries while checking portfolio cache refresh and truthful status.
-- [ ] 6.4 Assign a mobile commuter subagent to create a project and entry at 320px and 390px with the software keyboard, type picker, sticky actions, touch targets, and platform shortcut in use.
-- [ ] 6.5 Assign a returning power-user subagent to edit project metadata, manage tech tokens, traverse settings disclosures by keyboard, import and export data, switch themes, and reach public pages.
-- [ ] 6.6 Assign an independent creative UX designer subagent to review the editor index, project issue cover, settings colophon, public empty folio, and Midnight Ink at mobile and desktop widths against Press Proof constraints.
-- [ ] 6.7 Consolidate persona evidence, screenshots, hesitation and backtracking notes, focus order, clipping, overflow, console errors, and network errors; fix all P0 and P1 findings plus in-scope P2 regressions.
-- [ ] 6.8 Re-run every affected persona path after fixes and record the final pass or any explicitly deferred low-severity issue.
+- [x] 6.4 Assign a mobile commuter subagent to create a project and entry at 320px and 390px with the software keyboard, type picker, sticky actions, touch targets, and platform shortcut in use.
+- [x] 6.5 Assign a returning power-user subagent to edit project metadata, manage tech tokens, traverse settings disclosures by keyboard, import and export data, switch themes, and reach public pages.
+- [x] 6.6 Assign an independent creative UX designer subagent to review the editor index, project issue cover, settings colophon, public empty folio, and Midnight Ink at mobile and desktop widths against Press Proof constraints.
+- [x] 6.7 Consolidate persona evidence, screenshots, hesitation and backtracking notes, focus order, clipping, overflow, console errors, and network errors; fix all P0 and P1 findings plus in-scope P2 regressions.
+- [x] 6.8 Re-run every affected persona path after fixes and record the final pass or any explicitly deferred low-severity issue.
