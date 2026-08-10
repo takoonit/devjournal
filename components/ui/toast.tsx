@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useCallback, ReactNode, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
+import Link from "next/link";
 import { useDevJournalStore } from "@/lib/store";
 import {
   resolveSupportiveToastCopy,
@@ -16,6 +17,8 @@ interface ToastInput {
   message: string;
   type?: ToastType;
   copyKey?: ToastCopyKey;
+  actionHref?: string;
+  actionLabel?: string;
 }
 
 interface Toast {
@@ -24,6 +27,8 @@ interface Toast {
   title: string;
   emphasis?: string;
   type: ToastTone;
+  actionHref?: string;
+  actionLabel?: string;
 }
 
 interface ToastContextType {
@@ -69,7 +74,13 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       const normalized =
         typeof input === "string"
           ? { message: input, type: legacyType }
-          : { message: input.message, type: input.type ?? "info", copyKey: input.copyKey };
+          : {
+              message: input.message,
+              type: input.type ?? "info",
+              copyKey: input.copyKey,
+              actionHref: input.actionHref,
+              actionLabel: input.actionLabel,
+            };
 
       const resolved = resolveSupportiveToastCopy({
         type: normalized.type,
@@ -87,6 +98,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           title: resolved.title,
           emphasis: resolved.emphasis,
           type: normalized.type,
+          actionHref: normalized.actionHref,
+          actionLabel: normalized.actionLabel,
         },
       ].slice(-5));
 
@@ -175,6 +188,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   <p className="mt-1 text-ui text-text-primary">{toast.message}</p>
                   {toast.emphasis ? (
                     <p className="mt-0.5 text-ui italic text-text-secondary">{toast.emphasis}</p>
+                  ) : null}
+                  {toast.actionHref && toast.actionLabel ? (
+                    <Link href={toast.actionHref} className="control-target mt-2 link-ink justify-start font-mono text-meta">
+                      {toast.actionLabel}
+                    </Link>
                   ) : null}
                 </div>
                 <button

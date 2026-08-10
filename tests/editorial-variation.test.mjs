@@ -26,6 +26,8 @@ test("settings uses a colophon index and native disclosures", () => {
     const settings = read("app/editor/settings/page.tsx");
 
     assert.match(settings, /settings-chapter-index/);
+    assert.match(settings, /openSettingsChapter/);
+    assert.equal((settings.match(/className="control-target justify-start"/g) ?? []).length, 5);
     assert.match(settings, /<details[^>]*open[^>]*id="profile"/);
     assert.match(settings, /<details[^>]*open[^>]*id="publishing"/);
     assert.match(settings, /<summary[^>]*>\s*Composition\s*</);
@@ -38,6 +40,7 @@ test("public empty state is an unprinted folio", () => {
 
     assert.match(portfolio, /portfolio-empty-folio/);
     assert.match(portfolio, /No entries have been published/i);
+    assert.match(portfolio, /Open the editor/i);
     assert.doesNotMatch(portfolio, /projects are published from the editor/i);
 });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import { TechStackField } from "@/components/editor/tech-stack-field";
 export default function NewProjectPage() {
     const router = useRouter();
     const addProject = useDevJournalStore((state) => state.addProject);
+    const [isHydrated, setIsHydrated] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -19,6 +20,9 @@ export default function NewProjectPage() {
         repositoryLink: "",
         status: "in-progress" as "in-progress" | "shipped",
     });
+
+    useEffect(() => setIsHydrated(true), []);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!formData.name.trim()) return;
@@ -36,7 +40,8 @@ export default function NewProjectPage() {
                 </p>
             </header>
 
-            <form onSubmit={handleSubmit} className="space-y-7">
+            <form onSubmit={handleSubmit} aria-busy={!isHydrated}>
+                <fieldset disabled={!isHydrated} className="space-y-7 border-0 p-0">
                 <div>
                     <label htmlFor="project-name" className="mb-2 block font-mono text-label uppercase text-text-secondary">
                         Name <span className="text-accent">*</span>
@@ -135,6 +140,7 @@ export default function NewProjectPage() {
                         Cancel
                     </Link>
                 </div>
+                </fieldset>
             </form>
         </div>
     );

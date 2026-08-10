@@ -136,7 +136,13 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                     updateEntry(savedEntry.id, { isPublic: true });
                     message = "Entry published.";
                 } else {
-                    addToast({ message: `${result.message} The entry is saved privately.`, type: "error" });
+                    addToast({
+                        message: `${result.message} The entry is saved privately.`,
+                        type: "error",
+                        ...([401, 403, 503].includes(result.status)
+                            ? { actionHref: "/editor/settings", actionLabel: "Open Publishing settings" }
+                            : {}),
+                    });
                 }
             }
 
@@ -160,6 +166,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
     return (
         <div className="pb-20">
             <div className="mx-auto max-w-3xl">
+                <h1 className="sr-only">New entry for {project.name}</h1>
                 <Link
                     href={`/editor/projects/${project.id}`}
                     className="control-target mb-8 justify-start gap-2 font-mono text-label uppercase text-text-muted transition-colors duration-subtle hover:text-text-primary"

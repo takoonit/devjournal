@@ -26,6 +26,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
     const [name, setName] = useState(project.name);
     const [description, setDescription] = useState(project.description);
     const [techStack, setTechStack] = useState(project.techStack);
+    const [repositoryLink, setRepositoryLink] = useState(project.repositoryLink ?? "");
     const [status, setStatus] = useState<"in-progress" | "shipped">(project.status);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -38,6 +39,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
             setName(project.name);
             setDescription(project.description);
             setTechStack(project.techStack);
+            setRepositoryLink(project.repositoryLink ?? "");
             setStatus(project.status);
         }
     }, [isOpen, project]);
@@ -91,6 +93,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
             name: name.trim(),
             description: description.trim(),
             techStack,
+            repositoryLink: repositoryLink.trim() || undefined,
             status,
             updatedAt: new Date().toISOString(),
         };
@@ -168,6 +171,20 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                     </div>
 
                     <TechStackField id="edit-project-tech" value={techStack} onChange={setTechStack} />
+
+                    <div>
+                        <label htmlFor="edit-project-repository" className="mb-2 block font-mono text-label uppercase text-text-secondary">
+                            Repository Link
+                        </label>
+                        <input
+                            id="edit-project-repository"
+                            type="url"
+                            value={repositoryLink}
+                            onChange={(event) => setRepositoryLink(event.target.value)}
+                            className={cn(inputClasses, "font-mono text-meta")}
+                            placeholder="https://github.com/..."
+                        />
+                    </div>
 
                     <div>
                         <p className="mb-2 font-mono text-label uppercase text-text-secondary">Status</p>

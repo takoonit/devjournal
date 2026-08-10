@@ -6,9 +6,12 @@ const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf
 
 test("entry creation makes private save and publish separate outcomes", () => {
     const page = read("app/editor/projects/[id]/entries/new/page.tsx");
+    const toast = read("components/ui/toast.tsx");
 
     assert.match(page, /Save private/i);
     assert.match(page, /Publish entry/i);
+    assert.match(page, /Open Publishing settings/i);
+    assert.match(toast, /actionHref/);
     assert.match(page, /requestPublishingAction/);
     const creation = page.slice(page.indexOf("const savedEntry = addEntry"), page.indexOf("let message"));
     assert.doesNotMatch(creation, /isPublic\s*:/);
@@ -47,10 +50,14 @@ test("settings exposes explicit owner connection state", () => {
 test("project forms share one tech stack field and creation opens the record", () => {
     const create = read("app/editor/projects/new/page.tsx");
     const edit = read("components/editor/edit-project-modal.tsx");
+    const project = read("app/editor/projects/[id]/page.tsx");
     const field = read("components/editor/tech-stack-field.tsx");
 
     assert.match(create, /TechStackField/);
+    assert.match(create, /disabled=\{!isHydrated\}/);
     assert.match(edit, /TechStackField/);
+    assert.match(edit, /edit-project-repository/);
+    assert.match(project, /project\.repositoryLink/);
     assert.match(field, /parseTechStack/);
     assert.match(create, /router\.push\(`\/editor\/projects\/\$\{project\.id\}`\)/);
 });
@@ -64,6 +71,8 @@ test("entry composers share mobile type and shortcut behavior", () => {
 
     assert.match(create, /EntryTypePicker/);
     assert.match(edit, /EntryTypePicker/);
+    assert.match(create, /<h1 className="sr-only"/);
+    assert.match(edit, /<h1 className="sr-only"/);
     assert.match(picker, /Change type/);
     assert.match(shortcut, /Ctrl\+Enter/);
     assert.match(shortcut, /⌘↵/);

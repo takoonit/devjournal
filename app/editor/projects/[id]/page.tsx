@@ -3,7 +3,7 @@
 import { useState, use, useMemo, useEffect, useRef, useCallback } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
-import { Trash2, Eye, EyeOff, Pencil, RotateCcw } from "lucide-react";
+import { ArrowUpRight, Trash2, Eye, EyeOff, Pencil, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { TimelineEntry } from "@/components/ui/timeline-entry";
 import { StatusStamp } from "@/components/ui/stamp";
@@ -250,6 +250,17 @@ export default function ProjectDetailPage({
                     </Link>
                 )}
                 <ProjectActions projectId={project.id} />
+                {project.repositoryLink ? (
+                    <Link
+                        href={project.repositoryLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="control-target link-ink justify-start font-mono text-meta"
+                    >
+                        Repository
+                        <ArrowUpRight className="ml-1.5 h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                    </Link>
+                ) : null}
                 {entries.some((entry) => entry.isPublic) ? (
                     <Link
                         href={`/portfolio/${project.slug}`}

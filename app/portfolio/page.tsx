@@ -3,6 +3,7 @@ import { ProjectRow } from "@/components/portfolio/project-row";
 import { Reveal } from "@/components/ui/reveal";
 import CountUp from "@/components/ui/count-up";
 import { getPublicPortfolioOverview } from "@/lib/supabase/server";
+import Link from "next/link";
 
 export default async function PortfolioPage() {
     const { projects, user } = await getPublicPortfolioOverview();
@@ -33,6 +34,11 @@ export default async function PortfolioPage() {
                                     </p>
                                     <p className="mt-3 max-w-prose text-ui text-text-muted">
                                         Publish an entry from the editor and its project will be set here as part of the public record.
+                                    </p>
+                                    <p className="mt-6 font-mono text-meta">
+                                        <Link href="/editor" className="control-target link-ink justify-start">
+                                            Open the editor
+                                        </Link>
                                     </p>
                                 </div>
                             </div>

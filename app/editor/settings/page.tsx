@@ -107,6 +107,13 @@ export default function SettingsPage() {
         setUiFormData((prev) => ({ ...prev, [key]: value }));
     };
 
+    const openSettingsChapter = (id: string) => {
+        const chapter = document.getElementById(id);
+        if (!(chapter instanceof HTMLDetailsElement)) return;
+        chapter.open = true;
+        window.requestAnimationFrame(() => chapter.querySelector("summary")?.focus());
+    };
+
     const socialFields: Array<{ key: keyof typeof formData.socialLinks; label: string; type: string; placeholder: string }> = [
         { key: "github", label: "GitHub", type: "url", placeholder: "https://github.com/username" },
         { key: "twitter", label: "Twitter / X", type: "url", placeholder: "https://twitter.com/username" },
@@ -125,11 +132,11 @@ export default function SettingsPage() {
                 </header>
 
                 <nav className="settings-chapter-index mb-10" aria-label="Settings chapters">
-                    <a href="#profile">Profile</a>
-                    <a href="#publishing">Publishing</a>
-                    <a href="#composition">Composition</a>
-                    <a href="#links">Links</a>
-                    <a href="#data-portability">Data portability</a>
+                    <a href="#profile" onClick={() => openSettingsChapter("profile")} className="control-target justify-start">Profile</a>
+                    <a href="#publishing" onClick={() => openSettingsChapter("publishing")} className="control-target justify-start">Publishing</a>
+                    <a href="#composition" onClick={() => openSettingsChapter("composition")} className="control-target justify-start">Composition</a>
+                    <a href="#links" onClick={() => openSettingsChapter("links")} className="control-target justify-start">Links</a>
+                    <a href="#data-portability" onClick={() => openSettingsChapter("data-portability")} className="control-target justify-start">Data portability</a>
                 </nav>
 
                 <form onSubmit={handleSubmit} className="space-y-3">

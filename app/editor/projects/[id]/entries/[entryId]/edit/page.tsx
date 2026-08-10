@@ -160,6 +160,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
     return (
         <div className="pb-20">
             <div className="mx-auto max-w-3xl">
+                <h1 className="sr-only">Edit {entry.title || "entry"}</h1>
                 <Link
                     href={`/editor/projects/${project.id}`}
                     className="control-target mb-8 justify-start gap-2 font-mono text-label uppercase text-text-muted transition-colors duration-subtle hover:text-text-primary"
