@@ -34,6 +34,26 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 - Does it convert reflection into next-step clarity?
 - Does it keep the system calm and cognitively manageable?
 
+---
+
+## 2026-08-10 Private Authoring and Confirmed Publishing
+
+### Observations
+1. A local visibility toggle could claim an entry was public even when no server write happened.
+2. Matching public rows by title or insertion order could update the wrong record after imports, renames, or legacy data.
+3. Granting ownership to the first signup made deployment order part of the security model.
+
+### Decisions
+- Keep every new entry private in localStorage and expose separate `Save private` and `Publish entry` outcomes.
+- Treat Supabase as the server-readable public projection. Public edits, unpublishes, and deletes finish remotely before local state changes.
+- Link local records to Supabase rows with unique nullable `source_id` values. Only one unclaimed project slug may be adopted automatically; legacy profiles and entries require manual reconciliation.
+- Provision one owner UUID explicitly in `owner_settings`. The app uses the anonymous key and the signed owner's token, never a service-role key.
+- Route all public mutations through `/api/publishing`, which owns validation, RLS-backed authorization, mutation, and cache invalidation.
+
+### Rollback
+- Remove the owner row to stop public writes without touching local drafts or published rows.
+- Redeploy the previous app version if needed, but keep the additive source-ID columns and indexes. Take a `.devjournal` backup before any rollback work.
+
 
 ---
 

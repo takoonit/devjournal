@@ -44,9 +44,9 @@
 
 ## 5. Documentation and Automated Verification
 
-- [ ] 5.1 Update README and blueprint documentation for the local-draft/public-projection boundary, owner connection, source-ID migration, entry-level visibility, and rollback steps.
-- [ ] 5.2 Add or update automated tests for publishing payload validation, source matching, auth failure, public filtering, composer privacy, workflow utilities, and root routing.
-- [ ] 5.3 Run `bun test` and resolve all failures.
+- [x] 5.1 Update README and blueprint documentation for the local-draft/public-projection boundary, owner connection, source-ID migration, entry-level visibility, and rollback steps.
+- [x] 5.2 Add or update automated tests for publishing payload validation, source matching, auth failure, public filtering, composer privacy, workflow utilities, and root routing.
+- [x] 5.3 Run `bun test` and resolve all failures.
 - [ ] 5.4 Run `bun run lint` and `bun run build` and resolve all errors and warnings introduced by the change.
 - [ ] 5.5 Run `bun audit`, review the final diff for secrets and unrelated files, and record any accepted dependency finding.
 - [ ] 5.6 Run `openspec validate restore-publishing-trust-and-authoring-ux --type change --strict` and resolve every artifact or requirement error.

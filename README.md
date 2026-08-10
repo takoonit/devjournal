@@ -1,15 +1,15 @@
 # DevJournal
 
-A premium web application for developers to document their build process and automatically generate a public portfolio.
+A private-first build journal that publishes selected entries to a public portfolio.
 
 ## Features
 
 - **Private Editor**: Document your development journey with structured entries
 - **BLAST Framework**: Special planning template for feature development
-- **Public Portfolio**: Automatically generated portfolio showcasing your build logs
+- **Confirmed Publishing**: Publish selected entries through a connected owner account
 - **Press Proof Aesthetic**: Warm paper-and-ink editorial design, typeset like a printed journal
 - **Entry Categories**: Feature, fix, refactor, design, and journal entries
-- **Export/Import**: Backup and restore your journal data as JSON files
+- **Export/Import**: Move journal data in additive `.devjournal` files
 
 ## Tech Stack
 
@@ -49,7 +49,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 1. Navigate to `/editor/settings`
 2. Fill in your name, role, bio, and social links
-3. These will appear on your public portfolio
+3. Profile changes stay local until public work exists and a connected owner confirms the update
 
 ### 2. Create a Project
 
@@ -59,27 +59,14 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ### 3. Document Your Journey
 
-Create entries in three categories:
+Choose the entry type that best fits the record: feature, fix, refactor, design, or journal.
 
-**Plan**
-- BLAST Framework (Blueprint, Link, Architect, Style, Trigger)
-- Feature Concept
+### 4. Save or Publish
 
-**Build**
-- Technical Decision (Context, Decision, Rationale)
-- Bug Fix (Root Cause, Solution, Prevention)
-- Progress Update
-
-**Reflect**
-- Learning Note
-- Retrospective (What went well, didn't work, to improve)
-- General Note
-
-### 4. Toggle Visibility
-
-- Mark entries as public to display them on your portfolio
-- Private entries remain in the editor only
-- Portfolio at `/portfolio` shows only public entries
+- `Save private` writes only to this browser
+- `Publish entry` saves a private local copy first, then sends the entry through the authenticated owner route
+- A failed publish stays private. A failed unpublish stays public until Supabase confirms the change
+- `/portfolio` reads from Supabase and shows only projects with at least one confirmed public entry
 
 ## Project Structure
 
@@ -101,11 +88,11 @@ devjournal/
 
 ## Design Philosophy
 
-DevJournal is set like a typeset publication — the "Press Proof" system:
+DevJournal is set like a typeset publication through the "Press Proof" system:
 
 - Warm paper surfaces with a dark "Midnight Ink" twin (`data-theme-mode="press|ink"`)
 - Two typefaces: Newsreader serif for everything written, IBM Plex Mono for everything measured
-- One accent — proofreader's red ink — used only to annotate (links, ticks, caret, one button per view)
+- One accent: proofreader's red ink, used only to annotate (links, ticks, caret, one button per view)
 - Structure from hairline rules and whitespace: ledger rows, margin-rail timeline, keyline sections
 - Ink-stamp entry types (FT/FX/RF/DS/JN) instead of colored badges
 
@@ -113,7 +100,7 @@ DevJournal is set like a typeset publication — the "Press Proof" system:
 
 ## ISR + Vercel Deployment Steps (with Supabase)
 
-1. **Configure Vercel + Supabase integration envs (Preview + Production)**
+1. **Configure Vercel and Supabase for Preview and Production**
    - Connect your existing Vercel project to Supabase in the Vercel Integrations dashboard.
    - Ensure these public read vars exist for ISR routes:
      - `NEXT_PUBLIC_SUPABASE_URL=https://<your-project-ref>.supabase.co`
@@ -121,28 +108,41 @@ DevJournal is set like a typeset publication — the "Press Proof" system:
    - Optional compatibility aliases supported by server helpers:
      - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
      - `SUPABASE_PUBLISHABLE_KEY`
-   - Keep privileged vars for admin/migrations only (not required for public portfolio reads):
-     - `SUPABASE_SERVICE_ROLE_KEY`
-     - `POSTGRES_URL` / `POSTGRES_PRISMA_URL`
-   - Set `REVALIDATE_SECRET=<strong random token>` for on-demand ISR invalidation.
+   - Runtime publishing uses the anonymous key plus the signed-in owner's access token. Do not add a service-role key to the app runtime.
+   - Keep database credentials in Supabase or an admin-only migration environment.
    - Deploy region target: `ap-southeast-2`.
 
    > Security: never commit real Supabase/Postgres credentials to source control. If credentials were pasted/shared in plaintext, rotate **anon**, **service role**, **JWT secret**, and **database password** immediately.
 
-2. **Supabase as source of truth**
-   - Keep Zustand as editor-side cache only.
-   - Use Supabase tables (`profiles`, `projects`, `entries`) for portfolio reads and ISR output.
-   - Use single-user write/update policy with public read access for portfolio data.
+2. **Apply the source-ID migration**
+   - Apply `supabase/migrations/202608100001_publishing_source_ids.sql` to a preview project first.
+   - Review every row returned by its read-only legacy preflight. Existing profiles require manual reconciliation. A single unclaimed project with the same slug can be adopted; ambiguous projects and legacy entries must be resolved before publishing.
+   - `source_id` stores the browser-local record ID. Supabase UUID primary keys remain unchanged.
 
-3. **ISR strategy in Next.js**
-   - Portfolio routes use `revalidate = 150` seconds.
-   - Use on-demand revalidation endpoint at `POST /api/revalidate?secret=...`.
-   - Trigger path/tag invalidation for entry updates and slug changes (invalidate old/new slug paths).
+3. **Provision and connect the one owner**
+   - Create the intended user through Supabase Auth, then copy its UUID from `auth.users`.
+   - Insert that UUID through the Supabase SQL editor or an admin migration:
 
-4. **Release flow**
+     ```sql
+     insert into public.owner_settings (owner_id)
+     values ('<YOUR_AUTH_USER_UUID>')
+     on conflict (owner_id) do nothing;
+     ```
+
+   - The singleton index rejects a second owner. Signup order never grants publishing rights.
+   - Open `/editor/settings`, expand Publishing, and request the email sign-in link. The screen shows whether the session is the configured owner.
+
+4. **Public projection and cache invalidation**
+   - Zustand and localStorage hold the private authoring state. Supabase is the server-readable public projection.
+   - `POST /api/publishing` validates the action, verifies the bearer token, checks `owner_settings` through RLS, performs the mutation, and invalidates `/portfolio` plus affected project paths and tags.
+   - The retired generic `/api/revalidate` endpoint and `REVALIDATE_SECRET` are no longer used.
+
+5. **Release and rollback**
    - Validate in Vercel Preview first (soak period).
-   - Confirm cross-device consistency and ISR refresh behavior.
+   - Confirm owner connection, cross-device reads, first publish, edit, last unpublish, delete, and cache refresh behavior.
    - Promote to Production after verification.
+   - To stop writes immediately, remove the owner row through an admin connection. Local drafts remain available.
+   - If the app must roll back, redeploy the previous version and keep the additive `source_id` columns and indexes in place. Export a `.devjournal` backup first. Do not drop columns or delete public rows during an emergency rollback.
 
 ## Future Enhancements
 

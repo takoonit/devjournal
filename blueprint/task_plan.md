@@ -59,6 +59,13 @@
 - [x] Preserve editor actions below desktop width, including project import.
 - [x] Complete build, detector, responsive, zoom, theme, density, motion, and print verification.
 
+### Track 5 — Confirmed Publishing
+- [x] Keep entry creation private until an explicit publish succeeds.
+- [x] Map local records to the public projection with stable source IDs.
+- [x] Require one explicitly provisioned Supabase owner for all public writes.
+- [x] Invalidate portfolio paths and tags inside the authenticated publishing route.
+- [x] Give the editor ledger, project issue cover, settings colophon, and public empty folio distinct Press Proof roles.
+
 ---
 
 ## C) Definition of Done (for agentic PRs)
