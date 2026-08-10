@@ -97,7 +97,7 @@ describe("publishing route handler", () => {
                 calls.push(action.type);
                 return { paths: ["/portfolio/project-1"], tags: ["portfolio", "portfolio-entries"] };
             },
-            revalidate: ({ paths, tags }) => calls.push(...paths, ...tags),
+            revalidate: ({ paths, tags }) => { calls.push(...paths, ...tags); },
         }))(request(validAction));
 
         expect(response.status).toBe(200);

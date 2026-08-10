@@ -59,3 +59,30 @@ export function groupEntriesByYearMonth<T extends { createdAt: string }>(
 export function generateId(): string {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
+
+/**
+ * Adds comma-separated technologies while retaining the first spelling.
+ */
+export function parseTechStack(existing: string[], input: string): string[] {
+    const values = [...existing];
+    const seen = new Set(existing.map((value) => value.toLocaleLowerCase()));
+
+    for (const value of input.split(",").map((item) => item.trim()).filter(Boolean)) {
+        const key = value.toLocaleLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+        values.push(value);
+    }
+
+    return values;
+}
+
+/**
+ * Formats a date from local calendar fields for filenames.
+ */
+export function formatLocalDate(date: Date = new Date()): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}

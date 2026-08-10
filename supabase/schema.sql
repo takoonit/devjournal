@@ -9,8 +9,12 @@ create table if not exists public.owner_settings (
   created_at timestamptz not null default now()
 );
 
+create unique index if not exists owner_settings_single_owner
+  on public.owner_settings ((true));
+
 create table if not exists public.profiles (
   id uuid primary key default gen_random_uuid(),
+  source_id text,
   name text not null,
   role text not null,
   bio text not null,
@@ -30,6 +34,7 @@ create table if not exists private.profiles_private (
 
 create table if not exists public.projects (
   id uuid primary key default gen_random_uuid(),
+  source_id text,
   name text not null,
   slug text not null unique,
   description text not null,
@@ -42,6 +47,7 @@ create table if not exists public.projects (
 
 create table if not exists public.entries (
   id uuid primary key default gen_random_uuid(),
+  source_id text,
   project_id uuid not null references public.projects(id) on delete cascade,
   entry_type text not null default 'journal' check (entry_type in ('feature', 'fix', 'refactor', 'design', 'journal')),
   title text not null,
@@ -54,6 +60,18 @@ create table if not exists public.entries (
 );
 
 create index if not exists idx_entries_project_public_created on public.entries(project_id, is_public, created_at desc);
+
+create unique index if not exists profiles_source_id_unique
+  on public.profiles (source_id)
+  where source_id is not null;
+
+create unique index if not exists projects_source_id_unique
+  on public.projects (source_id)
+  where source_id is not null;
+
+create unique index if not exists entries_source_id_unique
+  on public.entries (source_id)
+  where source_id is not null;
 
 -- timestamp maintenance
 create or replace function public.set_updated_at()
@@ -101,35 +119,13 @@ create trigger set_profiles_private_updated_at
 before update on private.profiles_private
 for each row execute function public.set_updated_at();
 
--- Seed the owner_settings table for the initial authenticated user.
--- After signing in to Supabase Auth for the first time, run the following
--- from the Supabase SQL Editor (or a post-deploy migration) replacing
+-- Provision the one publishing owner explicitly through the Supabase SQL
+-- Editor or an admin migration, replacing
 -- <YOUR_AUTH_USER_UUID> with the uid from auth.users:
 --
 --   INSERT INTO public.owner_settings (owner_id)
 --   VALUES ('<YOUR_AUTH_USER_UUID>')
 --   ON CONFLICT (owner_id) DO NOTHING;
---
--- Alternatively, auto-register the first authenticated user as the owner:
-create or replace function public.auto_seed_owner()
-returns trigger
-language plpgsql
-security definer
-set search_path = public
-as $$
-begin
-  lock table public.owner_settings in exclusive mode;
-  if not exists (select 1 from public.owner_settings) then
-    insert into public.owner_settings (owner_id) values (new.id);
-  end if;
-  return new;
-end;
-$$;
-
-drop trigger if exists seed_owner_on_first_signup on auth.users;
-create trigger seed_owner_on_first_signup
-after insert on auth.users
-for each row execute function public.auto_seed_owner();
 
 -- RLS: single-user write/update, public read for portfolio tables
 alter table public.owner_settings enable row level security;
@@ -158,7 +154,14 @@ grant select on public.public_profiles to authenticated;
 
 create policy if not exists "public can read projects"
 on public.projects for select
-using (true);
+using (
+  exists (
+    select 1
+    from public.entries
+    where entries.project_id = projects.id
+      and entries.is_public = true
+  )
+);
 
 create policy if not exists "public can read public entries"
 on public.entries for select

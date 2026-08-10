@@ -131,7 +131,6 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                     entryType,
                     title: title.trim(),
                     content: details.trim() ? `${content.trim()}${DETAILS_MARKER}${details.trim()}` : content.trim(),
-                    isPublic: true,
                 })
             );
 

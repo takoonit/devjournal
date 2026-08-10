@@ -5,6 +5,7 @@ import type { Entry, Project, User } from "@/lib/types";
  */
 export interface ProfileRow {
     id: string;
+    source_id: string | null;
     name: string;
     role: string;
     bio: string;
@@ -19,6 +20,7 @@ export interface ProfileRow {
  */
 export interface ProjectRow {
     id: string;
+    source_id: string | null;
     name: string;
     slug: string;
     description: string;
@@ -34,6 +36,7 @@ export interface ProjectRow {
  */
 export interface EntryRow {
     id: string;
+    source_id: string | null;
     project_id: string;
     entry_type: Entry["entryType"] | null;
     title: string;
