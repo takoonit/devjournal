@@ -19,7 +19,7 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
           return (
             <li key={`${item.label}-${index}`} className="flex items-baseline gap-2">
               {item.href && !isLast ? (
-                <Link href={item.href} className="transition-colors duration-subtle hover:text-accent">
+                <Link href={item.href} className="control-target justify-start transition-colors duration-subtle hover:text-accent">
                   {item.label}
                 </Link>
               ) : (

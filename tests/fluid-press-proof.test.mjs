@@ -4,7 +4,7 @@ import test from "node:test";
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("the Press Proof type system is fluid and self-hosted by Next.js", () => {
+test("the Material type system is fluid and self-hosted by Next.js", () => {
     const globals = read("app/globals.css");
     const layout = read("app/layout.tsx");
     const tailwind = read("tailwind.config.ts");
@@ -12,7 +12,7 @@ test("the Press Proof type system is fluid and self-hosted by Next.js", () => {
     assert.doesNotMatch(globals, /@import\s+url\([^)]*fonts\.googleapis\.com/);
     assert.match(layout, /from\s+["']next\/font\/google["']/);
     assert.match(layout, /viewportFit:\s*["']cover["']/);
-    assert.match(tailwind, /display:\s*\["clamp\(2\.25rem,/);
+    assert.match(tailwind, /display:\s*\["clamp\(3\.25rem,/);
     assert.match(tailwind, /prose:\s*\["clamp\(1rem,/);
     assert.match(tailwind, /folio:\s*\["clamp\(4rem,/);
     assert.match(tailwind, /measure:\s*["']66ch["']/);
@@ -90,9 +90,10 @@ test("navigation and form fields share the 2.75rem interaction floor", () => {
     const newEntry = read("app/editor/projects/[id]/entries/new/page.tsx");
     const editEntry = read("app/editor/projects/[id]/entries/[entryId]/edit/page.tsx");
     const notFound = read("app/portfolio/[slug]/not-found.tsx");
+    const breadcrumbs = read("components/ui/breadcrumbs.tsx");
 
     assert.match(globals, /\.field-target\s*\{[^}]*min-block-size:\s*var\(--control-min-size\)/s);
-    assert.match(editorLayout, /control-target[^"']*font-serif text-subtitle/);
+    assert.match(editorLayout, /control-target[^"']*font-sans text-subtitle/);
     assert.match(editorLayout, /relative flex min-h-control/);
     assert.match(settings, /field-target w-full/);
     assert.match(formStyles, /field-target w-full/);
@@ -101,6 +102,8 @@ test("navigation and form fields share the 2.75rem interaction floor", () => {
     assert.match(newEntry, /field-target[^"']*text-title/);
     assert.match(editEntry, /field-target[^"']*text-title/);
     assert.match(notFound, /control-target link-ink/);
+    assert.match(breadcrumbs, /control-target[^"']*hover:text-accent/);
+    assert.match(globals, /@media\s*\(max-width:\s*22rem\)[\s\S]*?\.editor-masthead[\s\S]*?margin-block-end:\s*1\.5rem/s);
 });
 
 test("settings, editor extremes, print, and favicon have explicit adaptations", () => {
@@ -203,7 +206,7 @@ test("reviewed portfolio copy, heading tokens, and external icons use project co
     assert.match(bio, /platform === ["']email["']\s*\?\s*\(\s*<Mail/);
     assert.match(bio, /:\s*\(\s*<ExternalLink/);
     assert.match(projectRow, /Repository\s*<ExternalLink/);
-    assert.match(settings, /Preview your public portfolio\s*<ArrowUpRight/);
+    assert.match(settings, /Preview your public portfolio\s*<ArrowRight/);
     assert.doesNotMatch(`${slugPage}\n${bio}\n${projectRow}\n${settings}`, /↗/);
     assert.match(readme, /feature, fix, refactor, design, and journal/i);
 });
@@ -215,6 +218,7 @@ test("shared form and stamp helpers remove reviewed duplication", () => {
     const stamp = read("components/ui/stamp.tsx");
     const newEntry = read("app/editor/projects/[id]/entries/new/page.tsx");
     const editEntry = read("app/editor/projects/[id]/entries/[entryId]/edit/page.tsx");
+    const entryTypePicker = read("components/editor/entry-type-picker.tsx");
 
     assert.match(formStyles, /export const inputClasses/);
     assert.match(newProject, /role=["']group["']\s+aria-label=["']Status["']/);
@@ -222,6 +226,7 @@ test("shared form and stamp helpers remove reviewed duplication", () => {
     assert.match(modal, /const onCloseRef = useRef\(onClose\)/);
     assert.match(modal, /onCloseRef\.current\(\)/);
     assert.match(stamp, /export function getEntryStampControlTone/);
-    assert.match(newEntry, /getEntryStampControlTone\(option\.value, active\)/);
-    assert.match(editEntry, /getEntryStampControlTone\(option\.value, active\)/);
+    assert.match(newEntry, /EntryTypePicker/);
+    assert.match(editEntry, /EntryTypePicker/);
+    assert.match(entryTypePicker, /getEntryStampControlTone\(option\.value, active\)/);
 });

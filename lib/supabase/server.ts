@@ -1,6 +1,8 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import { Entry, Project, User } from "@/lib/types";
+import { getSupabasePublicConfig } from "@/lib/supabase/config";
+import { filterProjectsWithPublicEntries } from "@/lib/supabase/public-projects";
 import {
     EntryRow,
     mapEntryRowToEntry,
@@ -19,17 +21,10 @@ const ISR_WINDOW_SECONDS = 150;
  * Builds a public Supabase client from environment variables, or returns null when unavailable.
  */
 function getSupabasePublicClient() {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const publishableKey =
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-        process.env.SUPABASE_PUBLISHABLE_KEY;
+    const config = getSupabasePublicConfig();
+    if (!config) return null;
 
-    if (!url || !publishableKey) {
-        return null;
-    }
-
-    return createClient(url, publishableKey, {
+    return createClient(config.url, config.publishableKey, {
         auth: {
             persistSession: false,
             autoRefreshToken: false,
@@ -87,18 +82,31 @@ async function getCachedPublicProjects(): Promise<Project[]> {
         return [];
     }
 
-    const { data, error } = await client
-        .from("projects")
-        .select("id,name,slug,description,tech_stack,repository_link,status,created_at,updated_at")
-        .order("updated_at", { ascending: false })
-        .returns<ProjectRow[]>();
+    const [projectsResult, entriesResult] = await Promise.all([
+        client
+            .from("projects")
+            .select("id,name,slug,description,tech_stack,repository_link,status,created_at,updated_at")
+            .order("updated_at", { ascending: false })
+            .returns<ProjectRow[]>(),
+        client
+            .from("entries")
+            .select("project_id,is_public")
+            .eq("is_public", true)
+            .returns<Array<{ project_id: string; is_public: boolean }>>(),
+    ]);
 
-    if (error) {
-        console.error("Failed to fetch projects", error.message);
+    if (projectsResult.error || entriesResult.error) {
+        const message = projectsResult.error?.message ?? entriesResult.error?.message;
+        console.error("Failed to fetch public projects", message);
         return [];
     }
 
-    return data.map(mapProjectRowToProject);
+    const projects = projectsResult.data.map(mapProjectRowToProject);
+    const entries = entriesResult.data.map((entry) => ({
+        projectId: entry.project_id,
+        isPublic: entry.is_public,
+    }));
+    return filterProjectsWithPublicEntries(projects, entries);
 }
 
 /**
@@ -125,23 +133,7 @@ export async function getPublicProjectSlugs(): Promise<string[]> {
     cacheTag("portfolio-projects");
     cacheLife({ revalidate: ISR_WINDOW_SECONDS });
 
-    const client = getSupabasePublicClient();
-    if (!client) {
-        logSupabaseConfigWarning();
-        return [];
-    }
-
-    const { data, error } = await client
-        .from("projects")
-        .select("slug")
-        .returns<Array<{ slug: string }>>();
-
-    if (error) {
-        console.error("Failed to fetch project slugs", error.message);
-        return [];
-    }
-
-    return data.map((row) => row.slug);
+    return (await getCachedPublicProjects()).map((project) => project.slug);
 }
 
 /**
@@ -201,12 +193,15 @@ export async function getPublicProjectBySlug(slug: string): Promise<{ project: P
 
     if (entriesError) {
         console.error("Failed to fetch public entries", entriesError.message);
-        return { project, entries: [], user };
+        return { project: null, entries: [], user };
     }
+
+    const entries = entriesData.map(mapEntryRowToEntry);
+    if (entries.length === 0) return { project: null, entries: [], user };
 
     return {
         project,
-        entries: entriesData.map(mapEntryRowToEntry),
+        entries,
         user,
     };
 }

@@ -34,6 +34,39 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 - Does it convert reflection into next-step clarity?
 - Does it keep the system calm and cognitively manageable?
 
+---
+
+## 2026-08-10 Private Authoring and Confirmed Publishing
+
+### Observations
+1. A local visibility toggle could claim an entry was public even when no server write happened.
+2. Matching public rows by title or insertion order could update the wrong record after imports, renames, or legacy data.
+3. Granting ownership to the first signup made deployment order part of the security model.
+
+### Decisions
+- Keep every new entry private in localStorage and expose separate `Save private` and `Publish entry` outcomes.
+- Treat Supabase as the server-readable public projection. Public edits, unpublishes, and deletes finish remotely before local state changes.
+- Link local records to Supabase rows with unique nullable `source_id` values. Only one unclaimed project slug may be adopted automatically; legacy profiles and entries require manual reconciliation.
+- Provision one owner UUID explicitly in `owner_settings`. The app uses the anonymous key and the signed owner's token, never a service-role key.
+- Route all public mutations through `/api/publishing`, which owns validation, RLS-backed authorization, mutation, and cache invalidation.
+
+### Rollback
+- Remove the owner row to stop public writes without touching local drafts or published rows.
+- Redeploy the previous app version if needed, but keep the additive source-ID columns and indexes. Take a `.devjournal` backup before any rollback work.
+
+### Dependency audit
+- `bun audit` reported 31 advisories: 22 high, 8 moderate, and 1 low. The reported paths are in the Next.js, Tailwind, PostCSS, Babel, and ESLint build or lint graph.
+- Direct dependencies are already at their latest compatible versions. The resolved direct PostCSS version is 8.5.26; older reported PostCSS and Nano ID versions are transitive.
+- This change accepts the findings rather than mixing framework, Tailwind, or ESLint major upgrades into the publishing release. Recheck the audit during that separate upgrade.
+
+### Persona verification
+- Isolated browser runs covered a privacy-conscious diarist, a disconnected build-in-public author, a mobile commuter at 320px and 390px, a returning power user, and an independent creative UX review across Press Proof and Midnight Ink.
+- Private create, edit, export, import, and delete paths made no publishing requests. Failed publishing remained private, exposed a direct recovery link, and did not appear in the public portfolio.
+- Mobile composer focus order, 44px controls, safe-area actions, Ctrl+Enter private save, and page overflow checks passed. The creative review captured 24 desktop and mobile surface states and found no P0 or P1 visual issue.
+- Findings fixed during the run: owner-connection recovery, Settings chapter opening and focus, chapter target sizing, the mobile empty-folio action, pre-hydration form protection, repository editing and access, and accessible composer headings.
+- Five focused project-creation reruns reached the created record within 400ms. The earlier navigation report was an automation timing error, not an app failure.
+- Deferred P3 notes: the 320px Settings preview label can wrap without clipping, and Publishing uses technical configuration terms appropriate to the local setup screen.
+- A preview Supabase project was not configured locally. Owner connection, successful remote publish/update/unpublish/delete, cross-device reads, and cache refresh remain release blockers rather than claimed passes.
 
 ---
 
@@ -112,3 +145,23 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 ### Guardrails
 - Keep one dominant top-level navigation cue per screen.
 - Preserve focus-visible styles and ARIA semantics on whichever cue remains.
+
+---
+
+## 2026-08-16 Material 3 Expressive Migration
+
+### Observations
+1. The previous visual system owned nearly every visible decision, while Material behavior was limited to touch targets, focus, and basic state handling.
+2. The editor landing page emphasized a publication metaphor more strongly than the next useful action.
+3. Compact navigation placed several unlabeled actions in the top bar and did not provide the stable bottom navigation expected for frequent mobile use.
+
+### Decisions
+- Material 3 Expressive now governs color roles, Google Sans Flex typography, shape families, state layers, elevation, motion, navigation, cards, chips, and action hierarchy.
+- Narrative First remains the product model; free-form writing, local drafts, and explicit publishing behavior do not change.
+- Persisted `press` and `ink` values remain as compatibility keys but are presented as Light and Dark schemes.
+- Android-only or unavailable expressive components are not copied. Semantic web controls and CSS transitions are the documented fallback.
+
+### Guardrails
+- Strong expression stays concentrated in editor, project identity, entry-type selection, and the primary action.
+- Forms, publishing, settings details, reading, and destructive flows remain familiar and calm.
+- Every design claim and platform exception is recorded in `DESIGN.md` and must pass `materialist design lint DESIGN.md`.

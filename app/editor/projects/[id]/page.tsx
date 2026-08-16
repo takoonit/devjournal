@@ -3,7 +3,7 @@
 import { useState, use, useMemo, useEffect, useRef, useCallback } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
-import { Trash2, Eye, EyeOff, Pencil, RotateCcw } from "lucide-react";
+import { ArrowUpRight, Trash2, Eye, EyeOff, Pencil, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { TimelineEntry } from "@/components/ui/timeline-entry";
 import { StatusStamp } from "@/components/ui/stamp";
@@ -12,6 +12,7 @@ import { formatDate, groupEntriesByYearMonth } from "@/lib/utils";
 import { ProjectActions } from "@/components/editor/project-actions";
 import { EditProjectModal } from "@/components/editor/edit-project-modal";
 import { useToast } from "@/components/ui/toast";
+import { requestPublishingAction } from "@/lib/publishing/client";
 
 export default function ProjectDetailPage({
     params,
@@ -27,6 +28,7 @@ export default function ProjectDetailPage({
     const deleteProject = useDevJournalStore((state) => state.deleteProject);
     const deleteEntry = useDevJournalStore((state) => state.deleteEntry);
     const updateEntry = useDevJournalStore((state) => state.updateEntry);
+    const user = useDevJournalStore((state) => state.user);
 
     const project = useMemo(() => projects.find((p) => p.id === id), [projects, id]);
     const entries = useMemo(
@@ -45,6 +47,7 @@ export default function ProjectDetailPage({
     const [entryToDelete, setEntryToDelete] = useState<string | null>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [hasDraft, setHasDraft] = useState(false);
+    const [pendingMutation, setPendingMutation] = useState<string | null>(null);
 
     const deleteModalRef = useRef<HTMLDivElement>(null);
     const entryDeleteModalRef = useRef<HTMLDivElement>(null);
@@ -122,35 +125,80 @@ export default function ProjectDetailPage({
         );
     }
 
-    const handleDeleteProject = () => {
+    const handleDeleteProject = async () => {
+        setPendingMutation("project-delete");
+        if (entries.some((entry) => entry.isPublic)) {
+            const result = await requestPublishingAction({
+                type: "delete-project",
+                projectSourceId: project.id,
+                projectSlug: project.slug,
+            });
+            if (!result.ok) {
+                setPendingMutation(null);
+                addToast({ message: result.message, type: "error" });
+                return;
+            }
+        }
         deleteProject(project.id);
         addToast({ message: `"${project.name}" deleted.`, type: "success", copyKey: "project-deleted" });
         router.push("/editor");
     };
 
-    const handleDeleteEntry = () => {
+    const handleDeleteEntry = async () => {
         if (!entryToDelete) return;
         const entry = entries.find((e) => e.id === entryToDelete);
+        if (!entry) return;
+        setPendingMutation(`entry-delete-${entry.id}`);
+        if (entry.isPublic) {
+            const result = await requestPublishingAction({
+                type: "delete-entry",
+                entrySourceId: entry.id,
+                projectSlug: project.slug,
+            });
+            if (!result.ok) {
+                setPendingMutation(null);
+                addToast({ message: result.message, type: "error" });
+                return;
+            }
+        }
         deleteEntry(entryToDelete);
-        addToast({ message: `Entry "${entry?.title || "Untitled"}" deleted.`, type: "success", copyKey: "entry-deleted" });
+        addToast({ message: `Entry "${entry.title || "Untitled"}" deleted.`, type: "success", copyKey: "entry-deleted" });
+        setPendingMutation(null);
         setEntryToDelete(null);
     };
 
-    const toggleEntryVisibility = (entryId: string, currentStatus: boolean) => {
+    const toggleEntryVisibility = async (entryId: string, currentStatus: boolean) => {
+        const entry = entries.find((item) => item.id === entryId);
+        if (!entry) return;
+        setPendingMutation(`entry-visibility-${entryId}`);
+
+        const result = currentStatus
+            ? await requestPublishingAction({
+                type: "unpublish-entry",
+                entrySourceId: entry.id,
+                projectSlug: project.slug,
+            })
+            : await requestPublishingAction({ type: "publish-entry", profile: user, project, entry });
+
+        if (!result.ok) {
+            setPendingMutation(null);
+            addToast({
+                message: `${result.message} The entry is still ${currentStatus ? "public" : "private"}.`,
+                type: "error",
+            });
+            return;
+        }
+
         updateEntry(entryId, { isPublic: !currentStatus });
-        addToast({
-            message: currentStatus ? "Entry set to private." : "Entry set to public.",
-            type: "info",
-            copyKey: currentStatus ? "entry-private" : "entry-public",
-        });
+        setPendingMutation(null);
+        addToast({ message: currentStatus ? "Entry is now private." : "Entry published.", type: "success" });
     };
 
     let entryIndex = 0;
 
     return (
         <div className="max-w-page">
-            {/* Project masthead */}
-            <header className="masthead-block rule-oxford mb-10">
+            <header className="m3-hero issue-cover mb-12">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                     <h1 className="masthead-title print-display text-text-primary print:!text-[2rem] print:!leading-[1.1]">{project.name}</h1>
                     <div className="flex items-center gap-1">
@@ -175,39 +223,54 @@ export default function ProjectDetailPage({
                     <p className="mt-3 max-w-measure text-prose text-text-secondary">{project.description}</p>
                 ) : null}
 
-                <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
-                    <StatusStamp status={project.status} />
-                    <span className="font-mono text-meta tabular-nums text-text-muted">
-                        Opened {formatDate(project.createdAt, "dd MMM yyyy")} · {entries.length}{" "}
-                        {entries.length === 1 ? "entry" : "entries"}
-                    </span>
-                    {project.techStack.length > 0 && (
-                        <span className="font-mono text-meta text-text-muted">
-                            {project.techStack.join(" · ")}
-                        </span>
-                    )}
-                </div>
-            </header>
+                <dl className="issue-cover-facts">
+                    <div><dt>Status</dt><dd><StatusStamp status={project.status} /></dd></div>
+                    <div><dt>Opened</dt><dd>{formatDate(project.createdAt, "dd MMM yyyy")}</dd></div>
+                    <div><dt>Updated</dt><dd>{formatDate(project.updatedAt, "dd MMM yyyy")}</dd></div>
+                    <div><dt>Record</dt><dd>{entries.length} {entries.length === 1 ? "entry" : "entries"}</dd></div>
+                    <div><dt>Public</dt><dd>{entries.filter((entry) => entry.isPublic).length} confirmed</dd></div>
+                    {project.techStack.length > 0 ? <div className="issue-cover-stack"><dt>Stack</dt><dd>{project.techStack.join(" · ")}</dd></div> : null}
+                </dl>
 
-            {/* Actions row */}
-            <div className="mb-14 flex flex-wrap items-center gap-3">
+            <div className="issue-cover-actions flex flex-wrap items-center gap-3">
                 <Link
                     href={`/editor/projects/${project.id}/entries/new`}
-                    className="control-target rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
+                    className="m3-button-filled control-target font-sans text-label"
                 >
                     New Entry
                 </Link>
                 {hasDraft && (
                     <Link
                         href={`/editor/projects/${project.id}/entries/new`}
-                        className="control-target gap-2 rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                        className="m3-button-outlined control-target gap-2 font-sans text-label"
                     >
                         <RotateCcw className="h-3 w-3" strokeWidth={1.5} />
                         Resume draft
                     </Link>
                 )}
                 <ProjectActions projectId={project.id} />
+                {project.repositoryLink ? (
+                    <Link
+                        href={project.repositoryLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="control-target link-ink justify-start font-mono text-meta"
+                    >
+                        Repository
+                        <ArrowUpRight className="ml-1.5 h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                    </Link>
+                ) : null}
+                {entries.some((entry) => entry.isPublic) ? (
+                    <Link
+                        href={`/portfolio/${project.slug}`}
+                        target="_blank"
+                        className="control-target link-ink justify-start font-mono text-meta"
+                    >
+                        View public page
+                    </Link>
+                ) : null}
             </div>
+            </header>
 
             {/* The record */}
             {entries.length === 0 ? (
@@ -243,6 +306,7 @@ export default function ProjectDetailPage({
                                             <div className="timeline-actions z-10 flex items-center gap-0.5 transition-opacity duration-subtle">
                                                 <button
                                                     onClick={() => toggleEntryVisibility(entry.id, entry.isPublic)}
+                                                    disabled={pendingMutation !== null}
                                                     className="control-target text-text-muted transition-colors duration-subtle hover:text-text-primary"
                                                     aria-label={entry.isPublic ? "Set entry to private" : "Set entry to public"}
                                                 >
@@ -259,6 +323,7 @@ export default function ProjectDetailPage({
                                                 </Link>
                                                 <button
                                                     onClick={() => setEntryToDelete(entry.id)}
+                                                    disabled={pendingMutation !== null}
                                                     className="control-target text-text-muted transition-colors duration-subtle hover:text-destructive"
                                                     aria-label={`Delete entry: ${entry.title}`}
                                                 >
@@ -301,15 +366,16 @@ export default function ProjectDetailPage({
                         <div className="mt-7 flex justify-end gap-3 border-t border-rule/15 pt-5">
                             <button
                                 onClick={() => setShowDeleteConfirm(false)}
-                                className="control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                                className="m3-button-outlined control-target font-sans text-label"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleDeleteProject}
+                                disabled={pendingMutation !== null}
                                 className="control-target rounded bg-destructive px-4 py-2 font-mono text-label uppercase text-destructive-contrast transition-colors duration-subtle hover:opacity-90"
                             >
-                                Delete
+                                {pendingMutation === "project-delete" ? "Deleting…" : "Delete"}
                             </button>
                         </div>
                     </div>
@@ -341,15 +407,16 @@ export default function ProjectDetailPage({
                         <div className="mt-7 flex justify-end gap-3 border-t border-rule/15 pt-5">
                             <button
                                 onClick={() => setEntryToDelete(null)}
-                                className="control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                                className="m3-button-outlined control-target font-sans text-label"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleDeleteEntry}
+                                disabled={pendingMutation !== null}
                                 className="control-target rounded bg-destructive px-4 py-2 font-mono text-label uppercase text-destructive-contrast transition-colors duration-subtle hover:opacity-90"
                             >
-                                Delete
+                                {pendingMutation?.startsWith("entry-delete-") ? "Deleting…" : "Delete"}
                             </button>
                         </div>
                     </div>

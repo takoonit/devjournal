@@ -3,7 +3,7 @@
 import { useToast } from "@/components/ui/toast";
 import { useDevJournalStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
-import { FolderInput, Plus, Settings } from "lucide-react";
+import { BookOpenText, FolderInput, Plus, Settings } from "lucide-react";
 import { Breadcrumbs, type BreadcrumbItem } from "@/components/ui/breadcrumbs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -19,6 +19,7 @@ function EditorLayoutContent({
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { addToast } = useToast();
     const pathname = usePathname();
+    const isLedgerActive = pathname === "/editor";
     const isSettingsActive = pathname === "/editor/settings";
     const isEntryFormRoute = /^\/editor\/projects\/[^/]+\/entries\/(new|[^/]+\/edit)$/.test(pathname);
     const uiPreferences = useDevJournalStore((state) => state.uiPreferences);
@@ -74,15 +75,15 @@ function EditorLayoutContent({
 
     const navItemClasses = (isActive: boolean) =>
         cn(
-            "relative flex min-h-control items-center py-1.5 pl-4 font-serif text-ui transition-colors duration-subtle",
+            "m3-nav-item relative flex min-h-control items-center gap-3 px-4 py-2 font-sans text-ui transition-all duration-standard",
             isActive
-                ? "text-text-primary before:absolute before:left-0 before:top-1/2 before:h-3.5 before:w-0.5 before:-translate-y-1/2 before:bg-accent"
+                ? "is-active"
                 : "text-text-secondary hover:text-text-primary"
         );
 
     return (
         <div
-            className="flex min-h-screen"
+            className="editor-shell flex min-h-screen"
             data-theme-mode={uiPreferences.themeMode}
             data-focus-mode={uiPreferences.focusMode}
             data-density={uiPreferences.density}
@@ -95,25 +96,41 @@ function EditorLayoutContent({
             >
                 Skip to content
             </a>
-            {/* The index column */}
             <aside
                 className={cn(
-                    "editor-sidebar hidden shrink-0 border-r border-surface-border bg-surface-base lg:block",
+                    "m3-navigation-rail editor-sidebar hidden shrink-0 lg:block",
                     uiPreferences.focusMode &&
                         "opacity-30 transition-opacity duration-expressive hover:opacity-100 focus-within:opacity-100"
                 )}
             >
-                <div className="mb-10">
+                <div className="mb-6">
                     <Link
                         href="/portfolio"
-                        className="control-target justify-start font-serif text-subtitle text-text-primary transition-colors duration-subtle hover:text-accent"
+                        className="control-target justify-start gap-3 px-2 font-sans text-subtitle text-text-primary transition-colors duration-subtle hover:text-accent"
                     >
-                        DevJournal
+                        <span className="m3-brand-mark" aria-hidden="true">D</span>
+                        <span>DevJournal</span>
                     </Link>
-                    <p className="mt-1 font-mono text-label uppercase text-text-muted">The Editor</p>
+                    <p className="ml-14 mt-1 font-sans text-meta text-text-muted">Build in public</p>
                 </div>
 
-                <nav className="space-y-8" aria-label="Editor navigation">
+                <Link
+                    href="/editor/projects/new"
+                    className="m3-fab control-target mb-6 w-full justify-start gap-3 px-5 py-3"
+                >
+                    <Plus className="h-5 w-5" strokeWidth={2} aria-hidden="true" />
+                    New project
+                </Link>
+
+                <nav className="space-y-4" aria-label="Editor navigation">
+                    <Link
+                        href="/editor"
+                        className={navItemClasses(isLedgerActive)}
+                        aria-current={isLedgerActive ? "page" : undefined}
+                    >
+                        <BookOpenText className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+                        Ledger
+                    </Link>
                     <div>
                         <div className="mb-3 flex items-baseline justify-between gap-2">
                             <div className="keyline flex-1">
@@ -122,7 +139,7 @@ function EditorLayoutContent({
                             <div className="flex items-center gap-0.5">
                                 <button
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
+                                    className="m3-icon-button control-target"
                                     title="Import Project"
                                     aria-label="Import project from file"
                                 >
@@ -130,7 +147,7 @@ function EditorLayoutContent({
                                 </button>
                                 <Link
                                     href="/editor/projects/new"
-                                    className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
+                                    className="m3-icon-button control-target"
                                     title="New Project"
                                     aria-label="Create new project"
                                 >
@@ -169,7 +186,7 @@ function EditorLayoutContent({
                         </div>
                     </div>
 
-                    <div className="border-t border-rule/15 pt-6">
+                    <div className="pt-2">
                         <Link
                             href="/editor/settings"
                             className={navItemClasses(isSettingsActive)}
@@ -184,42 +201,44 @@ function EditorLayoutContent({
                 </nav>
             </aside>
 
-            {/* The working page */}
             <main id="editor-content" className="editor-page-frame min-w-0 flex-1">
                 <div className="editor-workspace mx-auto w-full max-w-page">
-                    <div className="mb-8 flex items-center justify-between border-b border-rule/15 pb-4 lg:hidden">
-                        <Link href="/editor" className="control-target justify-start font-serif text-subtitle text-text-primary">
-                            DevJournal
+                    <div className="m3-top-app-bar mb-6 p-2 lg:hidden">
+                        <Link href="/editor" className="control-target justify-start gap-2 px-2 font-sans text-subtitle text-text-primary">
+                            <span className="m3-brand-mark" aria-hidden="true">D</span>
+                            <span>DevJournal</span>
                         </Link>
-                        <div className="flex items-center gap-2">
+                        <div>
                             <button
                                 type="button"
                                 onClick={() => fileInputRef.current?.click()}
-                                className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
+                                className="m3-icon-button control-target"
                                 aria-label="Import project from file"
                             >
                                 <FolderInput className="h-5 w-5" strokeWidth={1.5} />
                             </button>
-                            <Link
-                                href="/editor/projects/new"
-                                className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
-                                aria-label="Create new project"
-                            >
-                                <Plus className="h-5 w-5" strokeWidth={1.5} />
-                            </Link>
-                            <Link
-                                href="/editor/settings"
-                                className="control-target text-text-muted transition-colors duration-subtle hover:text-accent"
-                                aria-label="Settings"
-                            >
-                                <Settings className="h-5 w-5" strokeWidth={1.5} />
-                            </Link>
                         </div>
                     </div>
                     {!isEntryFormRoute && <Breadcrumbs items={breadcrumbItems} />}
                     {children}
                 </div>
             </main>
+            {!isEntryFormRoute ? (
+                <nav className="m3-mobile-navigation lg:hidden" aria-label="Primary navigation">
+                    <Link href="/editor" aria-current={isLedgerActive ? "page" : undefined}>
+                        <BookOpenText className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+                        <span>Ledger</span>
+                    </Link>
+                    <Link href="/editor/projects/new" className="m3-fab" aria-label="Create new project">
+                        <Plus className="h-6 w-6" strokeWidth={2} aria-hidden="true" />
+                        <span>New</span>
+                    </Link>
+                    <Link href="/editor/settings" aria-current={isSettingsActive ? "page" : undefined}>
+                        <Settings className="h-5 w-5" strokeWidth={1.8} aria-hidden="true" />
+                        <span>Settings</span>
+                    </Link>
+                </nav>
+            ) : null}
         </div>
     );
 }

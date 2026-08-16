@@ -10,17 +10,17 @@ DevJournal is a "Build in Public" platform that turns daily developer logs into 
 
 - **Framework:** Next.js 16 with App Router and Turbopack
 - **UI:** React 19 and TypeScript
-- **Styling:** Tailwind CSS with the Press Proof design system, a warm paper-and-ink editorial theme with a Midnight Ink twin. All colors flow through CSS variable tokens in `app/globals.css`.
-- **Animations:** Framer Motion, limited to block-level settle motion described below
+- **Styling:** Tailwind CSS with a web-adapted Material 3 Expressive system. All colors, shapes, states, elevation, and motion flow through CSS variable tokens in `app/globals.css`.
+- **Animations:** Framer Motion for block entrance plus CSS Material state and emphasized motion
 - **State:** Zustand with localStorage persistence in `lib/store.ts`
 - **Icons:** Lucide React with semantic icon choices
-- **Package manager:** pnpm
+- **Package manager:** Bun 1.3.14+
 
 ## Commands
 
-- `pnpm dev`: start the Turbopack development server
-- `pnpm build`: run the production build and TypeScript checks
-- `pnpm lint`: run ESLint
+- `bun run dev`: start the Turbopack development server
+- `bun run build`: run the production build and TypeScript checks
+- `bun run lint`: run ESLint
 
 ## Code Conventions
 
@@ -79,20 +79,21 @@ interface Entry {
 - Imports may be `global`, `selective`, or `project` scope.
 - Imports are additive and non-destructive. Duplicate names receive a counter suffix, and imported records receive fresh IDs to prevent collisions.
 
-## Design Rules: Press Proof
+## Design Rules: Material 3 Expressive
 
-The journal is a typeset publication rather than a dashboard. Its visual devices come from print craft: rules, margins, stamps, and figures.
+`DESIGN.md` is the design-intent contract. Material 3 Expressive governs the visual system; Narrative First governs product behavior.
 
-- **Two themes, one token set:** Press Proof is the light default. Midnight Ink is its dark twin. Apply them through `data-theme-mode="press|ink"` on `<html>`. Never hardcode palette classes such as `zinc-*`, `cyan-*`, or hex colors. Use `surface-*`, `text-*`, `rule`, `accent`, `positive`, `warning`, and `destructive`.
-- **Two typefaces:** Newsreader is for written material such as headings, prose, and form copy. IBM Plex Mono is for measured material such as dates, counts, labels, buttons, and stamps. Do not add a sans-serif face. Serif text must not render below 14px; use mono for smaller text.
-- **One accent:** red ink annotates through links, active ticks, the caret, and selection. Allow at most one filled accent button per view.
-- **Rules provide structure:** use low-pressure ink hairlines, hairline-separated rows, and `.keyline` section openings. Allow one vertical `.margin-rule` and no more than two `.rule-oxford` elements per view. Reserve `.sheet` elevation for modals, toasts, and the composer.
-- **Entry types use stamps:** use `TypeStamp` and `.stamp`, with a two-letter code and word. Fix uses destructive ink, feature uses positive ink, and other types remain neutral.
-- **Motion settles:** `Reveal` may fade and move a whole block upward by 8px with `cubic-bezier(0.2, 0, 0, 1)`. Use a 45ms stagger capped at six items. Do not animate text by letter or add blur, glow, shimmer, or decorative spinning. Use `CountUp` no more than once per view. Respect `data-motion-level`; reduced motion is opacity-only.
-- **Composer parity:** the entry textarea and published prose use the same `text-prose` metrics and `66ch` measure.
-- **Layout language:** use ledger rows with `.leader`, the margin-rail `TimelineEntry`, 3px print radii, 6px input radii, and tabular numerals for figures.
-- **Unit policy:** use `rem` for scalable component dimensions and spacing, `ch` for reading measure, and `clamp()` for fluid type and macro spacing. Use container queries when a component's own width determines its composition. Pixels are limited to hairlines, focus outlines, print radii, optical transforms, shadows, scrollbars, the 7px timeline node, half-pixel axis centering, and viewport-observer margins. A new pixel value needs a documented optical or rendering reason.
-- **Adaptive frames:** use `.page-frame` for page gutters, `.portfolio-shell` and `.timeline-container` for content-driven layouts, and `.control-target` for controls that must retain a 44px interactive area.
+- **Complete color roles:** use `--md-sys-color-*` roles for primary, secondary, tertiary, error, surface containers, outlines, inverse surfaces, and their on-colors. Existing Tailwind semantic aliases map to those roles. Never add a one-off palette class or hex value inside components.
+- **Two schemes:** the persisted values remain `data-theme-mode="press|ink"` for backward compatibility, but the user-facing schemes are Light and Dark. Both schemes use the same role structure.
+- **Expressive type:** Google Sans Flex is the only interface and reading family. Use weight, width, optical size, grade, and roundedness to distinguish roles. Display text may be bold and rounded; prose remains calmer and highly legible.
+- **Contrasting shapes:** use the Material shape scale from extra-small through full. Cards use large or extra-large corners, controls use full corners, and selected or pressed controls may shift toward medium corners when the shape change clarifies state.
+- **Attention with purpose:** reserve strong color, scale, and asymmetric containment for one or two focal moments per view. Editor landing, project identity, entry-type choice, and the current primary action may be expressive. Forms, settings details, publishing, and destructive flows stay familiar.
+- **Material components:** reuse `.m3-button-filled`, `.m3-button-tonal`, `.m3-button-outlined`, `.m3-icon-button`, `.m3-card`, `.m3-hero`, `.m3-navigation-rail`, `.m3-mobile-navigation`, and `.m3-top-app-bar` before adding page-local styles.
+- **Accessible states:** enabled, hover, focus, pressed, selected, disabled, success, and error states need consistent visual treatment. Keep visible focus, semantic names, redundant selected/error indicators, and a 44px minimum target through `.control-target`.
+- **Motion physics:** motion may use short scale, shape, position, and elevation responses around meaningful actions. Keep text static, avoid loops, blur, glow, shimmer, or decorative spinning, and honor both `data-motion-level` and `prefers-reduced-motion`.
+- **Composer parity:** the entry textarea and published prose use the same `text-prose` metrics and readable measure.
+- **Adaptive scaffold:** compact screens use a top app bar and bottom navigation; expanded editor screens use the navigation rail. Use `.page-frame`, `.portfolio-shell`, and `.timeline-container` for responsive composition.
+- **Unit policy:** use `rem` for scalable dimensions and spacing, `ch` for reading measure, and `clamp()` for fluid type and macro spacing. Use container queries when component width determines composition. Pixels remain limited to hairlines, focus outlines, optical transforms, shadows, scrollbars, and precision geometry.
 
 ## UX Guidelines: Progressive Disclosure
 
@@ -106,24 +107,24 @@ Follow the Context-Aware Progressive Disclosure pattern in `blueprint/design-pat
 
 ## Signature Components
 
-The old ReactBits effects (`BlurText`, `ShinyText`, `DecryptedText`, `GradientText`, `RotatingText`, `SpotlightCard`, and `ScrollReveal`) are retired. Do not reintroduce them or equivalent effects. Press Proof's signature moments are structural and live in `components/ui/`.
+The old ReactBits effects (`BlurText`, `ShinyText`, `DecryptedText`, `GradientText`, `RotatingText`, `SpotlightCard`, and `ScrollReveal`) are retired. Do not reintroduce them or equivalent effects. Material expression comes from hierarchy, roles, state, shape, and motion.
 
 | Moment | Component or utility | Use |
 |--------|----------------------|-----|
 | Entrance | `Reveal` | Timeline and list items settling in; pass `index` for stagger |
-| Entry types and statuses | `TypeStamp` / `StatusStamp` | Every entry type or project status |
-| Timeline | `TimelineEntry` | Entries on the portfolio and editor margin rail |
-| Section openers | `.keyline` | Labeled sections |
-| Mastheads | `.rule-oxford` | Page and project headers, no more than two per view |
-| Elevation | `.sheet` | Modals, toasts, and the composer |
-| Text links | `.link-ink` | Inline and metadata links |
-| Ledger rows | `ProjectRow` and `.leader` | Project listings |
+| Entry types and statuses | `TypeStamp` / `StatusStamp` | Material chips with semantic status |
+| Timeline | `TimelineEntry` | Contained entry cards with readable metadata |
+| Focal surface | `.m3-hero` | One primary identity or next-action moment |
+| Containment | `.m3-card` / `.sheet` | Cards, composer, modals, and toasts |
+| Actions | `.m3-button-*` / `.m3-icon-button` | Filled, tonal, outlined, and icon actions |
+| Navigation | `.m3-navigation-rail` / `.m3-mobile-navigation` | Expanded and compact editor scaffolds |
+| Text links | `.link-ink` | Inline and metadata links using the primary role |
 | Live count | `CountUp` | No more than once per view |
 
 Additional rules:
 
 1. Use plain semantic `h1` through `h3` elements with `text-display`, `text-title`, or `text-subtitle`. Do not wrap headings in animation components.
-2. Use a solid accent fill and mono uppercase label for the primary call to action. Allow one per view and no shimmer.
+2. Use one prominent filled or extended primary action per view. Supporting actions are tonal, outlined, or icon-only.
 3. Wrap list items that enter on scroll with `Reveal` and pass `index`. Do not recreate entrance motion inside a page.
 4. Import from `framer-motion`, not `motion/react`.
 
@@ -134,5 +135,5 @@ Use BLAST for every feature and refactor.
 1. **Blueprint:** establish the goal and product fit first. Maintain `blueprint/constitution.md`, `blueprint/task_plan.md`, and `blueprint/findings.md`.
 2. **Link:** connect external systems such as MCPs, Supabase, and Vercel within the requested scope.
 3. **Architect:** build core behavior and data processing first. Reach a deterministic state before styling.
-4. **Style:** refine the UI through live browser review, premium references where useful, and the Press Proof rules in this file.
+4. **Style:** refine the UI through live browser review, `DESIGN.md`, and the Material 3 Expressive rules in this file.
 5. **Trigger:** validate deployment and automation concerns for Vercel, Modal, and GitHub Actions when the task includes them.

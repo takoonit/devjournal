@@ -23,7 +23,7 @@ export function ProjectRow({ project, href, entryCount }: ProjectRowProps) {
         .join(" · ");
 
     return (
-        <div className="project-row group relative border-t border-rule/15 transition-colors duration-subtle">
+        <div className="m3-card project-row group relative transition-all duration-standard">
             <Link
                 href={href}
                 aria-label={`Open ${project.name} build log`}

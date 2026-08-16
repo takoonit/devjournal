@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ChevronDown, Loader2 } from "lucide-react";
 import { useDevJournalStore } from "@/lib/store";
 import type { EntryType } from "@/lib/types";
-import { ENTRY_TYPE_OPTIONS, getEntryContent, getEntryType } from "@/lib/entry-types";
-import { ENTRY_STAMPS, getEntryStampControlTone } from "@/components/ui/stamp";
+import { getEntryContent, getEntryType } from "@/lib/entry-types";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
+import { EntryTypePicker } from "@/components/editor/entry-type-picker";
+import { useSubmitShortcut } from "@/components/editor/use-submit-shortcut";
+import { requestPublishingAction } from "@/lib/publishing/client";
 
 type EditEntryDraft = {
     entryType: EntryType;
@@ -42,6 +44,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
     const syncedEntryIdRef = useRef<string | null>(null);
     const hydratedEntryIdRef = useRef<string | null>(null);
     const formRef = useRef<HTMLFormElement>(null);
+    const { shortcutLabel, onSubmitShortcut } = useSubmitShortcut(formRef);
 
     const draftKey = `entry-draft-${entryId}`;
 
@@ -103,22 +106,10 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
         return () => window.clearTimeout(visibilityTimer);
     }, [showDraftSaved]);
 
-    const selectedTypeDescription = useMemo(() => {
-        const selected = ENTRY_TYPE_OPTIONS.find((option) => option.value === entryType);
-        return selected?.description ?? "";
-    }, [entryType]);
-
     const wordCount = useMemo(() => {
         const text = `${content} ${details}`.trim();
         return text ? text.split(/\s+/).filter(Boolean).length : 0;
     }, [content, details]);
-
-    const submitShortcut = (e: React.KeyboardEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-            e.preventDefault();
-            formRef.current?.requestSubmit();
-        }
-    };
 
     if (!project || !entry) {
         return (
@@ -136,14 +127,24 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
 
         setIsSubmitting(true);
         try {
-            await Promise.resolve(
-                updateEntry(entry.id, {
-                    entryType,
-                    title: title.trim(),
-                    content: details.trim() ? `${content.trim()}${DETAILS_MARKER}${details.trim()}` : content.trim(),
-                    templateData: undefined,
-                })
-            );
+            const updates = {
+                entryType,
+                title: title.trim(),
+                content: details.trim() ? `${content.trim()}${DETAILS_MARKER}${details.trim()}` : content.trim(),
+                templateData: undefined,
+            };
+            if (entry.isPublic) {
+                const result = await requestPublishingAction({
+                    type: "update-entry",
+                    project,
+                    entry: { ...entry, ...updates, updatedAt: new Date().toISOString() },
+                });
+                if (!result.ok) {
+                    addToast({ message: `${result.message} Your edit remains in this draft.`, type: "error" });
+                    return;
+                }
+            }
+            updateEntry(entry.id, updates);
 
             localStorage.removeItem(draftKey);
             addToast({ message: "Entry updated.", type: "success" });
@@ -159,6 +160,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
     return (
         <div className="pb-20">
             <div className="mx-auto max-w-3xl">
+                <h1 className="sr-only">Edit {entry.title || "entry"}</h1>
                 <Link
                     href={`/editor/projects/${project.id}`}
                     className="control-target mb-8 justify-start gap-2 font-mono text-label uppercase text-text-muted transition-colors duration-subtle hover:text-text-primary"
@@ -168,27 +170,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
 
                 <form ref={formRef} onSubmit={onSubmit} className="sheet px-7 py-8 md:px-12 md:py-10">
                     <div className="mb-8">
-                        <div className="entry-type-picker" role="group" aria-label="Entry type">
-                            {ENTRY_TYPE_OPTIONS.map((option) => {
-                                const active = entryType === option.value;
-                                return (
-                                    <button
-                                        key={option.value}
-                                        type="button"
-                                        aria-pressed={active}
-                                        onClick={() => setEntryType(option.value)}
-                                        className={cn(
-                                            "control-target stamp stamp-control transition-colors",
-                                            getEntryStampControlTone(option.value, active)
-                                        )}
-                                    >
-                                        <span className="opacity-70" aria-hidden="true">{ENTRY_STAMPS[option.value].code}</span>
-                                        {option.label}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        <p className="mt-2.5 text-ui italic text-text-muted">{selectedTypeDescription}</p>
+                        <EntryTypePicker value={entryType} onChange={setEntryType} />
                     </div>
 
                     <div className="mb-2">
@@ -197,7 +179,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                             id="title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            onKeyDown={submitShortcut}
+                            onKeyDown={onSubmitShortcut}
                             className="field-target -ml-3 w-full border-0 bg-transparent pl-3 font-serif text-title text-text-primary focus:outline-none focus-visible:shadow-[inset_2px_0_0_rgb(var(--color-accent-base))]"
                             placeholder="What changed?"
                         />
@@ -209,7 +191,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                             id="content"
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
-                            onKeyDown={submitShortcut}
+                            onKeyDown={onSubmitShortcut}
                             className="-ml-3 min-h-composer w-full max-w-measure resize-y border-0 bg-transparent pl-3 text-prose text-text-primary focus:outline-none focus-visible:shadow-[inset_2px_0_0_rgb(var(--color-accent-base))]"
                         />
                     </div>
@@ -234,7 +216,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                                     id="details"
                                     value={details}
                                     onChange={(e) => setDetails(e.target.value)}
-                                    onKeyDown={submitShortcut}
+                                    onKeyDown={onSubmitShortcut}
                                     className="-ml-3 mt-3 min-h-composer-details w-full max-w-measure resize-y border-0 bg-transparent pl-3 text-ui text-text-secondary focus:outline-none focus-visible:shadow-[inset_2px_0_0_rgb(var(--color-accent-base))]"
                                     placeholder="Optional tags, links, context, or attachment notes..."
                                 />
@@ -242,7 +224,7 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                         ) : null}
                     </div>
 
-                    <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-rule/15 pt-5">
+                    <div className="composer-actions mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-rule/15 pt-5">
                         <p className="font-mono text-meta tabular-nums text-text-muted">
                             {wordCount} {wordCount === 1 ? "word" : "words"}
                             <span
@@ -257,12 +239,12 @@ export default function EditEntryPage({ params }: { params: Promise<{ id: string
                         </p>
                         <div className="flex items-center gap-4">
                             <span className="hidden font-mono text-meta text-text-muted sm:block" aria-hidden="true">
-                                ⌘↵
+                                {shortcutLabel}
                             </span>
                             <button
                                 type="submit"
                                 disabled={!canSubmit || isSubmitting}
-                                className="control-target gap-2 rounded border border-transparent bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft disabled:cursor-not-allowed disabled:border-surface-border disabled:bg-surface-base disabled:text-text-muted"
+                                className="m3-button-filled control-target gap-2 font-sans text-label disabled:cursor-not-allowed disabled:bg-surface-base disabled:text-text-muted"
                             >
                                 {isSubmitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.5} /> : null}
                                 Update Entry

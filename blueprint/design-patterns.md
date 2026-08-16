@@ -89,17 +89,19 @@ If a change fails a higher layer, revise before implementation.
 - Microcopy that supports progress instead of pressure.
 
 
-### D) Fluid Press Proof Visual Pattern
-**Intent:** Combine publication-grade reading rhythm with low-friction editor operation across every available width.
+### D) Material 3 Expressive Visual Pattern
+**Intent:** Make the next useful action faster to find while keeping capture and reading calm.
 
 **Do**
-- Use Newsreader for written material and IBM Plex Mono for measured material.
-- Use semantic fluid tokens, readable measures, rules, stamps, and restrained red annotation.
+- Use complete Material color roles, Google Sans Flex type roles, and the shared shape scale.
+- Give strong color, size, shape, motion, and containment a functional hierarchy job.
+- Use one or two hero moments and keep publishing, forms, settings, and destructive flows familiar.
 - Let component width drive portfolio, timeline, and settings composition.
-- Keep small print marks inside 44px touch targets.
+- Keep every interactive control inside a 44px target with visible focus and redundant state cues.
 
 **Avoid**
-- Decorative effects that compete with writing or published work.
+- Android-only component assumptions or unavailable web behavior without a documented fallback.
+- Decorative expression that competes with writing or published work.
 - Fixed viewport assumptions inside reusable content components.
 - Pixel-based type or scalable spacing outside the documented rendering allowlist.
 
@@ -110,5 +112,5 @@ If a change fails a higher layer, revise before implementation.
 - [ ] User agency is preserved (especially around AI assistance).
 - [ ] Domain/data behavior remains deterministic.
 - [ ] Shared token/component system used first.
-- [ ] Visual treatment follows Press Proof type, rule, measure, and adaptive-layout guidance.
+- [ ] Visual treatment follows `DESIGN.md` and Material 3 Expressive role, shape, state, motion, and adaptive-layout guidance.
 - [ ] Lint/build validation reported.

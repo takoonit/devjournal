@@ -26,7 +26,7 @@ export default async function ProjectDetailPage({
                     <BioSidebarStatic user={user} />
 
                     <main className="min-w-0 flex-1">
-                        <header className="masthead-block rule-oxford mb-14">
+                        <header className="m3-hero masthead-block mb-12">
                             <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
                                 <h1 className="masthead-title print-display max-w-measure text-text-primary print:!text-[2rem] print:!leading-[1.1]">{project.name}</h1>
                                 <StatusStamp status={project.status} />
@@ -71,7 +71,7 @@ export default async function ProjectDetailPage({
 
                         <footer className="mt-24 border-t border-rule/15 pt-5 print-hidden">
                             <p className="font-mono text-meta text-text-muted">
-                                Set in Newsreader &amp; IBM Plex Mono · Printed from the record
+                                Built with DevJournal · Updated from the public record
                             </p>
                         </footer>
                     </main>

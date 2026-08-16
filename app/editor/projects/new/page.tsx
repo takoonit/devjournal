@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDevJournalStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
-import { Plus, X } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { inputClasses } from "@/components/ui/form-styles";
+import { TechStackField } from "@/components/editor/tech-stack-field";
 
 export default function NewProjectPage() {
     const router = useRouter();
     const addProject = useDevJournalStore((state) => state.addProject);
+    const [isHydrated, setIsHydrated] = useState(false);
+    const [nameError, setNameError] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -19,31 +21,18 @@ export default function NewProjectPage() {
         repositoryLink: "",
         status: "in-progress" as "in-progress" | "shipped",
     });
-    const [techInput, setTechInput] = useState("");
+
+    useEffect(() => setIsHydrated(true), []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.name.trim()) return;
-
-        addProject(formData);
-        router.push("/editor");
-    };
-
-    const addTech = () => {
-        if (techInput.trim() && !formData.techStack.includes(techInput.trim())) {
-            setFormData({
-                ...formData,
-                techStack: [...formData.techStack, techInput.trim()],
-            });
-            setTechInput("");
+        if (!formData.name.trim()) {
+            setNameError(true);
+            return;
         }
-    };
 
-    const removeTech = (tech: string) => {
-        setFormData({
-            ...formData,
-            techStack: formData.techStack.filter((t) => t !== tech),
-        });
+        const project = addProject(formData);
+        router.push(`/editor/projects/${project.id}`);
     };
 
     return (
@@ -55,7 +44,8 @@ export default function NewProjectPage() {
                 </p>
             </header>
 
-            <form onSubmit={handleSubmit} className="space-y-7">
+            <form onSubmit={handleSubmit} aria-busy={!isHydrated} noValidate>
+                <fieldset disabled={!isHydrated} className="space-y-7 border-0 p-0">
                 <div>
                     <label htmlFor="project-name" className="mb-2 block font-mono text-label uppercase text-text-secondary">
                         Name <span className="text-accent">*</span>
@@ -64,11 +54,21 @@ export default function NewProjectPage() {
                         id="project-name"
                         type="text"
                         value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        onChange={(e) => {
+                            setFormData({ ...formData, name: e.target.value });
+                            if (e.target.value.trim()) setNameError(false);
+                        }}
                         className={cn(inputClasses, "font-serif text-subtitle")}
                         placeholder="e.g. My Awesome App"
+                        aria-invalid={nameError}
+                        aria-describedby={nameError ? "project-name-error" : undefined}
                         required
                     />
+                    {nameError ? (
+                        <p id="project-name-error" className="mt-2 text-ui text-destructive">
+                            Give the project a name to continue.
+                        </p>
+                    ) : null}
                 </div>
 
                 <div>
@@ -87,55 +87,10 @@ export default function NewProjectPage() {
                     />
                 </div>
 
-                <div>
-                    <label htmlFor="project-tech" className="mb-2 block font-mono text-label uppercase text-text-secondary">
-                        Tech Stack
-                    </label>
-                    <div className="mb-3 flex gap-2">
-                        <input
-                            id="project-tech"
-                            type="text"
-                            value={techInput}
-                            onChange={(e) => setTechInput(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    e.preventDefault();
-                                    addTech();
-                                }
-                            }}
-                            className={cn(inputClasses, "flex-1 font-mono text-meta")}
-                            placeholder="e.g. React, TypeScript, Next.js"
-                        />
-                        <button
-                            type="button"
-                            onClick={addTech}
-                            className="control-target rounded-md border border-surface-border px-3.5 text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
-                            aria-label="Add technology"
-                        >
-                            <Plus className="h-4 w-4" strokeWidth={1.5} />
-                        </button>
-                    </div>
-                    {formData.techStack.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                            {formData.techStack.map((tech, index) => (
-                                <span
-                                    key={`${tech}-${index}`}
-                                    className="inline-flex items-center gap-2 rounded border border-surface-border px-2.5 py-1 font-mono text-meta text-text-secondary"
-                                >
-                                    {tech}
-                                    <button
-                                        type="button"
-                                        onClick={() => removeTech(tech)}
-                                        className="control-target -my-2 -mr-2 text-text-muted transition-colors duration-subtle hover:text-destructive"
-                                        aria-label={`Remove ${tech}`}
-                                    >
-                                        <X className="h-3 w-3" strokeWidth={1.5} />
-                                    </button>
-                                </span>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                <TechStackField
+                    value={formData.techStack}
+                    onChange={(techStack) => setFormData({ ...formData, techStack })}
+                />
 
                 <div>
                     <label htmlFor="project-repo" className="mb-2 block font-mono text-label uppercase text-text-secondary">
@@ -148,7 +103,7 @@ export default function NewProjectPage() {
                         onChange={(e) =>
                             setFormData({ ...formData, repositoryLink: e.target.value })
                         }
-                        className={cn(inputClasses, "font-mono text-meta")}
+                        className={cn(inputClasses, "font-mono")}
                         placeholder="https://github.com/..."
                     />
                 </div>
@@ -188,17 +143,18 @@ export default function NewProjectPage() {
                 <div className="flex items-center gap-3 border-t border-rule/15 pt-7">
                     <button
                         type="submit"
-                        className="control-target rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
+                        className="m3-button-filled control-target font-sans text-label"
                     >
                         Create Project
                     </button>
                     <Link
                         href="/editor"
-                        className="control-target rounded border border-surface-border px-5 py-2.5 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                        className="m3-button-outlined control-target font-sans text-label"
                     >
                         Cancel
                     </Link>
                 </div>
+                </fieldset>
             </form>
         </div>
     );

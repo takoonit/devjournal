@@ -5,8 +5,7 @@ import { Moon, Sun } from "lucide-react";
 import { useDevJournalStore } from "@/lib/store";
 
 /**
- * Reader-facing theme switch: the person reading a portfolio didn't choose
- * the author's theme, so the masthead offers Press Proof / Midnight Ink.
+ * Reader-facing Material light and dark scheme switch.
  */
 export function ThemeToggle({ className = "" }: { className?: string }) {
     const themeMode = useDevJournalStore((state) => state.uiPreferences.themeMode);
@@ -18,15 +17,15 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     }, []);
 
     const ink = mounted && themeMode === "ink";
-    const nextLabel = ink ? "Press Proof" : "Midnight Ink";
+    const nextLabel = ink ? "Light" : "Dark";
     const Icon = ink ? Sun : Moon;
 
     return (
         <button
             type="button"
             onClick={() => updateUiPreferences({ themeMode: ink ? "press" : "ink" })}
-            className={`control-target justify-start gap-2 font-mono text-label uppercase text-text-muted transition-colors duration-subtle hover:text-accent ${className}`}
-            aria-label={`Switch to ${nextLabel}`}
+            className={`m3-button-tonal control-target justify-start gap-2 font-sans text-label ${className}`}
+            aria-label={ink ? "Switch to Light" : "Switch to Dark"}
         >
             <Icon className="h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
             {nextLabel}

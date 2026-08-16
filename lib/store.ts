@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { User, Project, Entry, InboxCapture } from "@/lib/types";
 import type { ThemeMode } from "@/lib/design-tokens";
-import { generateId, generateSlug } from "@/lib/utils";
+import { formatLocalDate, generateId, generateSlug } from "@/lib/utils";
 
 export interface UiPreferences {
     themeMode: ThemeMode;
@@ -31,7 +31,7 @@ interface DevJournalStore {
 
     // Projects
     projects: Project[];
-    addProject: (project: Omit<Project, "id" | "slug" | "createdAt" | "updatedAt">) => void;
+    addProject: (project: Omit<Project, "id" | "slug" | "createdAt" | "updatedAt">) => Project;
     updateProject: (id: string, updates: Partial<Project>) => void;
     deleteProject: (id: string) => void;
     getProjectById: (id: string) => Project | undefined;
@@ -39,7 +39,7 @@ interface DevJournalStore {
 
     // Entries
     entries: Entry[];
-    addEntry: (entry: Omit<Entry, "id" | "createdAt" | "updatedAt">) => void;
+    addEntry: (entry: Omit<Entry, "id" | "isPublic" | "createdAt" | "updatedAt">) => Entry;
     updateEntry: (id: string, updates: Partial<Entry>) => void;
     deleteEntry: (id: string) => void;
     getEntriesByProjectId: (projectId: string) => Entry[];
@@ -96,17 +96,18 @@ export const useDevJournalStore = create<DevJournalStore>()(
             // Projects
             projects: [],
 
-            addProject: (project) =>
-                set((state) => {
-                    const newProject: Project = {
-                        ...project,
-                        id: generateId(),
-                        slug: generateSlug(project.name),
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString(),
-                    };
-                    return { projects: [...state.projects, newProject] };
-                }),
+            addProject: (project) => {
+                const now = new Date().toISOString();
+                const newProject: Project = {
+                    ...project,
+                    id: generateId(),
+                    slug: generateSlug(project.name),
+                    createdAt: now,
+                    updatedAt: now,
+                };
+                set((state) => ({ projects: [...state.projects, newProject] }));
+                return newProject;
+            },
 
             updateProject: (id, updates) =>
                 set((state) => ({
@@ -130,16 +131,18 @@ export const useDevJournalStore = create<DevJournalStore>()(
             // Entries
             entries: [],
 
-            addEntry: (entry) =>
-                set((state) => {
-                    const newEntry: Entry = {
-                        ...entry,
-                        id: generateId(),
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString(),
-                    };
-                    return { entries: [...state.entries, newEntry] };
-                }),
+            addEntry: (entry) => {
+                const now = new Date().toISOString();
+                const newEntry: Entry = {
+                    ...entry,
+                    id: generateId(),
+                    isPublic: false,
+                    createdAt: now,
+                    updatedAt: now,
+                };
+                set((state) => ({ entries: [...state.entries, newEntry] }));
+                return newEntry;
+            },
 
             updateEntry: (id, updates) =>
                 set((state) => ({
@@ -229,7 +232,7 @@ export const useDevJournalStore = create<DevJournalStore>()(
                 const blob = new Blob([dataStr], { type: "application/json" });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement("a");
-                const date = new Date().toISOString().split("T")[0];
+                const date = formatLocalDate();
                 link.href = url;
                 link.download = `devjournal-backup-${date}.devjournal`;
                 document.body.appendChild(link);
@@ -258,7 +261,7 @@ export const useDevJournalStore = create<DevJournalStore>()(
                 const link = document.createElement("a");
                 const fileName = selectedProjects.length === 1
                     ? `project-${selectedProjects[0].name.toLowerCase().replace(/[^a-z0-9]/g, "-")}`
-                    : `selected-projects-${new Date().toISOString().split("T")[0]}`;
+                    : `selected-projects-${formatLocalDate()}`;
 
                 link.href = url;
                 link.download = `${fileName}.devjournal`;

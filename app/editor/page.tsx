@@ -24,6 +24,10 @@ export default function EditorPage() {
         }
         return counts;
     }, [entries]);
+    const activeProjects = projects.filter((project) => project.status === "in-progress");
+    const privateEntries = entries.filter((entry) => !entry.isPublic);
+    const publicEntries = entries.filter((entry) => entry.isPublic);
+    const activeProject = activeProjects[0] ?? projects[0];
 
     useEffect(() => {
         const now = new Date();
@@ -33,23 +37,53 @@ export default function EditorPage() {
     }, []);
 
     return (
-        <div className="max-w-page">
-            <header className="editor-masthead masthead-block rule-oxford mb-12">
-                <h1 className="masthead-title text-text-primary">Projects</h1>
+        <div className="working-ledger max-w-page">
+            <header className="m3-hero editor-masthead masthead-block mb-10">
+                <div>
+                    <p className="m3-label mb-4">Build in public</p>
+                    <h1 className="masthead-title text-text-primary">Make the work visible.</h1>
+                </div>
                 <div className="masthead-meta font-mono text-text-muted">
                     <p className="text-label uppercase">{dateline || "\u00a0"}</p>
                     <p className="text-meta tabular-nums">
-                        {projects.length} {projects.length === 1 ? "project" : "projects"} ·{" "}
-                        {entries.length} {entries.length === 1 ? "entry" : "entries"} on record
+                        {projects.length} {projects.length === 1 ? "project" : "projects"} on record
                     </p>
                 </div>
             </header>
 
+            {projects.length > 0 ? (
+                <div className="ledger-summary mb-12">
+                    <dl className="ledger-figures">
+                        <div><dt>Active</dt><dd>{activeProjects.length}</dd></div>
+                        <div><dt>Private</dt><dd>{privateEntries.length}</dd></div>
+                        <div><dt>Public</dt><dd>{publicEntries.length}</dd></div>
+                    </dl>
+                    <div className="flex flex-wrap items-center gap-3 border-b border-rule/15 py-4">
+                        <Link
+                            href={`/editor/projects/${activeProject.id}/entries/new`}
+                            className="m3-button-filled control-target gap-2 font-sans text-label"
+                        >
+                            Continue active work
+                        </Link>
+                        <Link href="/editor/projects/new" className="control-target link-ink justify-start font-mono text-meta">
+                            Open another project
+                        </Link>
+                    </div>
+                </div>
+            ) : null}
+
             {projects.length === 0 ? (
-                <div className="empty-ledger">
-                    <p className="mb-8 max-w-measure text-title italic text-text-secondary">
-                        Every journal starts with an empty page.
+                <div className="empty-ledger m3-card m3-card-tertiary">
+                    <p className="m3-label mb-4">Your first move</p>
+                    <p className="mb-8 max-w-measure text-title text-text-secondary">
+                        Start with what you&apos;re building.
                     </p>
+                    <Link
+                        href="/editor/projects/new"
+                        className="m3-button-filled control-target mb-10 inline-flex font-sans text-label"
+                    >
+                        Start your first project
+                    </Link>
                     <ol className="editor-empty-steps mb-10 max-w-measure">
                         {EMPTY_STEPS.map((step, index) => (
                             <li key={step} className="flex items-baseline gap-4">
@@ -60,12 +94,6 @@ export default function EditorPage() {
                             </li>
                         ))}
                     </ol>
-                    <Link
-                        href="/editor/projects/new"
-                        className="inline-block rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
-                    >
-                        Start your first project
-                    </Link>
                 </div>
             ) : (
                 <div className="project-ledger editor-project-ledger">

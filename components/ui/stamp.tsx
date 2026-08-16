@@ -1,11 +1,7 @@
 import type { EntryType, Project } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-/**
- * Ink stamps: two-letter code + word, one hue only where it means something.
- * Fix carries destructive ink, feature carries positive ink; everything else
- * stays in secondary text — the one-red discipline holds.
- */
+/** Material chips for entry type and project status. */
 export const ENTRY_STAMPS: Record<EntryType, { code: string; label: string; tone: string }> = {
     feature: { code: "FT", label: "Feature", tone: "text-positive" },
     fix: { code: "FX", label: "Fix", tone: "text-destructive" },
