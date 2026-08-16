@@ -181,7 +181,7 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                             type="url"
                             value={repositoryLink}
                             onChange={(event) => setRepositoryLink(event.target.value)}
-                            className={cn(inputClasses, "font-mono text-meta")}
+                            className={cn(inputClasses, "font-mono")}
                             placeholder="https://github.com/..."
                         />
                     </div>
@@ -222,14 +222,14 @@ export function EditProjectModal({ project, isOpen, onClose }: EditProjectModalP
                         <button
                             type="button"
                             onClick={onClose}
-                            className="control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                            className="m3-button-outlined control-target font-sans text-label"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="control-target rounded bg-accent px-4 py-2 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
+                            className="m3-button-filled control-target font-sans text-label"
                         >
                             {isSubmitting ? "Saving…" : "Save Changes"}
                         </button>

@@ -26,7 +26,7 @@
 ### S — Style
 - [ ] Apply token/wrapper-first styling.
 - [ ] Reinforce calm focus, readability, and visible focus states.
-- [ ] Maintain the Press Proof publication system and its Midnight Ink reading twin.
+- [ ] Maintain the Material 3 Expressive design contract and tested light/dark role schemes.
 - [ ] Style should reduce overwhelm, not add novelty noise.
 
 ### T — Trigger
@@ -52,12 +52,17 @@
 - [ ] Improve visibility of momentum and follow-through.
 - [ ] Keep progress signals supportive, not judgmental.
 
-### Track 4 — Fluid Press Proof
+### Track 4 — Material 3 Expressive
 - [x] Move editorial fonts to optimized Next.js font loading.
 - [x] Centralize fluid type, page spacing, timeline, composer, and control tokens.
 - [x] Make portfolio, timeline, and settings composition respond to container width.
 - [x] Preserve editor actions below desktop width, including project import.
 - [x] Complete build, detector, responsive, zoom, theme, density, motion, and print verification.
+- [x] Define a Materialist-validated web design contract with official evidence and platform fallbacks.
+- [x] Replace the editorial font split with Google Sans Flex variable roles.
+- [x] Add complete Material color, shape, state, motion, and elevation tokens for light and dark schemes.
+- [x] Add an expanded navigation rail, compact top app bar, bottom navigation, Material cards, and action variants.
+- [x] Verify the new system in live desktop/mobile flows, both schemes, keyboard navigation, and reduced motion.
 
 ### Track 5 — Confirmed Publishing
 - [x] Keep entry creation private until an explicit publish succeeds.

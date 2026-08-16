@@ -6,12 +6,12 @@ import Link from "next/link";
 import { ExportImportSection } from "@/components/settings/export-import-section";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { PublishingSection } from "@/components/settings/publishing-section";
 import { requestPublishingAction } from "@/lib/publishing/client";
 
 const inputClasses =
-    "field-target w-full rounded-md border border-surface-border bg-surface-input px-3.5 py-2.5 text-ui text-text-primary transition-colors duration-subtle";
+    "field-target w-full rounded-md border border-surface-border bg-surface-input px-3.5 py-2.5 text-[1rem] leading-6 text-text-primary transition-colors duration-subtle";
 
 interface ToggleOption<T extends string> {
     value: T;
@@ -67,7 +67,6 @@ export default function SettingsPage() {
     const [formData, setFormData] = useState(user);
     const [uiFormData, setUiFormData] = useState<UiPreferences>(uiPreferences);
     const profileDirtyRef = useRef(false);
-    const preferencesDirtyRef = useRef(false);
     const [isSaving, setIsSaving] = useState(false);
     const { addToast } = useToast();
 
@@ -78,9 +77,7 @@ export default function SettingsPage() {
     }, [user]);
 
     useEffect(() => {
-        if (!preferencesDirtyRef.current) {
-            setUiFormData(uiPreferences);
-        }
+        setUiFormData(uiPreferences);
     }, [uiPreferences]);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -95,16 +92,15 @@ export default function SettingsPage() {
             }
         }
         updateUser(formData);
-        updateUiPreferences(uiFormData);
         profileDirtyRef.current = false;
-        preferencesDirtyRef.current = false;
         setIsSaving(false);
         addToast({ message: "Settings saved.", type: "success" });
     };
 
     const updatePreference = <K extends keyof UiPreferences>(key: K, value: UiPreferences[K]) => {
-        preferencesDirtyRef.current = true;
-        setUiFormData((prev) => ({ ...prev, [key]: value }));
+        const next = { ...uiFormData, [key]: value };
+        setUiFormData(next);
+        updateUiPreferences(next);
     };
 
     const openSettingsChapter = (id: string) => {
@@ -124,10 +120,11 @@ export default function SettingsPage() {
     return (
         <div className="max-w-page">
             <div className="max-w-measure">
-                <header className="colophon-header mb-8">
-                    <h1 className="text-display text-text-primary">Colophon</h1>
+                <header className="m3-hero colophon-header mb-8">
+                    <p className="m3-label mb-3">Your workspace</p>
+                    <h1 className="text-display text-text-primary">Settings</h1>
                     <p className="mt-2 text-ui text-text-secondary">
-                        Who you are, how the journal is set, and what leaves this browser.
+                        Shape your profile, publishing, appearance, and local data.
                     </p>
                 </header>
 
@@ -140,7 +137,7 @@ export default function SettingsPage() {
                 </nav>
 
                 <form onSubmit={handleSubmit} className="space-y-3">
-                <details open id="profile" className="settings-disclosure">
+                <details open id="profile" name="settings-chapters" className="settings-disclosure">
                     <summary>Profile</summary>
                     <div className="space-y-6 px-1 pb-8 pt-4">
                         <div>
@@ -187,22 +184,22 @@ export default function SettingsPage() {
                     </div>
                 </details>
 
-                <details open id="publishing" className="settings-disclosure">
+                <details id="publishing" name="settings-chapters" className="settings-disclosure">
                     <summary>Publishing</summary>
                     <div className="px-1 pb-8 pt-4">
                         <PublishingSection />
                     </div>
                 </details>
 
-                <details id="composition" className="settings-disclosure">
+                <details id="composition" name="settings-chapters" className="settings-disclosure">
                     <summary>Composition</summary>
                     <div className="px-1 pb-8 pt-2">
                     <ToggleGroup
                         label="Theme"
                         value={uiFormData.themeMode}
                         options={[
-                            { value: "press", label: "Press Proof" },
-                            { value: "ink", label: "Midnight Ink" },
+                            { value: "press", label: "Light" },
+                            { value: "ink", label: "Dark" },
                         ]}
                         onChange={(value) => updatePreference("themeMode", value)}
                     />
@@ -247,10 +244,13 @@ export default function SettingsPage() {
                     <p className="mt-3 text-ui italic text-text-muted">
                         Focus mode quiets the chrome and leaves ink on the page.
                     </p>
+                    <p className="mt-2 text-ui text-text-muted">
+                        Appearance choices apply immediately.
+                    </p>
                     </div>
                 </details>
 
-                <details id="links" className="settings-disclosure">
+                <details id="links" name="settings-chapters" className="settings-disclosure">
                     <summary>Links</summary>
                     <div className="space-y-6 px-1 pb-8 pt-4">
                         {socialFields.map((field) => (
@@ -269,7 +269,7 @@ export default function SettingsPage() {
                                             socialLinks: { ...formData.socialLinks, [field.key]: e.target.value },
                                         });
                                     }}
-                                    className={cn(inputClasses, "font-mono text-meta")}
+                                    className={cn(inputClasses, "font-mono")}
                                     placeholder={field.placeholder}
                                 />
                             </div>
@@ -281,17 +281,17 @@ export default function SettingsPage() {
                     <button
                         type="submit"
                         disabled={isSaving}
-                        className="control-target rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
+                        className="m3-button-filled control-target font-sans text-label"
                     >
                         {isSaving ? "Saving…" : "Save Changes"}
                     </button>
-                    <Link href="/portfolio" target="_blank" className="control-target link-ink justify-start font-mono text-meta">
+                    <Link href="/portfolio" className="control-target link-ink justify-start font-mono text-meta">
                         Preview your public portfolio
-                        <ArrowUpRight className="ml-1.5 h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
+                        <ArrowRight className="ml-1.5 h-3 w-3" strokeWidth={1.5} aria-hidden="true" />
                     </Link>
                 </div>
                 </form>
-                <details id="data-portability" className="settings-disclosure mt-3">
+                <details id="data-portability" name="settings-chapters" className="settings-disclosure mt-3">
                     <summary>Data portability</summary>
                     <div className="px-1 pb-8 pt-4">
                         <ExportImportSection />

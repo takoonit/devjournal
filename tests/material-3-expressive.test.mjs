@@ -55,6 +55,7 @@ test("the shared CSS exposes Material color, shape, state, and motion roles", ()
     assert.match(globals, /\.m3-card\s*\{/);
     assert.match(globals, /\.m3-navigation-rail\s*\{/);
     assert.match(globals, /\.m3-mobile-navigation\s*\{/);
+    assert.match(globals, /data-motion-level="reduced"[\s\S]*?\.m3-button-filled[\s\S]*?transform:\s*none/);
 });
 
 test("primary product surfaces opt into expressive Material components", () => {
@@ -73,4 +74,3 @@ test("primary product surfaces opt into expressive Material components", () => {
     assert.match(themeToggle, /Switch to (Light|Dark)/);
     assert.doesNotMatch(themeToggle, /Press Proof|Midnight Ink/);
 });
-

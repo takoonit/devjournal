@@ -38,8 +38,11 @@ export default function EditorPage() {
 
     return (
         <div className="working-ledger max-w-page">
-            <header className="editor-masthead masthead-block rule-oxford mb-12">
-                <h1 className="masthead-title text-text-primary">Working ledger</h1>
+            <header className="m3-hero editor-masthead masthead-block mb-10">
+                <div>
+                    <p className="m3-label mb-4">Build in public</p>
+                    <h1 className="masthead-title text-text-primary">Make the work visible.</h1>
+                </div>
                 <div className="masthead-meta font-mono text-text-muted">
                     <p className="text-label uppercase">{dateline || "\u00a0"}</p>
                     <p className="text-meta tabular-nums">
@@ -58,7 +61,7 @@ export default function EditorPage() {
                     <div className="flex flex-wrap items-center gap-3 border-b border-rule/15 py-4">
                         <Link
                             href={`/editor/projects/${activeProject.id}/entries/new`}
-                            className="control-target rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
+                            className="m3-button-filled control-target gap-2 font-sans text-label"
                         >
                             Continue active work
                         </Link>
@@ -70,10 +73,17 @@ export default function EditorPage() {
             ) : null}
 
             {projects.length === 0 ? (
-                <div className="empty-ledger">
-                    <p className="mb-8 max-w-measure text-title italic text-text-secondary">
-                        Every journal starts with an empty page.
+                <div className="empty-ledger m3-card m3-card-tertiary">
+                    <p className="m3-label mb-4">Your first move</p>
+                    <p className="mb-8 max-w-measure text-title text-text-secondary">
+                        Start with what you&apos;re building.
                     </p>
+                    <Link
+                        href="/editor/projects/new"
+                        className="m3-button-filled control-target mb-10 inline-flex font-sans text-label"
+                    >
+                        Start your first project
+                    </Link>
                     <ol className="editor-empty-steps mb-10 max-w-measure">
                         {EMPTY_STEPS.map((step, index) => (
                             <li key={step} className="flex items-baseline gap-4">
@@ -84,12 +94,6 @@ export default function EditorPage() {
                             </li>
                         ))}
                     </ol>
-                    <Link
-                        href="/editor/projects/new"
-                        className="inline-block rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
-                    >
-                        Start your first project
-                    </Link>
                 </div>
             ) : (
                 <div className="project-ledger editor-project-ledger">

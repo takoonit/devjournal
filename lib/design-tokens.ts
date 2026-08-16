@@ -1,6 +1,6 @@
 /**
- * Theme modes for the Press Proof design system.
- * "press" — warm paper, the default. "ink" — Midnight Ink, the dark twin.
+ * Material light and dark theme modes. Persisted values retain the original
+ * names so existing local journals migrate without losing preferences.
  * All palette/motion/spacing values live as CSS variables in app/globals.css;
  * components consume them through the Tailwind theme, never directly.
  */

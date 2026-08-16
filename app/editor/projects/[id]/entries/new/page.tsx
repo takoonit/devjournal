@@ -255,7 +255,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                                 name="intent"
                                 value="private"
                                 disabled={!canSubmit || isSubmitting}
-                                className="control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary disabled:cursor-not-allowed disabled:text-text-muted"
+                                className="m3-button-outlined control-target font-sans text-label disabled:cursor-not-allowed disabled:text-text-muted"
                             >
                                 Save private
                             </button>
@@ -264,7 +264,7 @@ export default function NewEntryPage({ params }: { params: Promise<{ id: string 
                                 name="intent"
                                 value="publish"
                                 disabled={!canSubmit || isSubmitting}
-                                className="control-target gap-2 rounded border border-transparent bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft disabled:cursor-not-allowed disabled:border-surface-border disabled:bg-surface-base disabled:text-text-muted"
+                                className="m3-button-filled control-target gap-2 font-sans text-label disabled:cursor-not-allowed disabled:bg-surface-base disabled:text-text-muted"
                             >
                                 {isSubmitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.5} /> : null}
                                 Publish entry

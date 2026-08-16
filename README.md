@@ -7,16 +7,16 @@ A private-first build journal that publishes selected entries to a public portfo
 - **Private Editor**: Document your development journey with structured entries
 - **BLAST Framework**: Special planning template for feature development
 - **Confirmed Publishing**: Publish selected entries through a connected owner account
-- **Press Proof Aesthetic**: Warm paper-and-ink editorial design, typeset like a printed journal
+- **Material 3 Expressive UI**: Purposeful color, shape, type, containment, motion, and adaptive navigation
 - **Entry Categories**: Feature, fix, refactor, design, and journal entries
 - **Export/Import**: Move journal data in additive `.devjournal` files
 
 ## Tech Stack
 
 - **Frontend**: Next.js 16 with App Router, React 19, TypeScript
-- **Styling**: Tailwind CSS over a CSS-variable token system ("Press Proof" light / "Midnight Ink" dark)
-- **Typography**: Newsreader (everything written) + IBM Plex Mono (everything measured)
-- **Animations**: Framer Motion, restrained block-level entrances
+- **Styling**: Tailwind CSS over complete Material color, shape, state, elevation, and motion roles
+- **Typography**: Google Sans Flex variable type through `next/font`
+- **Animations**: Framer Motion entrances plus CSS Material state and emphasized motion
 - **State Management**: Zustand with localStorage persistence
 - **Icons**: Lucide React
 - **Package Manager**: Bun 1.3.14+
@@ -88,13 +88,14 @@ devjournal/
 
 ## Design Philosophy
 
-DevJournal is set like a typeset publication through the "Press Proof" system:
+DevJournal uses a web-adapted Material 3 Expressive system defined in `DESIGN.md`:
 
-- Warm paper surfaces with a dark "Midnight Ink" twin (`data-theme-mode="press|ink"`)
-- Two typefaces: Newsreader serif for everything written, IBM Plex Mono for everything measured
-- One accent: proofreader's red ink, used only to annotate (links, ticks, caret, one button per view)
-- Structure from hairline rules and whitespace: ledger rows, margin-rail timeline, keyline sections
-- Ink-stamp entry types (FT/FX/RF/DS/JN) instead of colored badges
+- Light and dark schemes share complete Material role mappings (`data-theme-mode="press|ink"` is retained for stored-data compatibility)
+- Google Sans Flex varies weight, width, optical size, grade, and roundedness by role
+- Cobalt primary, orchid secondary, and warm-yellow tertiary roles clarify action, grouping, and progress
+- Large card shapes, full control shapes, and contrasting selected shapes make containment and state visible
+- Expanded navigation rail and compact bottom navigation follow the available width
+- Android-only expressive components fall back to semantic web controls and CSS transitions
 
 
 

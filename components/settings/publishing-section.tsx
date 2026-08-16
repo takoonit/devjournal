@@ -77,7 +77,7 @@ export function PublishingSection() {
                             Ask the database administrator to insert this account UUID into <code>owner_settings</code>, then reconnect.
                         </p>
                     ) : null}
-                    <button type="button" onClick={disconnect} className="control-target mt-4 rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary hover:border-text-secondary hover:text-text-primary">
+                    <button type="button" onClick={disconnect} className="m3-button-outlined control-target mt-4 font-sans text-label">
                         Disconnect
                     </button>
                 </div>
@@ -101,7 +101,7 @@ export function PublishingSection() {
                             placeholder="owner@example.com"
                         />
                     </div>
-                    <button type="button" onClick={() => void connect()} className="control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary hover:border-text-secondary hover:text-text-primary">
+                    <button type="button" onClick={() => void connect()} className="m3-button-outlined control-target font-sans text-label">
                         Email sign-in link
                     </button>
                 </div>

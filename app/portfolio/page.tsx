@@ -15,7 +15,7 @@ export default async function PortfolioPage() {
                     <BioSidebarStatic user={user} />
 
                     <main className="min-w-0 flex-1">
-                        <header className="portfolio-masthead masthead-block rule-oxford mb-12">
+                        <header className="m3-hero portfolio-masthead masthead-block mb-10">
                             <h2 className="masthead-title text-display text-text-primary">Projects</h2>
                             <div className="masthead-meta">
                                 <p className="font-mono text-meta tabular-nums text-text-muted">
@@ -26,14 +26,14 @@ export default async function PortfolioPage() {
                         </header>
 
                         {projects.length === 0 ? (
-                            <div className="portfolio-empty-folio">
+                            <div className="m3-card portfolio-empty-folio">
                                 <div>
-                                    <p className="folio-mark font-mono text-meta uppercase text-text-muted">Folio — unprinted</p>
-                                    <p className="mt-5 max-w-measure text-title italic text-text-secondary">
-                                        No entries have been published yet.
+                                    <p className="m3-label">Public portfolio</p>
+                                    <p className="mt-5 max-w-measure text-title text-text-secondary">
+                                        Nothing public yet.
                                     </p>
                                     <p className="mt-3 max-w-prose text-ui text-text-muted">
-                                        Publish an entry from the editor and its project will be set here as part of the public record.
+                                        Publish an entry from the editor and its project will appear here.
                                     </p>
                                     <p className="mt-6 font-mono text-meta">
                                         <Link href="/editor" className="control-target link-ink justify-start">
@@ -54,7 +54,7 @@ export default async function PortfolioPage() {
 
                         <footer className="mt-16 border-t border-rule/15 pt-5">
                             <p className="font-mono text-meta text-text-muted">
-                                Set in Newsreader &amp; IBM Plex Mono · Entries live on your machine
+                                Built one entry at a time · Private until you publish
                             </p>
                         </footer>
                     </main>

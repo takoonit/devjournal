@@ -27,7 +27,7 @@ export function EntryTypePicker({ value, onChange }: { value: EntryType; onChang
                             setMobileOpen(false);
                         }}
                         className={cn(
-                            "control-target stamp stamp-control transition-colors",
+                            "m3-button-tonal control-target stamp stamp-control transition-all",
                             getEntryStampControlTone(option.value, active)
                         )}
                     >

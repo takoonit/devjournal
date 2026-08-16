@@ -145,3 +145,23 @@ Entries should be concise, decision-oriented, and tied to user outcomes.
 ### Guardrails
 - Keep one dominant top-level navigation cue per screen.
 - Preserve focus-visible styles and ARIA semantics on whichever cue remains.
+
+---
+
+## 2026-08-16 Material 3 Expressive Migration
+
+### Observations
+1. The previous visual system owned nearly every visible decision, while Material behavior was limited to touch targets, focus, and basic state handling.
+2. The editor landing page emphasized a publication metaphor more strongly than the next useful action.
+3. Compact navigation placed several unlabeled actions in the top bar and did not provide the stable bottom navigation expected for frequent mobile use.
+
+### Decisions
+- Material 3 Expressive now governs color roles, Google Sans Flex typography, shape families, state layers, elevation, motion, navigation, cards, chips, and action hierarchy.
+- Narrative First remains the product model; free-form writing, local drafts, and explicit publishing behavior do not change.
+- Persisted `press` and `ink` values remain as compatibility keys but are presented as Light and Dark schemes.
+- Android-only or unavailable expressive components are not copied. Semantic web controls and CSS transitions are the documented fallback.
+
+### Guardrails
+- Strong expression stays concentrated in editor, project identity, entry-type selection, and the primary action.
+- Forms, publishing, settings details, reading, and destructive flows remain familiar and calm.
+- Every design claim and platform exception is recorded in `DESIGN.md` and must pass `materialist design lint DESIGN.md`.

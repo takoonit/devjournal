@@ -43,7 +43,7 @@ interface Entry {
 - **Activation First:** First interaction should be typing, not configuring.
 - **Progressive Disclosure:** Advanced options appear only when needed.
 - **Cognitive Safety:** Keep interfaces calm, predictable, and low-noise.
-- **Press Proof Visual Language:** The journal is a typeset publication with warm paper (or Midnight Ink) surfaces, Newsreader serif for the written, IBM Plex Mono for the measured, hairline rules over boxes, and one red-ink accent that only annotates (see `AGENTS.md`, Design Rules: Press Proof).
+- **Material 3 Expressive Visual Language:** The product uses complete Material color roles, Google Sans Flex, contrasting shape families, adaptive navigation, accessible state layers, and purposeful emphasized motion. `DESIGN.md` records the web-specific intent and unsupported-platform fallbacks.
 - **Deterministic UI:** Use shared tokens/components before page-specific custom styling.
 
 ## 5) Data & Portability Rules

@@ -57,6 +57,10 @@ The current task is the primary focal point. On the ledger, that is the active p
 
 Expression is welcome in the editor hero, project identity, entry-type choice, empty states, and completion feedback. Long-form reading, form fields, settings, import/export, authentication, publishing confirmation, and destructive dialogs stay familiar and calm. Shape changes and color must communicate grouping, selection, status, or action priority rather than decorate empty space.
 
+## Expression Contrast
+
+Bold color, oversized type, and asymmetric shape belong at decision points and moments of momentum. Writing, reading, configuration, and irreversible actions use quieter surface roles and familiar geometry so the expressive moments retain meaning.
+
 ## Accessibility
 
 Text and icons must meet WCAG AA contrast against their assigned Material color roles. Interactive controls keep a minimum 44px target, visible keyboard focus, semantic names, and at least two indicators for selected or error states. Body text scales without clipping at 200%, layouts avoid horizontal overflow at 320px, and color never carries status alone. Reduced motion removes translation, scale, morphing, and spring-like effects while preserving immediate state changes.
@@ -65,6 +69,17 @@ Text and icons must meet WCAG AA contrast against their assigned Material color 
 
 1. The editor ledger uses a large expressive headline, asymmetric primary container, and extended action to make the next work session obvious.
 2. Entry types use a tonal button group whose selected control changes color, weight, and shape. The composer itself remains a calm high-emphasis surface.
+
+## Component Strategy
+
+Keep native links, buttons, inputs, details, and dialogs underneath the visual treatment.
+
+| Component | Role and variant | State behavior | Expressive axes | Platform source or fallback |
+| --- | --- | --- | --- | --- |
+| Navigation | Expanded navigation rail and compact bottom navigation for stable destinations | Selected uses a secondary container plus icon and label; hover, focus, pressed, and disabled use state layers | Color, containment, and adaptive placement | M3 canonical layouts; semantic `nav` and links on web |
+| Primary action | One filled or extended button per view; outlined buttons remain secondary | Visible focus, short pressed scale and shape response, disabled opacity; reduced motion removes transform | Cobalt color role, pill-to-medium shape contrast, weight and grade | M3 button guidance; native button or link with CSS fallback |
+| Choice controls | Tonal buttons for entry type and preference groups | `aria-pressed`, color, weight, and shape jointly show selection; every target remains 44px | Orchid or primary container, roundedness, grade, and scale | M3 states guidance; native button group on web |
+| Heroes and cards | Primary-container hero for the current task; tonal cards for grouped or supporting content | Elevation and state layer on hover, visible focus for actionable cards, static under reduced motion | Oversized type, container color, asymmetric corners, limited decorative shapes | M3 Expressive overview; CSS containers where no web component exists |
 
 ## Expressive System
 

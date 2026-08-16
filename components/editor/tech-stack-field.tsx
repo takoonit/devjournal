@@ -38,7 +38,7 @@ export function TechStackField({ value, onChange, id = "project-tech" }: {
                             addInput();
                         }
                     }}
-                    className={cn(inputClasses, "flex-1 font-mono text-meta")}
+                    className={cn(inputClasses, "flex-1 font-mono")}
                     placeholder="React, TypeScript, Next.js"
                 />
                 <button

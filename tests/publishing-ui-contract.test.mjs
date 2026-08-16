@@ -52,6 +52,7 @@ test("project forms share one tech stack field and creation opens the record", (
     const edit = read("components/editor/edit-project-modal.tsx");
     const project = read("app/editor/projects/[id]/page.tsx");
     const field = read("components/editor/tech-stack-field.tsx");
+    const formStyles = read("components/ui/form-styles.ts");
 
     assert.match(create, /TechStackField/);
     assert.match(create, /disabled=\{!isHydrated\}/);
@@ -60,6 +61,11 @@ test("project forms share one tech stack field and creation opens the record", (
     assert.match(project, /project\.repositoryLink/);
     assert.match(field, /parseTechStack/);
     assert.match(create, /router\.push\(`\/editor\/projects\/\$\{project\.id\}`\)/);
+    assert.match(create, /noValidate/);
+    assert.match(create, /aria-invalid=\{nameError\}/);
+    assert.match(create, /project-name-error/);
+    assert.match(formStyles, /text-\[1rem\]/);
+    assert.doesNotMatch(field, /inputClasses, "[^"]*text-meta/);
 });
 
 test("entry composers share mobile type and shortcut behavior", () => {

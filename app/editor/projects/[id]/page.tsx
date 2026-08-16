@@ -198,8 +198,7 @@ export default function ProjectDetailPage({
 
     return (
         <div className="max-w-page">
-            {/* Issue cover */}
-            <header className="issue-cover rule-oxford mb-14">
+            <header className="m3-hero issue-cover mb-12">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                     <h1 className="masthead-title print-display text-text-primary print:!text-[2rem] print:!leading-[1.1]">{project.name}</h1>
                     <div className="flex items-center gap-1">
@@ -236,14 +235,14 @@ export default function ProjectDetailPage({
             <div className="issue-cover-actions flex flex-wrap items-center gap-3">
                 <Link
                     href={`/editor/projects/${project.id}/entries/new`}
-                    className="control-target rounded bg-accent px-5 py-2.5 font-mono text-label uppercase text-accent-contrast transition-colors duration-subtle hover:bg-accent-soft"
+                    className="m3-button-filled control-target font-sans text-label"
                 >
                     New Entry
                 </Link>
                 {hasDraft && (
                     <Link
                         href={`/editor/projects/${project.id}/entries/new`}
-                        className="control-target gap-2 rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                        className="m3-button-outlined control-target gap-2 font-sans text-label"
                     >
                         <RotateCcw className="h-3 w-3" strokeWidth={1.5} />
                         Resume draft
@@ -367,7 +366,7 @@ export default function ProjectDetailPage({
                         <div className="mt-7 flex justify-end gap-3 border-t border-rule/15 pt-5">
                             <button
                                 onClick={() => setShowDeleteConfirm(false)}
-                                className="control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                                className="m3-button-outlined control-target font-sans text-label"
                             >
                                 Cancel
                             </button>
@@ -408,7 +407,7 @@ export default function ProjectDetailPage({
                         <div className="mt-7 flex justify-end gap-3 border-t border-rule/15 pt-5">
                             <button
                                 onClick={() => setEntryToDelete(null)}
-                                className="control-target rounded border border-surface-border px-4 py-2 font-mono text-label uppercase text-text-secondary transition-colors duration-subtle hover:border-text-secondary hover:text-text-primary"
+                                className="m3-button-outlined control-target font-sans text-label"
                             >
                                 Cancel
                             </button>

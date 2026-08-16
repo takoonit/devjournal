@@ -1,26 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Newsreader } from "next/font/google";
+import { Google_Sans_Flex } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
-const newsreader = Newsreader({
+const googleSansFlex = Google_Sans_Flex({
     subsets: ["latin"],
-    style: ["normal", "italic"],
-    variable: "--font-newsreader",
-    display: "swap",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-    subsets: ["latin"],
-    weight: ["400", "500", "600"],
-    style: ["normal", "italic"],
-    variable: "--font-ibm-plex-mono",
+    axes: ["GRAD", "ROND", "opsz", "slnt", "wdth"],
+    variable: "--font-google-sans-flex",
+    adjustFontFallback: false,
     display: "swap",
 });
 
 export const metadata: Metadata = {
     title: "DevJournal — Build in Public",
-    description: "Write the work. Ship the story. A typeset journal for developers building in public.",
+    description: "Write the work. Share the story. A vivid journal for developers building in public.",
 };
 
 export const viewport: Viewport = {
@@ -37,7 +30,7 @@ export default function RootLayout({
     return (
         <html
             lang="en"
-            className={`${newsreader.variable} ${ibmPlexMono.variable}`}
+            className={googleSansFlex.variable}
             data-theme-mode="press"
             data-density="cozy"
             data-focus-mode="false"
