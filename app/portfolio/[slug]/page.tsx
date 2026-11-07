@@ -19,7 +19,7 @@ export default async function ProjectDetailPage({
     }
 
     return (
-        <div className="page-frame min-h-screen">
+        <div className="page-frame min-h-dvh">
             <div className="portfolio-container mx-auto max-w-page">
                 <Breadcrumbs items={[{ label: "Portfolio", href: "/portfolio" }, { label: project.name }]} />
                 <div className="portfolio-shell">

@@ -82,7 +82,7 @@ function EditorLayoutContent({
 
     return (
         <div
-            className="flex min-h-screen"
+            className="flex min-h-dvh"
             data-theme-mode={uiPreferences.themeMode}
             data-focus-mode={uiPreferences.focusMode}
             data-density={uiPreferences.density}
@@ -231,7 +231,7 @@ export default function EditorLayout({
     children: React.ReactNode;
 }) {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-surface-canvas" />}>
+        <Suspense fallback={<div className="min-h-dvh bg-surface-canvas" />}>
             <EditorLayoutContent>{children}</EditorLayoutContent>
         </Suspense>
     );

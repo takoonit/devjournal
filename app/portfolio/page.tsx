@@ -8,7 +8,7 @@ export default async function PortfolioPage() {
     const { projects, user } = await getPublicPortfolioOverview();
 
     return (
-        <div className="page-frame min-h-screen">
+        <div className="page-frame min-h-dvh">
             <div className="portfolio-container mx-auto max-w-page">
                 <div className="portfolio-shell">
                     <BioSidebarStatic user={user} />
